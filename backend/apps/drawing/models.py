@@ -1,5 +1,5 @@
 from django.db import models
-
+from apps.user.models import User
 
 class Voice(models.Model):
     id = models.BigAutoField(primary_key=True)
