@@ -2,10 +2,21 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status, views
 from rest_framework.response import Response
 from django.conf import settings
+from .models import Drawing
 from .serializers import DrawingSerializer
 
 
 # Create your views here.
+class DrawingAPIView(views.APIView):
+
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if user_id is None:
+            return Response({"detail": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        drawings = Drawing.objects.filter(host_id=user_id).prefetch_related('participants')
+        serializer = DrawingSerializer(drawings, many=True)
+        return Response({"drawings": serializer.data}, status=status.HTTP_200_OK)
 
 class DrawingSubmitAPIView(views.APIView):
 
