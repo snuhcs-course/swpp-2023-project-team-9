@@ -26,6 +26,14 @@ class DrawingAPIView(views.APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class DrawingDetailAPIView(views.APIView):
+
+    def get(self, request, id):
+        drawing = get_object_or_404(Drawing, id=id)
+        serializer = DrawingSerializer(drawing)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class DrawingSubmitAPIView(views.APIView):
 
     def post(self, request, id):
