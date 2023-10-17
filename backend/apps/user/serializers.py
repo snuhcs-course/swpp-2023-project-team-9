@@ -16,3 +16,18 @@ class SignUpSerializer(serializers.ModelSerializer):
             'type': instance.type,
             'created_at': instance.created_at
         }
+
+
+class LogInSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["username", "password"]
+
+    def to_representation(self, instance):
+        return {
+            'id': instance.id,
+            'username': instance.username,
+            'gender': instance.gender,
+            'type': instance.type,
+            'created_at': instance.created_at
+        }
