@@ -1,6 +1,7 @@
 package com.littlestudio.ui.gallery;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,9 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.littlestudio.R;
+
+import java.io.File;
+import java.util.ArrayList;
 
 
 /**
@@ -73,4 +77,17 @@ public class GalleryFragment extends Fragment {
         return view;
     }
 
+    public ArrayList<String> getFilesPath() {
+        ArrayList<String> resultList = new ArrayList<>();
+        String imageDir = Environment.DIRECTORY_PICTURES + "/Android Draw/";
+        File path = Environment.getExternalStoragePublicDirectory(imageDir);
+        path.mkdirs();
+        File[] imageList = path.listFiles();
+        if (imageList != null) {
+            for (File imagePath : imageList) {
+                resultList.add(imagePath.getAbsolutePath());
+            }
+        }
+        return resultList;
+    }
 }
