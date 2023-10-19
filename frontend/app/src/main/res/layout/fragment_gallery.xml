@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
     <TextView
         android:id="@+id/gallery_title"
@@ -16,21 +16,5 @@
         android:text="My Gallery"
         android:textSize="30dp"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/test_api"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
-        android:text="Test API"
-        app:layout_constraintTop_toBottomOf="@+id/gallery_title" />
-
-    <ImageView
-        android:id="@+id/test_api_result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        app:layout_constraintTop_toBottomOf="@id/test_api" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
