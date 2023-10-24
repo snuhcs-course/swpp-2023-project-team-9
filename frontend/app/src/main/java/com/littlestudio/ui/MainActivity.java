@@ -22,6 +22,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.littlestudio.DrawAdapter;
 import com.littlestudio.R;
 import com.littlestudio.ui.drawing.DrawingActivity;
+import com.littlestudio.ui.drawing.WaitingRoomActivity;
 import com.littlestudio.ui.gallery.GalleryFragment;
 
 import java.util.ArrayList;
@@ -100,10 +101,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             Toast.makeText(MainActivity.this, selectedText, Toast.LENGTH_SHORT).show();
 
             if (selectedText.equals("Create a drawing")) {
-                Intent intent = new Intent(this, DrawingActivity.class);
+                Intent intent = new Intent(this, WaitingRoomActivity.class);
                 startActivityForResult(intent, REQUEST_CODE);
             } else if (selectedText.equals("Join a drawing")) {
-                Intent intent = new Intent(this, DrawingActivity.class);
+                Intent intent = new Intent(this, WaitingRoomActivity.class);
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
