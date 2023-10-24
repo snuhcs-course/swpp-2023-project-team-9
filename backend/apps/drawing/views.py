@@ -26,12 +26,45 @@ class DrawingAPIView(views.APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class DrawingJoinAPIView(views.APIView):
+
+    def post(self, request):
+        user_id = request.data.get('user_id')
+        invitation_code = request.data.get('invitation_code')
+
+        # Validate the invitation code (you may have a different method to check the code)
+        drawing = Drawing.objects.filter(invitation_code=invitation_code).first()
+        if not drawing:
+            return Response({"detail": "Invalid invitation code"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Save to UserDrawing table (assuming you have a model named UserDrawing)
+        user_drawing = UserDrawing(user_id=user_id, drawing_id=drawing.id)
+        user_drawing.save()
+
+        return Response({"detail": "Successfully joined the drawing"}, status=status.HTTP_200_OK)
+
+
 class DrawingDetailAPIView(views.APIView):
 
     def get(self, request, id):
         drawing = get_object_or_404(Drawing, id=id)
         serializer = DrawingSerializer(drawing)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class DrawingStartAPIView(views.APIView):
+
+    def post(self, request, id):
+        user_id = request.data.get('user_id')
+
+        drawing = get_object_or_404(Drawing, id=id)
+        if drawing.host_id != user_id:
+            return Response({"detail": "You are not authorized to start this drawing"}, status=status.HTTP_403_FORBIDDEN)
+        
+        drawing.type = "STARTED"
+        drawing.save()
+
+        return Response({"detail": "Drawing started successfully"}, status=status.HTTP_200_OK)
 
 
 class DrawingSubmitAPIView(views.APIView):
@@ -52,7 +85,7 @@ class DrawingSubmitAPIView(views.APIView):
             "image_url": image_url,
             "host_id": host_id,
             "voice_id": request.data.get('voice_id'),
-            "type": "PROCESSED"
+            "type": "COMPLETED"
         }
 
         serializer = DrawingSerializer(data=drawing_data)
