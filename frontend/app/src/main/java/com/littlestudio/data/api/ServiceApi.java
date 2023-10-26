@@ -36,7 +36,7 @@ public interface ServiceApi {
     @POST("/drawing/join")
     Call<Void> joinDrawing(@Body DrawingJoinRequestDto request);
 
-    @PUT("/drawing/submit")
+    @POST("/drawing/1/submit")
     Call<Drawing> submitDrawing(@Body DrawingSubmitRequestDto request);
 
     @POST("/drawing/{id}/canvas")
