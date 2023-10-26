@@ -14,6 +14,7 @@ import os
 import environ
 import boto3
 from pathlib import Path
+import pusher 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -89,6 +90,16 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+# Pusher configuration
+
+PUSHER_CLIENT = pusher.Pusher(
+  app_id=os.environ.get('PUSHER_APP_ID'),
+  key=os.environ.get('PUSHER_KEY'), 
+  secret=os.environ.get('PUSHER_SECRET'), 
+  cluster='ap3',
+  ssl=True
+)
 
 # AWS S3 configuration
 
