@@ -94,3 +94,11 @@ class DrawingSubmitAPIView(views.APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DrawingRealTimeAPIView(views.APIView):
+
+    def post(self, request, id):
+        pusher_client = settings.PUSHER_CLIENT
+        pusher_client.trigger('drawing-channel', 'new-stroke', {'stroke_data': request.data.get('stroke_data')})
+        return Response(status=status.HTTP_200_OK)
