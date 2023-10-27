@@ -37,6 +37,10 @@
             android:exported="true">
         </activity>
 
+        <activity
+            android:name=".ui.drawing.WaitingRoomActivity"
+            android:exported="true">
+        </activity>
     </application>
 
     
