@@ -7,9 +7,11 @@ import com.littlestudio.data.dto.DrawingCreateResponseDto;
 import com.littlestudio.data.dto.DrawingJoinRequestDto;
 import com.littlestudio.data.dto.DrawingListRequestDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
-import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.dto.DrawingViewResponseDto;
 import com.littlestudio.data.model.Drawing;
+import com.littlestudio.data.model.DrawingCreateRequest;
+import com.littlestudio.data.model.DrawingCreateResponse;
+import com.littlestudio.data.model.DrawingJoinRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,5 +46,17 @@ public class DrawingMapper {
 
     public DrawingListRequestDto mapToListDto(Drawing drawing) {
         return objectMapper.convertValue(drawing, DrawingListRequestDto.class);
+    }
+
+    public DrawingCreateRequestDto toDrawingCreateRequestDto(DrawingCreateRequest request) {
+        return objectMapper.convertValue(request, DrawingCreateRequestDto.class);
+    }
+
+    public DrawingCreateResponse fromDrawingCreateResponseDto(DrawingCreateResponseDto dto) {
+        return objectMapper.convertValue(dto, DrawingCreateResponse.class);
+    }
+
+    public DrawingJoinRequestDto toDrawingJoinRequestDto(DrawingJoinRequest drawing) {
+        return objectMapper.convertValue(drawing, DrawingJoinRequestDto.class);
     }
 }

@@ -1,11 +1,13 @@
 package com.littlestudio.data.repository;
 
-import android.util.Log;
-
 import com.littlestudio.data.datasource.DrawingDataSource;
+import com.littlestudio.data.dto.DrawingCreateResponseDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.model.Drawing;
+import com.littlestudio.data.model.DrawingCreateRequest;
+import com.littlestudio.data.model.DrawingCreateResponse;
+import com.littlestudio.data.model.DrawingJoinRequest;
 
 import java.util.List;
 
@@ -43,6 +45,43 @@ public class DrawingRepository {
         });
     }
 
-    // TODO implement more drawing methods
-    // TODO create similar UserRepository and FamilyRepository
+    public void createDrawing(DrawingCreateRequest request, final Callback<DrawingCreateResponse> callback) {
+        remoteDataSource.createDrawing(drawingMapper.toDrawingCreateRequestDto(request), new Callback<DrawingCreateResponseDto>() {
+            @Override
+            public void onResponse(Call<DrawingCreateResponseDto> call, Response<DrawingCreateResponseDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    DrawingCreateResponse createResponse = drawingMapper.fromDrawingCreateResponseDto(response.body());
+                    callback.onResponse(null, Response.success(createResponse));
+                } else {
+                    callback.onFailure(null, new Throwable("Unsuccessful response"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DrawingCreateResponseDto> call, Throwable t) {
+                callback.onFailure(null, t);
+            }
+        });
+    }
+
+    public void joinDrawing(DrawingJoinRequest request, final Callback callback) {
+        remoteDataSource.joinDrawing(drawingMapper.toDrawingJoinRequestDto(request), new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onResponse(null, Response.success(response));
+                } else {
+                    callback.onFailure(null, new Throwable("Unsuccessful response"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                callback.onFailure(null, t);
+            }
+        });
+    }
+
+// TODO implement more drawing methods
+// TODO create similar UserRepository and FamilyRepository
 }
