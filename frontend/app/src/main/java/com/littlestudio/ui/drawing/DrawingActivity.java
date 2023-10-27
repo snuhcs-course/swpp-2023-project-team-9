@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.os.Environment;
 import android.view.View;
 import android.widget.EditText;
@@ -17,6 +18,13 @@ import android.widget.SeekBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.littlestudio.R;
+import com.littlestudio.data.datasource.DrawingRemoteDataSource;
+import com.littlestudio.data.dto.DrawingSubmitRequestDto;
+import com.littlestudio.data.mapper.DrawingMapper;
+import com.littlestudio.data.mapper.FamilyMapper;
+import com.littlestudio.data.repository.DrawingRepository;
 import com.littlestudio.DrawAdapter;
 import com.littlestudio.R;
 import com.littlestudio.ui.MainActivity;
@@ -25,6 +33,21 @@ import com.littlestudio.ui.drawing.widget.DrawView;
 import com.littlestudio.ui.gallery.GalleryFragment;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Base64;
+import java.util.UUID;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class DrawingActivity extends AppCompatActivity {
+    DrawingRepository drawingRepository;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(com.littlestudio.R.layout.drawing);
+        drawingRepository = new DrawingRepository(new DrawingRemoteDataSource(), new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper())));
+=======
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.UUID;
@@ -61,10 +84,72 @@ public class DrawingActivity extends AppCompatActivity {
                     .show();
         });
 
+
+        findViewById(R.id.finish_btn).setOnClickListener(v -> {
+            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+            Bitmap bitmap = ((DrawView) findViewById(R.id.draw_view)).getBitmap();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bStream);
+            byte[] byteArray = bStream.toByteArray();
+            showSaveDialog(bitmap, byteArray);
+
+        });
+
         setUpDrawTools();
         colorSelector();
         setPaintAlpha();
         setPaintWidth();
+    }
+    private void showSaveDialog(Bitmap bitmap, byte[] byteArray) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_save, null);
+        alertDialog.setView(dialogView);
+        EditText fileNameEditText = dialogView.findViewById(R.id.editText_file_name);
+        EditText descriptionEditText = dialogView.findViewById(R.id.editText_description);
+        String filename = UUID.randomUUID().toString();
+        fileNameEditText.setSelectAllOnFocus(true);
+        fileNameEditText.setText(filename);
+
+        alertDialog.setTitle("Save Drawing")
+                .setPositiveButton("OK", (dialogInterface, i) -> {
+                    submitDrawing(bitmap, fileNameEditText.getText().toString(), descriptionEditText.getText().toString());
+//                    Intent intent = new Intent(this, LoadingActivity.class);
+//                    startActivityForResult(intent, RESULT_OK);
+                    finish();
+                })
+                .setNegativeButton("Cancel", (dialogInterface, i) -> {
+                    // Do nothing
+                });
+        AlertDialog dialog = alertDialog.create();
+        dialog.show();
+    }
+
+    private void submitDrawing(Bitmap bitmap, String fileName, String description){
+        String bitmapString = bitmapToString(bitmap);
+        drawingRepository.submitDrawing(
+                new DrawingSubmitRequestDto(bitmapString, fileName, description, 123),
+                new Callback() {
+                    @Override
+                    public void onResponse(Call call, Response response) {
+                        Log.d("TETE success", response.body().toString());
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Throwable t) {
+                        Log.e("TETE error", t.toString());
+                    }
+                }
+        );
+
+    }
+    private String bitmapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String imageString = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            imageString = Base64.getEncoder().encodeToString(imageBytes);
+        }
+        return imageString;
     }
 
     @Override
