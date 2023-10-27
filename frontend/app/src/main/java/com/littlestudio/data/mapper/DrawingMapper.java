@@ -1,5 +1,6 @@
 package com.littlestudio.data.mapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.littlestudio.data.dto.DrawingCanvasRequestDto;
 import com.littlestudio.data.dto.DrawingCreateRequestDto;
@@ -7,10 +8,12 @@ import com.littlestudio.data.dto.DrawingCreateResponseDto;
 import com.littlestudio.data.dto.DrawingJoinRequestDto;
 import com.littlestudio.data.dto.DrawingListRequestDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
+import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.dto.DrawingViewResponseDto;
 import com.littlestudio.data.model.Drawing;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,5 +47,9 @@ public class DrawingMapper {
 
     public DrawingListRequestDto mapToListDto(Drawing drawing) {
         return objectMapper.convertValue(drawing, DrawingListRequestDto.class);
+    }
+
+    public DrawingRealTimeRequestDto mapToStroke(String request) throws IOException {
+        return objectMapper.readValue(request, DrawingRealTimeRequestDto.class);
     }
 }

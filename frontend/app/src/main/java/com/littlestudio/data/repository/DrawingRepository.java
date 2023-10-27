@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.littlestudio.data.datasource.DrawingDataSource;
 import com.littlestudio.data.dto.DrawingListResponseDto;
+import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.model.Drawing;
@@ -60,7 +61,24 @@ public class DrawingRepository {
             }
         });
     }
-
+    public void realTimeDrawing(DrawingRealTimeRequestDto request, final Callback callback){
+        remoteDataSource.realTimeDrawing(request, new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call call, Response response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                callback.onResponse(null, Response.success(response));
+                            } else {
+                                Log.e("error", response.message());
+                                Log.e("error", response.toString());
+                                callback.onFailure(null, new Throwable("Unsuccessful response"));
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call call, Throwable t) {
+                            callback.onFailure(null, t);
+                        }
+                    });
+                }
     // TODO implement more drawing methods
     // TODO create similar UserRepository and FamilyRepository
 }
