@@ -3,6 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+
     android:layout_height="match_parent">
 
     <EditText
@@ -26,6 +28,7 @@
         android:maxLines="10"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="90dp" />
-
+        android:maxLines="1"
+        android:inputType="text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
