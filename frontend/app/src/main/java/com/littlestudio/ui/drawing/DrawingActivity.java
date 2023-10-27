@@ -6,8 +6,11 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.os.Environment;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -22,6 +25,9 @@ import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.repository.DrawingRepository;
+import com.littlestudio.DrawAdapter;
+import com.littlestudio.R;
+import com.littlestudio.ui.MainActivity;
 import com.littlestudio.ui.drawing.widget.CircleView;
 import com.littlestudio.ui.drawing.widget.DrawView;
 import com.littlestudio.ui.gallery.GalleryFragment;
@@ -41,8 +47,28 @@ public class DrawingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(com.littlestudio.R.layout.drawing);
         drawingRepository = new DrawingRepository(new DrawingRemoteDataSource(), new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper())));
+=======
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.UUID;
 
-        //findViewById(R.id.image_close_drawing).setOnClickListener(v -> finish());
+public class DrawingActivity extends AppCompatActivity {
+    private static final int REQUEST_CODE_DRAW = 101;
+    GalleryFragment galleryFragment;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(com.littlestudio.R.layout.activity_drawing);
+
+        findViewById(R.id.finish_btn).setOnClickListener(v -> {
+            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+            Bitmap bitmap = ((DrawView) findViewById(R.id.draw_view)).getBitmap();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bStream);
+            byte[] byteArray = bStream.toByteArray();
+            showSaveDialog(bitmap, byteArray);
+        });
+
         findViewById(R.id.image_close_drawing).setOnClickListener(v -> {
             new AlertDialog.Builder(this)
                     .setTitle("Close Drawing")
@@ -57,6 +83,7 @@ public class DrawingActivity extends AppCompatActivity {
                     })
                     .show();
         });
+
 
         findViewById(R.id.finish_btn).setOnClickListener(v -> {
             ByteArrayOutputStream bStream = new ByteArrayOutputStream();
@@ -123,6 +150,70 @@ public class DrawingActivity extends AppCompatActivity {
             imageString = Base64.getEncoder().encodeToString(imageBytes);
         }
         return imageString;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_CODE_DRAW) {
+                byte[] result = data.getByteArrayExtra("bitmap");
+                Bitmap bitmap = BitmapFactory.decodeByteArray(result, 0, result.length);
+                showSaveDialog(bitmap, result);
+            }
+        }
+    }
+
+    private void showSaveDialog(Bitmap bitmap, byte[] byteArray) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_save, null);
+        alertDialog.setView(dialogView);
+        EditText fileNameEditText = dialogView.findViewById(R.id.editText_file_name);
+        String filename = UUID.randomUUID().toString();
+        fileNameEditText.setSelectAllOnFocus(true);
+        fileNameEditText.setText(filename);
+
+        alertDialog.setTitle("Save Drawing")
+                .setPositiveButton("OK", (dialogInterface, i) -> {
+                    saveImage(bitmap, fileNameEditText.getText().toString(), byteArray);
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivityForResult(intent, RESULT_OK);
+                    finish();
+                })
+                .setNegativeButton("Cancel", (dialogInterface, i) -> {
+                    // Do nothing
+                });
+
+        AlertDialog dialog = alertDialog.create();
+        dialog.show();
+    }
+
+    private void saveImage(Bitmap bitmap, String fileName, byte[] byteArray) {
+        String imageDir = Environment.DIRECTORY_PICTURES + "/Android Draw/";
+        File path = Environment.getExternalStoragePublicDirectory(imageDir);
+        path.mkdirs();
+        File file = new File(path, fileName + ".png");
+        try {
+            file.createNewFile();
+            FileOutputStream outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+            updateRecyclerView(Uri.fromFile(file));
+
+            Intent intent = new Intent();
+            intent.putExtra("uri", Uri.fromFile(file));
+            setResult(RESULT_OK, intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateRecyclerView(Uri uri) {
+        DrawAdapter adapter = new DrawAdapter(galleryFragment.getActivity(), galleryFragment.getFilesPath());
+        adapter.addItem(uri.toString());
     }
 
     private void setUpDrawTools() {

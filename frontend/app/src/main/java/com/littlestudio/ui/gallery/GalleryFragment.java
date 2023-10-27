@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.littlestudio.DrawAdapter;
 import com.littlestudio.R;
 
 import java.io.File;
@@ -20,7 +23,6 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class GalleryFragment extends Fragment {
-
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,9 +32,7 @@ public class GalleryFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private final int REQUEST_CODE_START_DRAWING = 210;
-
-
+    private DrawAdapter adapter;
     public GalleryFragment() {
         // Required empty public constructor
     }
@@ -46,6 +46,7 @@ public class GalleryFragment extends Fragment {
      * @return A new instance of fragment com.example.littlestudio.ui.galleryList.GalleryFragment.
      */
     // TODO: Rename and change types and number of parameters
+
     public static GalleryFragment newInstance(String param1, String param2) {
         GalleryFragment fragment = new GalleryFragment();
         Bundle args = new Bundle();
@@ -67,13 +68,19 @@ public class GalleryFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_gallery, container, false);
+
+        RecyclerView rcv = (RecyclerView) view.findViewById(R.id.recycler_view);
+        adapter = new DrawAdapter(getActivity(), getFilesPath());
+        rcv.setAdapter(adapter);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
+        rcv.setLayoutManager(layoutManager);
+
         return view;
     }
 
