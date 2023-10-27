@@ -18,9 +18,13 @@ import android.widget.SeekBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
+import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
@@ -30,9 +34,19 @@ import com.littlestudio.R;
 import com.littlestudio.ui.MainActivity;
 import com.littlestudio.ui.drawing.widget.CircleView;
 import com.littlestudio.ui.drawing.widget.DrawView;
+import com.littlestudio.ui.drawing.widget.PaintOptions;
 import com.littlestudio.ui.gallery.GalleryFragment;
+import com.pusher.client.Pusher;
+import com.pusher.client.PusherOptions;
+import com.pusher.client.channel.Channel;
+import com.pusher.client.channel.PusherEvent;
+import com.pusher.client.channel.SubscriptionEventListener;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -46,8 +60,12 @@ public class DrawingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.littlestudio.R.layout.drawing);
-        drawingRepository = new DrawingRepository(new DrawingRemoteDataSource(), new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper())));
-=======
+
+        ObjectMapper mapper = new ObjectMapper();
+        FamilyMapper familyMapper = new FamilyMapper(mapper);
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        drawingRepository = new DrawingRepository(new DrawingRemoteDataSource(), new DrawingMapper(mapper, new FamilyMapper(mapper)));
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.UUID;
@@ -68,6 +86,7 @@ public class DrawingActivity extends AppCompatActivity {
             byte[] byteArray = bStream.toByteArray();
             showSaveDialog(bitmap, byteArray);
         });
+
 
         findViewById(R.id.image_close_drawing).setOnClickListener(v -> {
             new AlertDialog.Builder(this)
@@ -98,6 +117,58 @@ public class DrawingActivity extends AppCompatActivity {
         colorSelector();
         setPaintAlpha();
         setPaintWidth();
+        connectToPusher();
+    }
+
+    private void connectToPusher() {
+        PusherOptions options = new PusherOptions();
+        options.setCluster("ap3");
+
+        Pusher pusher = new Pusher("48e0ed2d6758286a8441", options);
+
+        pusher.connect(new ConnectionEventListener() {
+            @Override
+            public void onConnectionStateChange(ConnectionStateChange change) {
+                Log.i("Pusher", "State changed from " + change.getPreviousState() +
+                        " to " + change.getCurrentState());
+            }
+
+            @Override
+            public void onError(String message, String code, Exception e) {
+                Log.i("Pusher", "There was a problem connecting! " +
+                        "\ncode: " + code +
+                        "\nmessage: " + message +
+                        "\nException: " + e
+                );
+            }
+        }, ConnectionState.ALL);
+
+
+
+        Channel channel = pusher.subscribe("drawing-channel");
+
+        ((DrawView) findViewById(R.id.draw_view)).setChannel(channel);
+        ((DrawView) findViewById(R.id.draw_view)).setDrawingRepository(drawingRepository);
+        channel.bind("new-stroke", new SubscriptionEventListener() {
+            @Override
+            public void onEvent(PusherEvent event) {
+                // draw canvas
+                Log.i("Pusher", "Received event with data: " + event.toString());
+                // TODO : Deserialize String to Stroke
+                ObjectMapper mapper = new ObjectMapper();
+                // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                // mapper
+                DrawingMapper drawingMapper = new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()));
+                DrawingRealTimeRequestDto stroke = null;
+                try {
+                    stroke = drawingMapper.mapToStroke(event.getData());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                PaintOptions paint = stroke.stroke_data.paint;
+                ((DrawView) findViewById(R.id.draw_view)).addRealTimeStroke(stroke.stroke_data);
+            }
+        });
     }
     private void showSaveDialog(Bitmap bitmap, byte[] byteArray) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);

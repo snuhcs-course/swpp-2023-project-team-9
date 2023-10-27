@@ -7,14 +7,17 @@ import java.io.Writer;
 
 public class Move implements Action {
 
-    private final float x;
-    private final float y;
+    public float x;
+    public float y;
 
     public Move(float x, float y) {
         this.x = x;
         this.y = y;
     }
+    public ActionType type = ActionType.MOVE;
 
+    public Move() {
+    }
     @Override
     public void perform(Path path) {
         path.moveTo(x, y);

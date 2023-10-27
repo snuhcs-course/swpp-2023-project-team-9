@@ -6,6 +6,7 @@ import com.littlestudio.data.dto.DrawingCreateRequestDto;
 import com.littlestudio.data.dto.DrawingCreateResponseDto;
 import com.littlestudio.data.dto.DrawingJoinRequestDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
+import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 
 import retrofit2.Callback;
@@ -57,5 +58,16 @@ public class DrawingRemoteDataSource implements DrawingDataSource {
             callback.onFailure(null, e);
         }
     }
+
+    public void realTimeDrawing(DrawingRealTimeRequestDto request, Callback callback) {
+        try {
+            serviceApi.uploadRealTimeDrawing(1, request).enqueue(callback);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            callback.onFailure(null, e);
+        }
+    }
+
 
 }
