@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,16 +19,28 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.littlestudio.DrawAdapter;
 import com.littlestudio.R;
-import com.littlestudio.ui.drawing.DrawingActivity;
+import com.littlestudio.data.datasource.DrawingRemoteDataSource;
+import com.littlestudio.data.mapper.DrawingMapper;
+import com.littlestudio.data.mapper.FamilyMapper;
+import com.littlestudio.data.model.DrawingCreateRequest;
+import com.littlestudio.data.model.DrawingCreateResponse;
+import com.littlestudio.data.model.DrawingJoinRequest;
+import com.littlestudio.data.repository.DrawingRepository;
+import com.littlestudio.ui.constant.IntentExtraKey;
 import com.littlestudio.ui.drawing.WaitingRoomActivity;
 import com.littlestudio.ui.gallery.GalleryFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     BottomNavigationView bottomNavigationView;
@@ -35,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private final int REQUEST_CODE = 111;
     private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     DrawAdapter adapter;
+    DrawingRepository drawingRepository;
 
 
     @Override
@@ -63,6 +78,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         buttonView.setOnClickListener((view) -> {
             showStartDrawingModal();
         });
+
+        drawingRepository = new DrawingRepository(
+                new DrawingRemoteDataSource(),
+                new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()))
+        );
     }
 
     @Override
@@ -88,26 +108,80 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void showStartDrawingModal() {
-        final List<String> ListItems = new ArrayList();
-        ListItems.add("Create a drawing");
-        ListItems.add("Join a drawing");
-        final CharSequence[] items = ListItems.toArray(new String[ListItems.size()]);
+        final List<String> startDrawingOptions = new ArrayList<String>() {{
+            add(StartDrawingOptions.CREATE);
+            add(StartDrawingOptions.JOIN);
+        }};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("What would you like to do?");
-        builder.setCancelable(true);
-        builder.setItems(items, (DialogInterface dialog, int pos) -> {
-            String selectedText = items[pos].toString();
-            Toast.makeText(MainActivity.this, selectedText, Toast.LENGTH_SHORT).show();
+        final CharSequence[] optionItems = startDrawingOptions.toArray(new String[startDrawingOptions.size()]);
 
-            if (selectedText.equals("Create a drawing")) {
-                Intent intent = new Intent(this, WaitingRoomActivity.class);
-                startActivityForResult(intent, REQUEST_CODE);
-            } else if (selectedText.equals("Join a drawing")) {
-                Intent intent = new Intent(this, WaitingRoomActivity.class);
-                startActivityForResult(intent, REQUEST_CODE);
-            }
-        });
-        builder.show();
+        new AlertDialog.Builder(this)
+                .setTitle("What would you like to do?")
+                .setItems(optionItems, (DialogInterface dialog, int pos) -> {
+                    String selectedOption = optionItems[pos].toString();
+                    switch (selectedOption) {
+                        case StartDrawingOptions.CREATE:
+                            Intent intent = new Intent(this, WaitingRoomActivity.class);
+                            drawingRepository.createDrawing(new DrawingCreateRequest(1), new Callback<DrawingCreateResponse>() {
+                                @Override
+                                public void onResponse(Call<DrawingCreateResponse> call, Response<DrawingCreateResponse> response) {
+                                    String invitationCode = response.body().invitation_code;
+                                    intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
+                                    startActivityForResult(intent, REQUEST_CODE);
+                                }
+
+                                @Override
+                                public void onFailure(Call<DrawingCreateResponse> call, Throwable t) {
+                                    Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            break;
+                        case StartDrawingOptions.JOIN:
+                            showInvitationCodeInputDialog();
+                            break;
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, _which) -> dialog.dismiss())
+                .show();
     }
+
+    private void showInvitationCodeInputDialog() {
+        final EditText invitationCodeInput = new EditText(this);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Enter Invitation Code")
+                .setView(invitationCodeInput)
+                .create();
+
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Join", (_dialog, _which) -> {});
+        dialog.show();
+
+        Button joinButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        joinButton.setOnClickListener(view -> {
+            String invitationCode = invitationCodeInput.getText().toString();
+            if (invitationCode.isEmpty()) {
+                Toast.makeText(MainActivity.this, "Please enter invitation code.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Intent intent = new Intent(this, WaitingRoomActivity.class);
+            drawingRepository.joinDrawing(new DrawingJoinRequest(1, invitationCode), new Callback() {
+                @Override
+                public void onResponse(Call call, Response response) {
+                    intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
+                    startActivityForResult(intent, REQUEST_CODE);
+                    dialog.dismiss();
+                }
+
+                @Override
+                public void onFailure(Call call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "Invalid Invitation Code", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+    }
+}
+
+class StartDrawingOptions {
+    public final static String CREATE = "Create a drawing";
+    public final static String JOIN = "Join a drawing";
 }
