@@ -4,10 +4,10 @@ import android.graphics.Color;
 
 public class PaintOptions {
 
-    private int color;
-    private float strokeWidth;
-    private int alpha;
-    private boolean isEraserOn;
+    public int color;
+    public float strokeWidth;
+    public int alpha;
+    public boolean isEraserOn;
 
     public PaintOptions() {
         this.color = Color.BLACK;

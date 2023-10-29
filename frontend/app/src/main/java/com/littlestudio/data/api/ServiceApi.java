@@ -5,6 +5,7 @@ import com.littlestudio.data.dto.DrawingCreateRequestDto;
 import com.littlestudio.data.dto.DrawingCreateResponseDto;
 import com.littlestudio.data.dto.DrawingJoinRequestDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
+import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.dto.DrawingViewResponseDto;
 import com.littlestudio.data.dto.FamilyListResponseDto;
@@ -36,11 +37,11 @@ public interface ServiceApi {
     @POST("/drawing/join")
     Call<Void> joinDrawing(@Body DrawingJoinRequestDto request);
 
-    @PUT("/drawing/submit")
+    @POST("/drawing/1/submit")
     Call<Drawing> submitDrawing(@Body DrawingSubmitRequestDto request);
 
     @POST("/drawing/{id}/canvas")
-    Call<Void> uploadRealTimeDrawing(@Path("id") int id, @Body DrawingCanvasRequestDto request);
+    Call<Void> uploadRealTimeDrawing(@Path("id") int id, @Body DrawingRealTimeRequestDto request);
 
     @POST("/user")
     Call<User> registerUser(@Body UserCreateRequestDto request);

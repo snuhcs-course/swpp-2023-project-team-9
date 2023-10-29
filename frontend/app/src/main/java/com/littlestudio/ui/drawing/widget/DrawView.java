@@ -6,15 +6,28 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.ColorInt;
 import androidx.core.graphics.ColorUtils;
 
+import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
+import com.littlestudio.data.repository.DrawingRepository;
+import com.pusher.client.channel.Channel;
+
 import java.util.LinkedHashMap;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class DrawView extends View {
+
+    private Channel channel;
+
+    private DrawingRepository drawingRepository;
 
     private LinkedHashMap<MyPath, PaintOptions> mPaths = new LinkedHashMap<>();
     private LinkedHashMap<MyPath, PaintOptions> mLastPaths = new LinkedHashMap<>();
@@ -93,7 +106,40 @@ public class DrawView extends View {
         }
     }
      */
+    public void addRealTimeStroke(Stroke strokeData){
+        PaintOptions paintOptions = new PaintOptions();
+        paintOptions.setColor(strokeData.paint.color);
+        paintOptions.setStrokeWidth(strokeData.paint.strokeWidth);
+        paintOptions.setAlpha(strokeData.paint.alpha);
 
+        MyPath myPath = new MyPath();
+        // Iterate over the actions and perform them on the path
+        for (Action action : strokeData.path.actions) {
+            if (action instanceof Move) {
+                Move move = (Move) action;
+                myPath.moveTo(move.x, move.y);
+            } else if (action instanceof Line) {
+                Line line = (Line) action;
+                myPath.lineTo(line.x, line.y);
+            } else if (action instanceof Quad) {
+                Quad quad = (Quad) action;
+                myPath.quadTo(quad.x1, quad.y1, quad.x2, quad.y2);
+            }
+            // Add more types as needed
+        }
+
+        mPaths.put(myPath, paintOptions);
+        Log.d(myPath.toString(), paintOptions.toString());
+        Log.d("TETE", "path: " + myPath.toString());
+        Log.d("TETE", "path: " + myPath.actions.toString());
+        Log.d("TETE", "path: " + myPath.actions.get(0).toString());
+        Log.d("TETE", "path: " + myPath.getFillType());
+        Log.d("TETE", "path: " + myPath.isEmpty());
+        Log.d("TETE", "path: " + myPath.isConvex());
+        Log.d("TETE", "path: " + myPath.isInverseFillType());
+        Log.d("TETE", "mPaths: " + mPaths.toString());
+        invalidate();
+    }
     public void redo() {
         if (!mUndonePaths.isEmpty()) {
             MyPath lastKey = (MyPath) mUndonePaths.keySet().toArray()[mUndonePaths.size() - 1];
@@ -154,6 +200,14 @@ public class DrawView extends View {
         canvas.drawPath(mPath, mPaint);
     }
 
+    public void setChannel(Channel channel) {
+        this.channel = channel;
+    }
+
+    public void setDrawingRepository(DrawingRepository drawingRepository) {
+        this.drawingRepository = drawingRepository;
+    }
+
     private void changePaint(PaintOptions paintOptions) {
         mPaint.setColor(paintOptions.isEraserOn() ? Color.WHITE : paintOptions.getColor());
         mPaint.setStrokeWidth(paintOptions.getStrokeWidth());
@@ -189,6 +243,21 @@ public class DrawView extends View {
         }
 
         mPaths.put(mPath, mPaintOptions);
+        Stroke stroke = new Stroke(mPath, mPaintOptions);
+
+        drawingRepository.realTimeDrawing(
+                new DrawingRealTimeRequestDto(stroke),
+                new Callback() {
+                    @Override
+                    public void onResponse(Call call, Response response) {
+                        Log.d("TETE success", response.body().toString());
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Throwable t) {
+                        Log.e("TETE error", t.toString());
+                    }
+                });
         mPath = new MyPath();
         mPaintOptions = new PaintOptions(mPaintOptions.getColor(), mPaintOptions.getStrokeWidth(), mPaintOptions.getAlpha(), mPaintOptions.isEraserOn());
     }

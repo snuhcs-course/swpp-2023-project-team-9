@@ -7,10 +7,10 @@ import java.io.Writer;
 
 public class Quad implements Action {
 
-    private final float x1;
-    private final float y1;
-    private final float x2;
-    private final float y2;
+    public float x1;
+    public float y1;
+    public float x2;
+    public float y2;
 
     public Quad(float x1, float y1, float x2, float y2) {
         this.x1 = x1;
@@ -18,7 +18,11 @@ public class Quad implements Action {
         this.x2 = x2;
         this.y2 = y2;
     }
+    public ActionType type = ActionType.QUAD;
 
+    public Quad() {
+        type = ActionType.QUAD;
+    }
     @Override
     public void perform(Path path) {
         path.quadTo(x1, y1, x2, y2);

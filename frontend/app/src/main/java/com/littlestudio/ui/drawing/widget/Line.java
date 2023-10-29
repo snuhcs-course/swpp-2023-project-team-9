@@ -7,9 +7,14 @@ import java.io.Writer;
 
 public class Line implements Action {
 
-    private final float x;
-    private final float y;
+    public float x;
+    public float y;
 
+
+    public ActionType type = ActionType.LINE;
+
+    public Line() {
+    }
     public Line(float x, float y) {
         this.x = x;
         this.y = y;

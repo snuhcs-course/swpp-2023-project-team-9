@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.os.Environment;
 import android.view.View;
 import android.widget.EditText;
@@ -17,14 +18,54 @@ import android.widget.SeekBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.littlestudio.R;
+import com.littlestudio.data.datasource.DrawingRemoteDataSource;
+import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
+import com.littlestudio.data.dto.DrawingSubmitRequestDto;
+import com.littlestudio.data.mapper.DrawingMapper;
+import com.littlestudio.data.mapper.FamilyMapper;
+import com.littlestudio.data.repository.DrawingRepository;
 import com.littlestudio.DrawAdapter;
 import com.littlestudio.R;
 import com.littlestudio.ui.MainActivity;
 import com.littlestudio.ui.drawing.widget.CircleView;
 import com.littlestudio.ui.drawing.widget.DrawView;
+import com.littlestudio.ui.drawing.widget.PaintOptions;
 import com.littlestudio.ui.gallery.GalleryFragment;
+import com.pusher.client.Pusher;
+import com.pusher.client.PusherOptions;
+import com.pusher.client.channel.Channel;
+import com.pusher.client.channel.PusherEvent;
+import com.pusher.client.channel.SubscriptionEventListener;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.UUID;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class DrawingActivity extends AppCompatActivity {
+    DrawingRepository drawingRepository;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(com.littlestudio.R.layout.drawing);
+
+        ObjectMapper mapper = new ObjectMapper();
+        FamilyMapper familyMapper = new FamilyMapper(mapper);
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        drawingRepository = new DrawingRepository(new DrawingRemoteDataSource(), new DrawingMapper(mapper, new FamilyMapper(mapper)));
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.UUID;
@@ -46,6 +87,7 @@ public class DrawingActivity extends AppCompatActivity {
             showSaveDialog(bitmap, byteArray);
         });
 
+
         findViewById(R.id.image_close_drawing).setOnClickListener(v -> {
             new AlertDialog.Builder(this)
                     .setTitle("Close Drawing")
@@ -61,10 +103,124 @@ public class DrawingActivity extends AppCompatActivity {
                     .show();
         });
 
+
+        findViewById(R.id.finish_btn).setOnClickListener(v -> {
+            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+            Bitmap bitmap = ((DrawView) findViewById(R.id.draw_view)).getBitmap();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bStream);
+            byte[] byteArray = bStream.toByteArray();
+            showSaveDialog(bitmap, byteArray);
+
+        });
+
         setUpDrawTools();
         colorSelector();
         setPaintAlpha();
         setPaintWidth();
+        connectToPusher();
+    }
+
+    private void connectToPusher() {
+        PusherOptions options = new PusherOptions();
+        options.setCluster("ap3");
+
+        Pusher pusher = new Pusher("48e0ed2d6758286a8441", options);
+
+        pusher.connect(new ConnectionEventListener() {
+            @Override
+            public void onConnectionStateChange(ConnectionStateChange change) {
+                Log.i("Pusher", "State changed from " + change.getPreviousState() +
+                        " to " + change.getCurrentState());
+            }
+
+            @Override
+            public void onError(String message, String code, Exception e) {
+                Log.i("Pusher", "There was a problem connecting! " +
+                        "\ncode: " + code +
+                        "\nmessage: " + message +
+                        "\nException: " + e
+                );
+            }
+        }, ConnectionState.ALL);
+
+
+
+        Channel channel = pusher.subscribe("drawing-channel");
+
+        ((DrawView) findViewById(R.id.draw_view)).setChannel(channel);
+        ((DrawView) findViewById(R.id.draw_view)).setDrawingRepository(drawingRepository);
+        channel.bind("new-stroke", new SubscriptionEventListener() {
+            @Override
+            public void onEvent(PusherEvent event) {
+                // draw canvas
+                Log.i("Pusher", "Received event with data: " + event.toString());
+                // TODO : Deserialize String to Stroke
+                ObjectMapper mapper = new ObjectMapper();
+                // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                // mapper
+                DrawingMapper drawingMapper = new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()));
+                DrawingRealTimeRequestDto stroke = null;
+                try {
+                    stroke = drawingMapper.mapToStroke(event.getData());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                PaintOptions paint = stroke.stroke_data.paint;
+                ((DrawView) findViewById(R.id.draw_view)).addRealTimeStroke(stroke.stroke_data);
+            }
+        });
+    }
+    private void showSaveDialog(Bitmap bitmap, byte[] byteArray) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_save, null);
+        alertDialog.setView(dialogView);
+        EditText fileNameEditText = dialogView.findViewById(R.id.editText_file_name);
+        EditText descriptionEditText = dialogView.findViewById(R.id.editText_description);
+        String filename = UUID.randomUUID().toString();
+        fileNameEditText.setSelectAllOnFocus(true);
+        fileNameEditText.setText(filename);
+
+        alertDialog.setTitle("Save Drawing")
+                .setPositiveButton("OK", (dialogInterface, i) -> {
+                    submitDrawing(bitmap, fileNameEditText.getText().toString(), descriptionEditText.getText().toString());
+//                    Intent intent = new Intent(this, LoadingActivity.class);
+//                    startActivityForResult(intent, RESULT_OK);
+                    finish();
+                })
+                .setNegativeButton("Cancel", (dialogInterface, i) -> {
+                    // Do nothing
+                });
+        AlertDialog dialog = alertDialog.create();
+        dialog.show();
+    }
+
+    private void submitDrawing(Bitmap bitmap, String fileName, String description){
+        String bitmapString = bitmapToString(bitmap);
+        drawingRepository.submitDrawing(
+                new DrawingSubmitRequestDto(bitmapString, fileName, description, 123),
+                new Callback() {
+                    @Override
+                    public void onResponse(Call call, Response response) {
+                        Log.d("TETE success", response.body().toString());
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Throwable t) {
+                        Log.e("TETE error", t.toString());
+                    }
+                }
+        );
+
+    }
+    private String bitmapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String imageString = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            imageString = Base64.getEncoder().encodeToString(imageBytes);
+        }
+        return imageString;
     }
 
     @Override
