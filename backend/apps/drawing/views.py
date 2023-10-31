@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django.conf import settings
 from .models import Drawing
 from .serializers import DrawingSerializer, DrawingCreateSerializer
+import json
 
 
 # Create your views here.
@@ -100,5 +101,29 @@ class DrawingRealTimeAPIView(views.APIView):
 
     def post(self, request, id):
         pusher_client = settings.PUSHER_CLIENT
-        pusher_client.trigger('drawing-channel', 'new-stroke', {'stroke_data': request.data.get('stroke_data')})
+        stroke_data = request.data.get('stroke_data')
+        serialized_data = json.dumps({'stroke_data': stroke_data})
+        
+        chunk_size = 5000  # You can adjust this size
+        msg_id = str(id)  # Assuming 'id' is unique for each stroke
+        
+        if len(serialized_data) <= chunk_size:
+            # Send normally
+            pusher_client.trigger('drawing-channel', 'new-stroke', {'stroke_data': stroke_data})
+        else:
+            # Send in chunks
+            for i in range(0, len(serialized_data), chunk_size):
+                chunk = serialized_data[i:i + chunk_size]
+                is_final = i + chunk_size >= len(serialized_data)
+                pusher_client.trigger(
+                    'drawing-channel', 
+                    'chunked-new-stroke', 
+                    {
+                        'id': msg_id,
+                        'index': int(i / chunk_size),
+                        'chunk': chunk,
+                        'final': is_final
+                    }
+                )
+        
         return Response(status=status.HTTP_200_OK)

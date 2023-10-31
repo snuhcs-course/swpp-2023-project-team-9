@@ -45,11 +45,15 @@ import com.pusher.client.connection.ConnectionEventListener;
 import com.pusher.client.connection.ConnectionState;
 import com.pusher.client.connection.ConnectionStateChange;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.UUID;
 
 import retrofit2.Call;
@@ -141,16 +145,16 @@ public class DrawingActivity extends AppCompatActivity {
 
         ((DrawView) findViewById(R.id.draw_view)).setChannel(channel);
         ((DrawView) findViewById(R.id.draw_view)).setDrawingRepository(drawingRepository);
+
+        final HashMap<String, HashMap<String, HashMap<Integer, String>>> events = new HashMap<>();
+
+        ObjectMapper mapper = new ObjectMapper();
+        DrawingMapper drawingMapper = new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()));
+
         channel.bind("new-stroke", new SubscriptionEventListener() {
             @Override
             public void onEvent(PusherEvent event) {
-                // draw canvas
                 Log.i("Pusher", "Received event with data: " + event.toString());
-                // TODO : Deserialize String to Stroke
-                ObjectMapper mapper = new ObjectMapper();
-                // mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                // mapper
-                DrawingMapper drawingMapper = new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()));
                 DrawingRealTimeRequestDto stroke = null;
                 try {
                     stroke = drawingMapper.mapToStroke(event.getData());
@@ -159,6 +163,48 @@ public class DrawingActivity extends AppCompatActivity {
                 }
                 PaintOptions paint = stroke.stroke_data.paint;
                 ((DrawView) findViewById(R.id.draw_view)).addRealTimeStroke(stroke.stroke_data);
+            }
+        });
+
+        channel.bind("chunked-new-stroke", new SubscriptionEventListener() {
+            @Override
+            public void onEvent(PusherEvent event) {
+                Log.i("Pusher", "Received chunked event with data: " + event.toString());
+                try {
+                    JSONObject data = new JSONObject(event.getData());
+                    String id = data.getString("id");
+                    String stroke_id = data.getString("stroke_id");
+                    int index = data.getInt("index");
+                    String chunk = data.getString("chunk");
+                    boolean isFinal = data.getBoolean("final");
+
+                    if (!events.containsKey(id)) {
+                        events.put(id, new HashMap<>());
+                    }
+
+                    if (!events.get(id).containsKey(stroke_id)) {
+                        events.get(id).put(stroke_id, new HashMap<>());
+                    }
+
+                    HashMap<Integer, String> eventChunks = events.get(id).get(stroke_id);
+                    eventChunks.put(index, chunk);
+
+                    if (isFinal) {
+                        StringBuilder fullData = new StringBuilder();
+                        for (int i = 0; i < eventChunks.size(); i++) {
+                            fullData.append(eventChunks.get(i));
+                        }
+
+                        String fullDataString = fullData.toString();
+                        DrawingRealTimeRequestDto stroke = drawingMapper.mapToStroke(fullDataString);
+                        PaintOptions paint = stroke.stroke_data.paint;
+                        ((DrawView) findViewById(R.id.draw_view)).addRealTimeStroke(stroke.stroke_data);
+
+                        events.get(id).remove(stroke_id);
+                    }
+                } catch (JSONException | IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
