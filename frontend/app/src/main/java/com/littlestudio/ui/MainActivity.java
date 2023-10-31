@@ -126,7 +126,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                 @Override
                                 public void onResponse(Call<DrawingCreateResponse> call, Response<DrawingCreateResponse> response) {
                                     String invitationCode = response.body().invitation_code;
+                                    int id = response.body().id;
                                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
+                                    intent.putExtra(IntentExtraKey.DRAWING_CODE, id);
                                     startActivityForResult(intent, REQUEST_CODE);
                                 }
 

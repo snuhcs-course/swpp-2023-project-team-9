@@ -15,7 +15,7 @@ import androidx.core.graphics.ColorUtils;
 
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
 import com.littlestudio.data.repository.DrawingRepository;
-import com.pusher.client.channel.Channel;
+
 
 import java.util.LinkedHashMap;
 
@@ -25,7 +25,6 @@ import retrofit2.Response;
 
 public class DrawView extends View {
 
-    private Channel channel;
 
     private DrawingRepository drawingRepository;
 
@@ -36,6 +35,8 @@ public class DrawView extends View {
     private Paint mPaint = new Paint();
     private MyPath mPath = new MyPath();
     private PaintOptions mPaintOptions = new PaintOptions();
+
+    private String invitationCode;
 
     private float mCurX = 0f;
     private float mCurY = 0f;
@@ -83,6 +84,7 @@ public class DrawView extends View {
             invalidate();
         }
     }
+
 
     /*
     public void undo() {
@@ -200,9 +202,7 @@ public class DrawView extends View {
         canvas.drawPath(mPath, mPaint);
     }
 
-    public void setChannel(Channel channel) {
-        this.channel = channel;
-    }
+
 
     public void setDrawingRepository(DrawingRepository drawingRepository) {
         this.drawingRepository = drawingRepository;
@@ -244,9 +244,8 @@ public class DrawView extends View {
 
         mPaths.put(mPath, mPaintOptions);
         Stroke stroke = new Stroke(mPath, mPaintOptions);
-
         drawingRepository.realTimeDrawing(
-                new DrawingRealTimeRequestDto(stroke),
+                new DrawingRealTimeRequestDto(stroke, invitationCode),
                 new Callback() {
                     @Override
                     public void onResponse(Call call, Response response) {
@@ -285,7 +284,9 @@ public class DrawView extends View {
         invalidate();
         return true;
     }
-
+    public void setInvitationCode(String invitationCode){
+        this.invitationCode = invitationCode;
+    }
 
     public void toggleEraser() {
         isEraserOn = !isEraserOn;
@@ -296,4 +297,5 @@ public class DrawView extends View {
     public boolean isEraserOn() {
         return isEraserOn;
     }
+
 }

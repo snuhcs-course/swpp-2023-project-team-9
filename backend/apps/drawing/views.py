@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status, views
 from rest_framework.response import Response
 from django.conf import settings
-from .models import Drawing
+from .models import Drawing, UserDrawing
 from .serializers import DrawingSerializer, DrawingCreateSerializer
 import json
 import uuid
@@ -102,6 +102,7 @@ class DrawingRealTimeAPIView(views.APIView):
     def post(self, request, id):
         pusher_client = settings.PUSHER_CLIENT
         stroke_data = request.data.get('stroke_data')
+        invitation_code = request.data.get('invitationCode')
         serialized_data = json.dumps({'stroke_data': stroke_data})
         
         chunk_size = 5000  # Adjust this size
@@ -109,13 +110,13 @@ class DrawingRealTimeAPIView(views.APIView):
         stroke_id = str(uuid.uuid4())  # Unique ID for each stroke
         
         if len(serialized_data) <= chunk_size:
-            pusher_client.trigger('drawing-channel', 'new-stroke', {'stroke_data': stroke_data})
+            pusher_client.trigger(invitation_code, 'new-stroke', {'stroke_data': stroke_data})
         else:
             for i in range(0, len(serialized_data), chunk_size):
                 chunk = serialized_data[i:i + chunk_size]
                 is_final = i + chunk_size >= len(serialized_data)
                 pusher_client.trigger(
-                    'drawing-channel', 
+                    invitation_code,
                     'chunked-new-stroke', 
                     {
                         'id': msg_id,

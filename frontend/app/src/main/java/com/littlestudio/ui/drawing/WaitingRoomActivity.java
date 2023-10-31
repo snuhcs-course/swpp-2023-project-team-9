@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.littlestudio.R;
+import com.littlestudio.ui.constant.IntentExtraKey;
 
 public class WaitingRoomActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_DRAW = 101;
@@ -35,6 +36,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
         Button button = findViewById(R.id.start_drawing);
         button.setOnClickListener((v) -> {
             Intent intent = new Intent(this, DrawingActivity.class);
+            intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
             startActivityForResult(intent, REQUEST_CODE_DRAW);
         });
     }
