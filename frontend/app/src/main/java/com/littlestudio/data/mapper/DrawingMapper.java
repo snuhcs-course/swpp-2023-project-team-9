@@ -62,6 +62,7 @@ public class DrawingMapper {
 
     public DrawingJoinRequestDto toDrawingJoinRequestDto(DrawingJoinRequest drawing) {
         return objectMapper.convertValue(drawing, DrawingJoinRequestDto.class);
+    }
 
     public DrawingRealTimeRequestDto mapToStroke(String request) throws IOException {
         return objectMapper.readValue(request, DrawingRealTimeRequestDto.class);
