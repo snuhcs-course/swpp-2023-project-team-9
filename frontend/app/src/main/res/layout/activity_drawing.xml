@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_brown"
+    android:background="@color/white"
     tools:context=".ui.drawing.DrawingActivity">
 
     <com.littlestudio.ui.drawing.widget.DrawView
         android:id="@+id/draw_view"
         android:layout_width="400dp"
         android:layout_height="400dp"
-        android:background="#4DFFFFFF"
+        android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
