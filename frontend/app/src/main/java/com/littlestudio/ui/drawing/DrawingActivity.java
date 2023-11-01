@@ -131,6 +131,11 @@ public class DrawingActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        pusher.unsubscribe(invitationCode);
+    }
 
     private void connectToPusher() {
         PusherOptions options = new PusherOptions();

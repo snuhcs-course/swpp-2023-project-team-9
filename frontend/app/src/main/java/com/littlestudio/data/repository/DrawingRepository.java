@@ -90,7 +90,7 @@ public class DrawingRepository {
         remoteDataSource.joinDrawing(drawingMapper.toDrawingJoinRequestDto(request), new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful()) {
                     callback.onResponse(null, Response.success(response));
                 } else {
                     callback.onFailure(null, new Throwable("Unsuccessful response"));

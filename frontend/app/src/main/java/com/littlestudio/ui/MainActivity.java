@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
@@ -177,6 +178,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 @Override
                 public void onFailure(Call call, Throwable t) {
                     Toast.makeText(MainActivity.this, "Invalid Invitation Code", Toast.LENGTH_SHORT).show();
+                    Log.e("why error?", t.toString());
+
+
                 }
             });
         });

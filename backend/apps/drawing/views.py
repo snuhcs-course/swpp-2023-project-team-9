@@ -7,6 +7,8 @@ from .serializers import DrawingSerializer, DrawingCreateSerializer
 import json
 import uuid
 
+from ..user.models import User
+
 
 class DrawingAPIView(views.APIView):
 
@@ -30,16 +32,18 @@ class DrawingAPIView(views.APIView):
 class DrawingJoinAPIView(views.APIView):
 
     def post(self, request):
-        user_id = request.data.get('user_id')
+        user_id = int(request.data.get('user_id'))
+        # TODO : After implement login feature, check invitation Code validation.
         invitation_code = request.data.get('invitation_code')
 
         # Validate the invitation code (you may have a different method to check the code)
         drawing = Drawing.objects.filter(invitation_code=invitation_code).first()
         if not drawing:
             return Response({"detail": "Invalid invitation code"}, status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.get(id=user_id)
 
         # Save to UserDrawing table (assuming you have a model named UserDrawing)
-        user_drawing = UserDrawing(user_id=user_id, drawing_id=drawing.id)
+        user_drawing = UserDrawing(user_id=user, drawing_id=drawing)
         user_drawing.save()
 
         return Response({"detail": "Successfully joined the drawing"}, status=status.HTTP_200_OK)
