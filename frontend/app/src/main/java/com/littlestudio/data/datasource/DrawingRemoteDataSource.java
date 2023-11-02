@@ -1,5 +1,7 @@
 package com.littlestudio.data.datasource;
 
+import android.util.Log;
+
 import com.littlestudio.data.api.ServiceApi;
 import com.littlestudio.data.api.ServiceApiClient;
 import com.littlestudio.data.dto.DrawingCreateRequestDto;
@@ -64,7 +66,6 @@ public class DrawingRemoteDataSource implements DrawingDataSource {
             serviceApi.uploadRealTimeDrawing(1, request).enqueue(callback);
 
         } catch (Exception e) {
-            e.printStackTrace();
             callback.onFailure(null, e);
         }
     }

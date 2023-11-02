@@ -2,10 +2,12 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status, views
 from rest_framework.response import Response
 from django.conf import settings
-from .models import Drawing
+from .models import Drawing, UserDrawing
 from .serializers import DrawingSerializer, DrawingCreateSerializer
 import json
 import uuid
+
+from ..user.models import User
 
 
 class DrawingAPIView(views.APIView):
@@ -30,16 +32,18 @@ class DrawingAPIView(views.APIView):
 class DrawingJoinAPIView(views.APIView):
 
     def post(self, request):
-        user_id = request.data.get('user_id')
+        user_id = int(request.data.get('user_id'))
+        # TODO : After implement login feature, check invitation Code validation.
         invitation_code = request.data.get('invitation_code')
 
         # Validate the invitation code (you may have a different method to check the code)
         drawing = Drawing.objects.filter(invitation_code=invitation_code).first()
         if not drawing:
             return Response({"detail": "Invalid invitation code"}, status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.get(id=user_id)
 
         # Save to UserDrawing table (assuming you have a model named UserDrawing)
-        user_drawing = UserDrawing(user_id=user_id, drawing_id=drawing.id)
+        user_drawing = UserDrawing(user_id=user, drawing_id=drawing)
         user_drawing.save()
 
         return Response({"detail": "Successfully joined the drawing"}, status=status.HTTP_200_OK)
@@ -102,6 +106,7 @@ class DrawingRealTimeAPIView(views.APIView):
     def post(self, request, id):
         pusher_client = settings.PUSHER_CLIENT
         stroke_data = request.data.get('stroke_data')
+        invitation_code = request.data.get('invitationCode')
         serialized_data = json.dumps({'stroke_data': stroke_data})
         
         chunk_size = 5000  # Adjust this size
@@ -109,13 +114,13 @@ class DrawingRealTimeAPIView(views.APIView):
         stroke_id = str(uuid.uuid4())  # Unique ID for each stroke
         
         if len(serialized_data) <= chunk_size:
-            pusher_client.trigger('drawing-channel', 'new-stroke', {'stroke_data': stroke_data})
+            pusher_client.trigger(invitation_code, 'new-stroke', {'stroke_data': stroke_data})
         else:
             for i in range(0, len(serialized_data), chunk_size):
                 chunk = serialized_data[i:i + chunk_size]
                 is_final = i + chunk_size >= len(serialized_data)
                 pusher_client.trigger(
-                    'drawing-channel', 
+                    invitation_code,
                     'chunked-new-stroke', 
                     {
                         'id': msg_id,

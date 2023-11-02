@@ -29,6 +29,8 @@ class DrawingCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         drawing = Drawing.objects.create(**validated_data)
+        drawing.invitation_code = self.get_invitation_code(drawing)
+        drawing.save()
         UserDrawing.objects.create(user_id=validated_data['host_id'], drawing_id=drawing)
         return drawing
 

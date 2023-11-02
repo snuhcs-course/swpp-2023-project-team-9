@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
@@ -126,7 +127,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                 @Override
                                 public void onResponse(Call<DrawingCreateResponse> call, Response<DrawingCreateResponse> response) {
                                     String invitationCode = response.body().invitation_code;
+                                    int id = response.body().id;
                                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
+                                    intent.putExtra(IntentExtraKey.DRAWING_CODE, id);
                                     startActivityForResult(intent, REQUEST_CODE);
                                 }
 
@@ -175,6 +178,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 @Override
                 public void onFailure(Call call, Throwable t) {
                     Toast.makeText(MainActivity.this, "Invalid Invitation Code", Toast.LENGTH_SHORT).show();
+                    Log.e("why error?", t.toString());
+
+
                 }
             });
         });

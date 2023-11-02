@@ -65,6 +65,12 @@ public class DrawingActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_DRAW = 101;
     GalleryFragment galleryFragment;
 
+    private Pusher pusher;
+
+    private Channel channel;
+
+    private String invitationCode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +80,7 @@ public class DrawingActivity extends AppCompatActivity {
         FamilyMapper familyMapper = new FamilyMapper(mapper);
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         drawingRepository = new DrawingRepository(new DrawingRemoteDataSource(), new DrawingMapper(mapper, new FamilyMapper(mapper)));
+        ((DrawView) findViewById(R.id.draw_view)).setDrawingRepository(drawingRepository);
 
         findViewById(R.id.finish_btn).setOnClickListener(v -> {
             ByteArrayOutputStream bStream = new ByteArrayOutputStream();
@@ -116,13 +123,28 @@ public class DrawingActivity extends AppCompatActivity {
         connectToPusher();
     }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+        this.invitationCode = getIntent().getStringExtra("invitationCode");
+        connectToChannel(invitationCode);
+
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        pusher.unsubscribe(invitationCode);
+    }
+
     private void connectToPusher() {
         PusherOptions options = new PusherOptions();
         options.setCluster("ap3");
 
-        Pusher pusher = new Pusher("48e0ed2d6758286a8441", options);
+        Pusher pusherInstance = new Pusher("48e0ed2d6758286a8441", options);
+        this.pusher = pusherInstance;
 
-        pusher.connect(new ConnectionEventListener() {
+        this.pusher.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange change) {
                 Log.i("Pusher", "State changed from " + change.getPreviousState() +
@@ -141,17 +163,19 @@ public class DrawingActivity extends AppCompatActivity {
 
 
 
-        Channel channel = pusher.subscribe("drawing-channel");
+    }
 
-        ((DrawView) findViewById(R.id.draw_view)).setChannel(channel);
-        ((DrawView) findViewById(R.id.draw_view)).setDrawingRepository(drawingRepository);
+    private void connectToChannel(String invitationCode) {
+        this.channel = this.pusher.subscribe(invitationCode);
+
+
 
         final HashMap<String, HashMap<String, HashMap<Integer, String>>> events = new HashMap<>();
 
         ObjectMapper mapper = new ObjectMapper();
         DrawingMapper drawingMapper = new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()));
-
-        channel.bind("new-stroke", new SubscriptionEventListener() {
+        ((DrawView) findViewById(R.id.draw_view)).setInvitationCode(invitationCode);
+        this.channel.bind("new-stroke", new SubscriptionEventListener() {
             @Override
             public void onEvent(PusherEvent event) {
                 Log.i("Pusher", "Received event with data: " + event.toString());
@@ -166,7 +190,7 @@ public class DrawingActivity extends AppCompatActivity {
             }
         });
 
-        channel.bind("chunked-new-stroke", new SubscriptionEventListener() {
+        this.channel.bind("chunked-new-stroke", new SubscriptionEventListener() {
             @Override
             public void onEvent(PusherEvent event) {
                 Log.i("Pusher", "Received chunked event with data: " + event.toString());
@@ -208,6 +232,7 @@ public class DrawingActivity extends AppCompatActivity {
             }
         });
     }
+
     private void showSaveDialog(Bitmap bitmap, byte[] byteArray) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_save, null);
@@ -243,6 +268,7 @@ public class DrawingActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call call, Response response) {
                         Log.d("TETE success", response.body().toString());
+                        pusher.unsubscribe(invitationCode);
                     }
 
                     @Override

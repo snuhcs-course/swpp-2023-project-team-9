@@ -23,6 +23,7 @@ class Drawing(models.Model):
     id = models.BigAutoField(primary_key=True)
     title = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
+    invitation_code = models.CharField(max_length=255, null=True, blank=True)
 
     image_url = models.TextField(null=True, blank=True)
     ai_image_url = models.TextField(null=True, blank=True)
@@ -37,7 +38,7 @@ class Drawing(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.title
+        return str(self.id)
 
 
 class UserDrawing(models.Model):
