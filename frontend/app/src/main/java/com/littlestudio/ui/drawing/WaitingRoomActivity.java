@@ -46,6 +46,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
     private String invitationCode;
     private Pusher pusher;
     private Channel channel;
+
     private int topMargin = 30;
     private LinearLayout container;
     private int drawingId;
@@ -59,10 +60,6 @@ public class WaitingRoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_waiting_room);
         container = (LinearLayout) findViewById(R.id.participants);
 
-        drawingRepository = new DrawingRepository(
-                new DrawingRemoteDataSource(),
-                new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()))
-        );
 
         drawingRepository = new DrawingRepository(
                 new DrawingRemoteDataSource(),

@@ -1,3 +1,7 @@
+import base64
+import hashlib
+import io
+
 from django.shortcuts import get_object_or_404
 from rest_framework import status, views
 from rest_framework.response import Response
@@ -80,33 +84,42 @@ class DrawingSubmitAPIView(views.APIView):
 
     def post(self, request, id):
         s3_client = settings.S3_CLIENT
-        file = request.FILES.get('file')
-        host_id = request.data.get('host_id')
+        file = request.data.get('file')
+        drawing_id = request.data.get('host_id')
+        title = request.data.get('title')
+        decode_file = io.BytesIO()
+        decode_file.write(base64.b64decode(file))
+        decode_file.seek(0)
 
-        object_name = f"drawings/{host_id}/{file.name}"
-        s3_client.upload_fileobj(file, 'little-studio', object_name)
+        object_name = f"drawings/{drawing_id}/{hashlib.sha256(title.encode()).hexdigest()[:10]}"
+        s3_client.upload_fileobj(decode_file, 'little-studio', object_name)
         image_url = f"https://little-studio.s3.amazonaws.com/{object_name}"
-
+        Drawing.objects.filter(id=drawing_id).update(title=title, description=request.data.get('description'),
+                                                             image_url=image_url, type="COMPLETED")
         drawing_users = DrawingUser.objects.filter(drawing_id=id)
         for first_user in drawing_users:
             for second_user in drawing_users:
                 if first_user.user_id.id != second_user.user_id.id:
                     family_id = Family.objects.filter(user_id=first_user.user_id.id).first()
                     FamilyUser.objects.get_or_create(user_id=first_user.user_id, family_id=family_id)
+
+        # Modify previous data instead of saving new data
+        drawing_data = {
+            "id": drawing_id,
+            "title": title,
+            "description": request.data.get('description'),
+            "image_url": image_url,
+            "type": "COMPLETED"
+        }
+
+        # serializer = DrawingSerializer(data=drawing_data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        return Response(drawing_data, status=status.HTTP_200_OK)
+
         
-        drawing, created = Drawing.objects.get_or_create(id=id)
-        if not created: 
-            drawing.title = request.data.get('title', drawing.title)
-            drawing.description = request.data.get('description', drawing.description)
-            drawing.image_url = image_url
-            drawing.host_id = User.objects.filter(id=host_id).first()
-            # drawing.voice_id = request.data.get('voice_id', drawing.voice_id)
-            drawing.type = "COMPLETED"
-            drawing.save(update_fields=['title', 'description', 'image_url', 'voice_id', 'type'])
-            serializer = DrawingSerializer(drawing)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response({"error": "Drawing not found."}, status=status.HTTP_400_BAD_REQUEST)
+        
+
 
 
 class DrawingRealTimeAPIView(views.APIView):
@@ -116,11 +129,11 @@ class DrawingRealTimeAPIView(views.APIView):
         stroke_data = request.data.get('stroke_data')
         invitation_code = request.data.get('invitationCode')
         serialized_data = json.dumps({'stroke_data': stroke_data})
-        
+
         chunk_size = 5000  # Adjust this size
         msg_id = str(id)  # Drawing ID
         stroke_id = str(uuid.uuid4())  # Unique ID for each stroke
-        
+
         if len(serialized_data) <= chunk_size:
             pusher_client.trigger(invitation_code, 'new-stroke', {'stroke_data': stroke_data})
         else:
@@ -129,7 +142,7 @@ class DrawingRealTimeAPIView(views.APIView):
                 is_final = i + chunk_size >= len(serialized_data)
                 pusher_client.trigger(
                     invitation_code,
-                    'chunked-new-stroke', 
+                    'chunked-new-stroke',
                     {
                         'id': msg_id,
                         'stroke_id': stroke_id,
