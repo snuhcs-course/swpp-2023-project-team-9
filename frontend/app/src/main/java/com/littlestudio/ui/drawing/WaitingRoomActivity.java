@@ -4,9 +4,12 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
@@ -43,7 +46,8 @@ public class WaitingRoomActivity extends AppCompatActivity {
     private String invitationCode;
     private Pusher pusher;
     private Channel channel;
-
+    private int topMargin = 30;
+    private LinearLayout container;
     private int drawingId;
 
     // TODO : make finish button and out.
@@ -53,6 +57,12 @@ public class WaitingRoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         connectToPusher();
         setContentView(R.layout.activity_waiting_room);
+        container = (LinearLayout) findViewById(R.id.participants);
+
+        drawingRepository = new DrawingRepository(
+                new DrawingRemoteDataSource(),
+                new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()))
+        );
 
         drawingRepository = new DrawingRepository(
                 new DrawingRemoteDataSource(),
@@ -80,11 +90,10 @@ public class WaitingRoomActivity extends AppCompatActivity {
             intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
             intent.putExtra(IntentExtraKey.DRAWING_CODE, drawingId);
 
-            Log.d("help", "help");
+
             drawingRepository.startDrawing(new DrawingStartRequestDto(invitationCode), new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {
-                    Log.d("good", "good");
                     pusher.unsubscribe(invitationCode);
                     startActivityForResult(intent, REQUEST_CODE_DRAW);
                 }
@@ -94,6 +103,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
                     Log.e("error!!!!!!!!!!!!!", t.toString());
                 }
             });
+
         });
 
     }
@@ -134,7 +144,26 @@ public class WaitingRoomActivity extends AppCompatActivity {
                         String username = data.getString("username");
                         String type = data.getString("type");
                         if(type.equals("IN")){
-                            Log.d("IN", username + " IN!");
+                            TextView textView = new TextView(WaitingRoomActivity.this);
+                            textView.setText(username);
+                            textView.setTextSize(20);
+                            textView.setTextColor(Color.BLACK);
+                            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                            lp.gravity = Gravity.CENTER;
+                            lp.topMargin = topMargin += 30;
+
+
+                            textView.setLayoutParams(lp);
+                            runOnUiThread(
+                                    new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            container.addView(textView);
+                                        }
+                                    }
+                            );
+                            //부모 뷰에 추가
+
                         }else if(type.equals("OUT")){
                             Log.d("OUT", username + " OUT!");
                         }
@@ -152,6 +181,19 @@ public class WaitingRoomActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        this.invitationCode = getIntent().getStringExtra(IntentExtraKey.INVITATION_CODE);
+        this.isHost = getIntent().getBooleanExtra(IntentExtraKey.HOST_CODE, false);
+        connectToChannel(invitationCode);
+        Button button = findViewById(R.id.start_drawing);
+        if(!isHost){
+            Toast.makeText(WaitingRoomActivity.this, "Only Host can start drawing", Toast.LENGTH_SHORT).show();
+            button.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
