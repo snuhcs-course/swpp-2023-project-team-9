@@ -1,6 +1,5 @@
 package com.littlestudio.data.mapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.littlestudio.data.dto.DrawingCanvasRequestDto;
 import com.littlestudio.data.dto.DrawingCreateRequestDto;
@@ -9,7 +8,6 @@ import com.littlestudio.data.dto.DrawingJoinRequestDto;
 import com.littlestudio.data.dto.DrawingListRequestDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
-import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.dto.DrawingViewResponseDto;
 import com.littlestudio.data.model.Drawing;
 import com.littlestudio.data.model.DrawingCreateRequest;
@@ -30,7 +28,7 @@ public class DrawingMapper {
         this.familyMapper = familyMapper;
     }
 
-    public Drawing mapViewToModel(DrawingViewResponseDto dto) {
+    public Drawing fromDrawingViewResponseDto(DrawingViewResponseDto dto) {
         Drawing drawing = objectMapper.convertValue(dto, Drawing.class);
         if (dto.participants != null) {
             drawing.participants = familyMapper.mapMembersToModel(dto.participants);
@@ -38,9 +36,9 @@ public class DrawingMapper {
         return drawing;
     }
 
-    public List<Drawing> mapListToModel(DrawingListResponseDto dto) {
+    public List<Drawing> fromDrawingListResponseDto(DrawingListResponseDto dto) {
         return dto.drawings.stream()
-                .map(this::mapViewToModel)
+                .map(this::fromDrawingViewResponseDto)
                 .collect(Collectors.toList());
     }
 

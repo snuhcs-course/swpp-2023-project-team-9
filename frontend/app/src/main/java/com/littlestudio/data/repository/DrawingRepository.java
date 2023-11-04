@@ -35,7 +35,7 @@ public class DrawingRepository {
             @Override
             public void onResponse(Call<DrawingListResponseDto> call, Response<DrawingListResponseDto> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Drawing> drawings = drawingMapper.mapListToModel(response.body());
+                    List<Drawing> drawings = drawingMapper.fromDrawingListResponseDto(response.body());
                     callback.onResponse(null, Response.success(drawings));
                 } else {
                     callback.onFailure(null, new Throwable("Unsuccessful response"));
