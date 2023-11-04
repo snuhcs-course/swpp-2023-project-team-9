@@ -60,6 +60,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_waiting_room);
         container = (LinearLayout) findViewById(R.id.participants);
 
+
         drawingRepository = new DrawingRepository(
                 new DrawingRemoteDataSource(),
                 new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()))
@@ -86,11 +87,10 @@ public class WaitingRoomActivity extends AppCompatActivity {
             intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
             intent.putExtra(IntentExtraKey.DRAWING_CODE, drawingId);
 
-            Log.d("help", "help");
+
             drawingRepository.startDrawing(new DrawingStartRequestDto(invitationCode), new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {
-                    Log.d("good", "good");
                     pusher.unsubscribe(invitationCode);
                     startActivityForResult(intent, REQUEST_CODE_DRAW);
                 }
@@ -100,6 +100,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
                     Log.e("error!!!!!!!!!!!!!", t.toString());
                 }
             });
+
         });
 
     }
@@ -177,6 +178,19 @@ public class WaitingRoomActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        this.invitationCode = getIntent().getStringExtra(IntentExtraKey.INVITATION_CODE);
+        this.isHost = getIntent().getBooleanExtra(IntentExtraKey.HOST_CODE, false);
+        connectToChannel(invitationCode);
+        Button button = findViewById(R.id.start_drawing);
+        if(!isHost){
+            Toast.makeText(WaitingRoomActivity.this, "Only Host can start drawing", Toast.LENGTH_SHORT).show();
+            button.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
