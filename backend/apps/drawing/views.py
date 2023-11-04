@@ -17,7 +17,10 @@ class DrawingAPIView(views.APIView):
         if user_id is None:
             return Response({"detail": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        drawings = Drawing.objects.filter(host_id=user_id).prefetch_related('participants')
+        drawings = Drawing.objects.filter(
+            host_id=user_id, 
+            type=Drawing.TypeChoices.COMPLETED
+        ).order_by('-id').prefetch_related('participants')
         serializer = DrawingSerializer(drawings, many=True)
         return Response({"drawings": serializer.data}, status=status.HTTP_200_OK)
 
