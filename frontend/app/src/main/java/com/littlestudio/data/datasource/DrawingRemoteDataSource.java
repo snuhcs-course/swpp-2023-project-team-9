@@ -76,7 +76,7 @@ public class DrawingRemoteDataSource implements DrawingDataSource {
     public void startDrawing(DrawingStartRequestDto request, Callback callback){
 
         try{
-            serviceApi.startDrawing(request);
+            serviceApi.startDrawing(request).enqueue(callback);
 
         }catch (Exception e) {
             Log.e("remote2", "remote2");
