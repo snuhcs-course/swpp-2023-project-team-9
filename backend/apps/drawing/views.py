@@ -2,12 +2,12 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status, views
 from rest_framework.response import Response
 from django.conf import settings
-from .models import Drawing, UserDrawing
+from .models import Drawing, DrawingUser
+from ..user.models import User
+from ..family.models import Family, FamilyUser
 from .serializers import DrawingSerializer, DrawingCreateSerializer
 import json
 import uuid
-
-from ..user.models import User
 
 
 class DrawingAPIView(views.APIView):
@@ -17,7 +17,10 @@ class DrawingAPIView(views.APIView):
         if user_id is None:
             return Response({"detail": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        drawings = Drawing.objects.filter(host_id=user_id).prefetch_related('participants')
+        drawings = Drawing.objects.filter(
+            host_id=user_id, 
+            type=Drawing.TypeChoices.COMPLETED
+        ).order_by('-id').prefetch_related('participants')
         serializer = DrawingSerializer(drawings, many=True)
         return Response({"drawings": serializer.data}, status=status.HTTP_200_OK)
 
@@ -33,21 +36,19 @@ class DrawingJoinAPIView(views.APIView):
 
     def post(self, request):
         user_id = int(request.data.get('user_id'))
-        # TODO : After implement login feature, check invitation Code validation.
         invitation_code = request.data.get('invitation_code')
 
-        # Validate the invitation code (you may have a different method to check the code)
         drawing = Drawing.objects.filter(invitation_code=invitation_code).first()
         if not drawing:
             return Response({"detail": "Invalid invitation code"}, status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.get(id=user_id)
         username = user.username
         pusher_client = settings.PUSHER_CLIENT
-
         pusher_client.trigger(invitation_code, 'participant', {'username': username, 'type': "IN"})
         # Save to UserDrawing table (assuming you have a model named UserDrawing)
-        user_drawing = UserDrawing(user_id=user, drawing_id=drawing)
-        user_drawing.save()
+        drawing_user = DrawingUser(drawing_id=drawing, user_id=user)
+        drawing_user.save()
+
 
         return Response({"detail": "Successfully joined the drawing"}, status=status.HTTP_200_OK)
 
@@ -82,22 +83,26 @@ class DrawingSubmitAPIView(views.APIView):
         s3_client.upload_fileobj(file, 'little-studio', object_name)
         image_url = f"https://little-studio.s3.amazonaws.com/{object_name}"
 
-        # Modify previous data instead of saving new data
-        drawing_data = {
-            "title": request.data.get('title'),
-            "description": request.data.get('description'),
-            "image_url": image_url,
-            "host_id": host_id,
-            "voice_id": request.data.get('voice_id'),
-            "type": "COMPLETED"
-        }
-
-        serializer = DrawingSerializer(data=drawing_data)
-        if serializer.is_valid():
-            serializer.save()
+        drawing_users = DrawingUser.objects.filter(drawing_id=id)
+        for first_user in drawing_users:
+            for second_user in drawing_users:
+                if first_user.user_id.id != second_user.user_id.id:
+                    family_id = Family.objects.filter(user_id=first_user.user_id.id).first()
+                    FamilyUser.objects.get_or_create(user_id=first_user.user_id, family_id=family_id)
+        
+        drawing, created = Drawing.objects.get_or_create(id=id)
+        if not created: 
+            drawing.title = request.data.get('title', drawing.title)
+            drawing.description = request.data.get('description', drawing.description)
+            drawing.image_url = image_url
+            drawing.host_id = User.objects.filter(id=host_id).first()
+            # drawing.voice_id = request.data.get('voice_id', drawing.voice_id)
+            drawing.type = "COMPLETED"
+            drawing.save(update_fields=['title', 'description', 'image_url', 'voice_id', 'type'])
+            serializer = DrawingSerializer(drawing)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Drawing not found."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DrawingRealTimeAPIView(views.APIView):
