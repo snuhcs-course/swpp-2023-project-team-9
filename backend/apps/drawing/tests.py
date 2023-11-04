@@ -6,7 +6,7 @@ from apps.drawing.models import Drawing, Voice
 from apps.user.models import User
 
 
-class DrawingAPITests(APITestCase):
+class DrawingTests(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = User.objects.create(username='testuser', password='testpassword')
