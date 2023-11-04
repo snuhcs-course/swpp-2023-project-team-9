@@ -9,8 +9,10 @@ import com.littlestudio.data.dto.DrawingCreateResponseDto;
 import com.littlestudio.data.dto.DrawingJoinRequestDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
+import com.littlestudio.data.dto.DrawingStartRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 
+import okhttp3.Request;
 import retrofit2.Callback;
 
 public class DrawingRemoteDataSource implements DrawingDataSource {
@@ -70,5 +72,16 @@ public class DrawingRemoteDataSource implements DrawingDataSource {
         }
     }
 
+    @Override
+    public void startDrawing(DrawingStartRequestDto request, Callback callback){
+
+        try{
+            serviceApi.startDrawing(request).enqueue(callback);
+
+        }catch (Exception e) {
+            Log.e("remote2", "remote2");
+            callback.onFailure(null, e);
+        }
+    }
 
 }
