@@ -42,12 +42,16 @@ class DrawingJoinAPIView(views.APIView):
         if not drawing:
             return Response({"detail": "Invalid invitation code"}, status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.get(id=user_id)
+
+
         username = user.username
         pusher_client = settings.PUSHER_CLIENT
+
         pusher_client.trigger(invitation_code, 'participant', {'username': username, 'type': "IN"})
         # Save to UserDrawing table (assuming you have a model named UserDrawing)
-        drawing_user = DrawingUser(drawing_id=drawing, user_id=user)
-        drawing_user.save()
+        user_drawing = UserDrawing(user_id=user, drawing_id=drawing)
+        user_drawing.save()
+
 
 
         return Response({"detail": "Successfully joined the drawing"}, status=status.HTTP_200_OK)
