@@ -32,7 +32,7 @@ class Drawing(models.Model):
 
     voice_id = models.OneToOneField(Voice, on_delete=models.CASCADE, db_column="voice_id", null=True, blank=True)
     host_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column="host_id")
-    participants = models.ManyToManyField(User, blank=True, related_name='user_drawing', through='UserDrawing')
+    participants = models.ManyToManyField(User, blank=True, related_name='drawing_user', through='DrawingUser')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -41,7 +41,7 @@ class Drawing(models.Model):
         return str(self.id)
 
 
-class UserDrawing(models.Model):
+class DrawingUser(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column="user_id")
     drawing_id = models.ForeignKey(Drawing, on_delete=models.CASCADE, db_column="drawing_id")
     created_at = models.DateTimeField(auto_now_add=True)

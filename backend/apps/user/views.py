@@ -3,6 +3,7 @@ from rest_framework import status, views
 from rest_framework.response import Response
 from .serializers import SignUpSerializer, LogInSerializer
 from .models import User
+from apps.family.models import Family, FamilyUser
 
 
 class SignUpAPIView(views.APIView):
@@ -11,7 +12,14 @@ class SignUpAPIView(views.APIView):
         if serializer.is_valid():
             password = serializer.validated_data['password']
             serializer.validated_data['password'] = hash_password(password)
-            serializer.save()
+            user = serializer.save()
+
+            family = Family(user_id=user)
+            family.save() 
+
+            family_user = FamilyUser(family_id=family, user_id=user)
+            family_user.save()
+
             return Response(serializer.data)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
