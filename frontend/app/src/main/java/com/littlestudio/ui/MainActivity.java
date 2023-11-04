@@ -1,9 +1,7 @@
 package com.littlestudio.ui;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -14,16 +12,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.littlestudio.DrawAdapter;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
 import com.littlestudio.data.mapper.DrawingMapper;
@@ -49,9 +42,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     MypageFragment mypageFragment = new MypageFragment();
     private final int REQUEST_CODE = 111;
     private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
-    DrawAdapter adapter;
     DrawingRepository drawingRepository;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,19 +52,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.gallery);
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-        } else {
-            adapter = new DrawAdapter(this, galleryFragment.getFilesPath());
-            RecyclerView rcv = (RecyclerView) galleryFragment.getView().findViewById(R.id.recycler_view);
-
-            rcv.setAdapter(adapter);
-            rcv.setLayoutManager(new LinearLayoutManager(this));
-        }
 
         FloatingActionButton buttonView = findViewById(R.id.fab_add_draw);
         buttonView.setOnClickListener((view) -> {
