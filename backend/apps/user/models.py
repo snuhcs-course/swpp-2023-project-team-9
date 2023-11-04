@@ -16,8 +16,6 @@ class User(models.Model):
     password = models.CharField(max_length=255)
     gender = models.CharField(choices=GenderChoices.choices, max_length=255)
     type = models.CharField(choices=TypeChoices.choices, max_length=255)
-    family_id = models.ForeignKey('family.Family', on_delete=models.CASCADE, db_column="family_id",
-                                  related_name='family_members', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -13,11 +13,11 @@ public class UserMapper {
         this.objectMapper = objectMapper;
     }
 
-    public UserCreateRequestDto mapToCreateDto(User user) {
+    public UserCreateRequestDto toUserCreateRequestDto(UserCreateRequestDto user) {
         return objectMapper.convertValue(user, UserCreateRequestDto.class);
     }
 
-    public UserLoginRequestDto mapToLoginDto(User user) {
+    public UserLoginRequestDto toUserLoginRequestDto(User user) {
         return objectMapper.convertValue(user, UserLoginRequestDto.class);
     }
 }

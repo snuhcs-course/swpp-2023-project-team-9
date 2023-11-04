@@ -45,7 +45,7 @@ public interface ServiceApi {
     @POST("/drawing/{id}/canvas")
     Call<Void> uploadRealTimeDrawing(@Path("id") int id, @Body DrawingRealTimeRequestDto request);
 
-    @POST("/user")
+    @POST("/user/")
     Call<User> registerUser(@Body UserCreateRequestDto request);
 
     @POST("/user/login")

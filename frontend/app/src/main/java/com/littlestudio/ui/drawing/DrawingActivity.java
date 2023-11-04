@@ -253,7 +253,6 @@ public class DrawingActivity extends AppCompatActivity {
                     submitDrawing(bitmap, fileNameEditText.getText().toString(), descriptionEditText.getText().toString());
 //                    Intent intent = new Intent(this, LoadingActivity.class);
 //                    startActivityForResult(intent, RESULT_OK);
-                    saveImage(bitmap, fileNameEditText.getText().toString(), byteArray);
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivityForResult(intent, RESULT_OK);
                     finish();
@@ -306,33 +305,6 @@ public class DrawingActivity extends AppCompatActivity {
                 showSaveDialog(bitmap, result);
             }
         }
-    }
-
-    private void saveImage(Bitmap bitmap, String fileName, byte[] byteArray) {
-        String imageDir = Environment.DIRECTORY_PICTURES + "/Android Draw/";
-        File path = Environment.getExternalStoragePublicDirectory(imageDir);
-        path.mkdirs();
-        File file = new File(path, fileName + ".png");
-        try {
-            file.createNewFile();
-            FileOutputStream outputStream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            outputStream.flush();
-            outputStream.close();
-
-            updateRecyclerView(Uri.fromFile(file));
-
-            Intent intent = new Intent();
-            intent.putExtra("uri", Uri.fromFile(file));
-            setResult(RESULT_OK, intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void updateRecyclerView(Uri uri) {
-        DrawAdapter adapter = new DrawAdapter(galleryFragment.getActivity(), galleryFragment.getFilesPath());
-        adapter.addItem(uri.toString());
     }
 
     private void setUpDrawTools() {

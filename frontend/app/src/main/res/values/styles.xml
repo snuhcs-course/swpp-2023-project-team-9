@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="littleStudio">
+        <item name="android:textSize">73sp</item>
+    </style>
+
+    <style name="infoText">
+        <item name="android:textColor">#888888</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="loginText">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+    <style name="smallText">
+        <item name="android:textColor">#888888</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="signUpText">
+        <item name="android:textColor">#FCA100</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+
+    <style name="Button">
+        <item name="android:paddingLeft">20sp</item>
+        <item name="android:background">@drawable/edittext_bg</item>
+    </style>
+
+    <style name="LogButton">
+        <item name="android:background">@drawable/rounded_btn</item>
+    </style>
+
+    <style name = "editTextButton">
+        <item name = "android:background">@drawable/edittext_bg</item>
+        <item name = "android:layout_marginTop">10dp</item>
+        <item name = "android:padding">10dp</item>
+        <item name = "android:textSize">10dp</item>
+    </style>
+
+</resources>
