@@ -2,12 +2,11 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status, views
 from rest_framework.response import Response
 from django.conf import settings
-from .models import Drawing, UserDrawing
+from .models import Drawing, DrawingUser
+from ..user.models import User
 from .serializers import DrawingSerializer, DrawingCreateSerializer
 import json
 import uuid
-
-from ..user.models import User
 
 
 class DrawingAPIView(views.APIView):
@@ -42,9 +41,11 @@ class DrawingJoinAPIView(views.APIView):
             return Response({"detail": "Invalid invitation code"}, status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.get(id=user_id)
 
-        # Save to UserDrawing table (assuming you have a model named UserDrawing)
-        user_drawing = UserDrawing(user_id=user, drawing_id=drawing)
-        user_drawing.save()
+        # Save to DrawingUser table (assuming you have a model named DrawingUser)
+        drawing_user = DrawingUser(drawing_id=drawing, user_id=user)
+        drawing_user.save()
+
+        # Add participating users to family by checking DrawingUser table 
 
         return Response({"detail": "Successfully joined the drawing"}, status=status.HTTP_200_OK)
 
