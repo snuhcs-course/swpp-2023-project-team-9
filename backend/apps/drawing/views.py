@@ -44,7 +44,7 @@ class DrawingJoinAPIView(views.APIView):
         username = user.username
         pusher_client = settings.PUSHER_CLIENT
 
-        pusher_client.trigger(invitation_code, 'participant', {'username': username})
+        pusher_client.trigger(invitation_code, 'participant', {'username': username, 'type': "IN"})
         # Save to UserDrawing table (assuming you have a model named UserDrawing)
         user_drawing = UserDrawing(user_id=user, drawing_id=drawing)
         user_drawing.save()
@@ -63,14 +63,10 @@ class DrawingDetailAPIView(views.APIView):
 class DrawingStartAPIView(views.APIView):
 
     def post(self, request, id):
-        user_id = request.data.get('user_id')
+        invitation_code = request.data.get('invitationCode')
 
-        drawing = get_object_or_404(Drawing, id=id)
-        if drawing.host_id != user_id:
-            return Response({"detail": "You are not authorized to start this drawing"}, status=status.HTTP_403_FORBIDDEN)
-        
-        drawing.type = "STARTED"
-        drawing.save()
+        pusher_client = settings.PUSHER_CLIENT
+        pusher_client.trigger(invitation_code, 'participant', {'start': True})
 
         return Response({"detail": "Drawing started successfully"}, status=status.HTTP_200_OK)
 

@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                     int id = response.body().id;
                                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
                                     intent.putExtra(IntentExtraKey.DRAWING_CODE, id);
+                                    intent.putExtra(IntentExtraKey.HOST_CODE, true);
                                     startActivityForResult(intent, REQUEST_CODE);
                                 }
 
@@ -172,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 @Override
                 public void onResponse(Call call, Response response) {
                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
+                    intent.putExtra(IntentExtraKey.HOST_CODE, false);
                     startActivityForResult(intent, REQUEST_CODE);
                     dialog.dismiss();
                 }

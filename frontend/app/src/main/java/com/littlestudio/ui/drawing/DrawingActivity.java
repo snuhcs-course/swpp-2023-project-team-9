@@ -130,7 +130,7 @@ public class DrawingActivity extends AppCompatActivity {
     protected void onStart(){
         super.onStart();
         this.invitationCode = getIntent().getStringExtra(IntentExtraKey.INVITATION_CODE);
-        this.drawingId = Integer.parseInt(getIntent().getStringExtra(IntentExtraKey.DRAWING_CODE));
+        this.drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_CODE, 1);
 
         connectToChannel(invitationCode);
 
