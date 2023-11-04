@@ -32,6 +32,7 @@ import com.littlestudio.data.repository.DrawingRepository;
 import com.littlestudio.DrawAdapter;
 import com.littlestudio.R;
 import com.littlestudio.ui.MainActivity;
+import com.littlestudio.ui.constant.IntentExtraKey;
 import com.littlestudio.ui.drawing.widget.CircleView;
 import com.littlestudio.ui.drawing.widget.DrawView;
 import com.littlestudio.ui.drawing.widget.PaintOptions;
@@ -70,6 +71,8 @@ public class DrawingActivity extends AppCompatActivity {
     private Channel channel;
 
     private String invitationCode;
+
+    private int drawingId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +129,9 @@ public class DrawingActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        this.invitationCode = getIntent().getStringExtra("invitationCode");
+        this.invitationCode = getIntent().getStringExtra(IntentExtraKey.INVITATION_CODE);
+        this.drawingId = Integer.parseInt(getIntent().getStringExtra(IntentExtraKey.DRAWING_CODE));
+
         connectToChannel(invitationCode);
 
     }
@@ -263,7 +268,7 @@ public class DrawingActivity extends AppCompatActivity {
     private void submitDrawing(Bitmap bitmap, String fileName, String description){
         String bitmapString = bitmapToString(bitmap);
         drawingRepository.submitDrawing(
-                new DrawingSubmitRequestDto(bitmapString, fileName, description, 123),
+                new DrawingSubmitRequestDto(bitmapString, fileName, description, drawingId),
                 new Callback() {
                     @Override
                     public void onResponse(Call call, Response response) {
