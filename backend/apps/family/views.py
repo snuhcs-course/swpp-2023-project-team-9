@@ -11,8 +11,7 @@ class FamilyAPIView(APIView):
             return Response({'error': 'user_id is required'}, status=400)
 
         try:
-            # Need to find family for users who are not host as well
-            family = Family.objects.get(host_id=user_id)
+            family = Family.objects.get(user_id=user_id)
         except Family.DoesNotExist:
             return Response({'error': 'Family not found'}, status=404)
 
