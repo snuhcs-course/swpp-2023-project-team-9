@@ -16,7 +16,7 @@ import java.util.Collections;
 public class DrawAdapter extends RecyclerView.Adapter<DrawAdapter.ViewHolder> {
     static final String IMAGE_PATH = "image_path";
     private final Context context;
-    private final ArrayList<String> imageList;
+    private ArrayList<String> imageList;
 
     public DrawAdapter(Context context, ArrayList<String> imageList) {
         this.context = context;
@@ -59,8 +59,8 @@ public class DrawAdapter extends RecyclerView.Adapter<DrawAdapter.ViewHolder> {
         }
     }
 
-    public void addItem(String uri) {
-        imageList.add(0, uri);
-        notifyItemInserted(imageList.size() - 1);
+    public void updateItems(ArrayList<String> imageUrls) {
+        imageList = imageUrls;
+        notifyDataSetChanged();
     }
 }
