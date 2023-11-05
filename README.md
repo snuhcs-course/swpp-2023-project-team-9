@@ -1,28 +1,16 @@
-# SNU-SWPP-Template
+# LittleStudio 
 
-You can use the README file to showcase and promote your mobile app. The template provided below is just a starting point. Feel free to craft your README as you see fit. 
+"LittleStudio" is an innovative drawing application designed for children aged 5-8 and their parents. The interactive platform allows families to collectively produce unique piece of artwork in their mobile systems.
 
-Please note that the README doesn't affect your grade and is not included in documentation(Wiki).
-
-# [Your Application Name]
-
-[Short application description here]
-
-![Application Screenshot](path_to_screenshot.png)
+![Application Screenshot](https://github.com/snuhcs-course/swpp-2023-project-team-9/assets/52521749/578c533f-6cb7-4f6b-b3e3-b8d18db20703)
 
 ## Features
 
-- Feature 1: Brief description
-- Feature 2: Brief description
-- ...
+- Real-time drawing across different devices
+- Animated artwork
+- Gallery shared with family
 
-## Getting Started
+## Documents 
 
-### Prerequisites
-
-- Android Studio [version, e.g., 4.2.1]
-- Minimum Android SDK Version [e.g., 21]
-
-### Installation
-
-[Installation link here]
+- [Design Document](../../wiki/Design-Document)
+- [Requirements and Specifications](../../wiki/Requirements-and-Specifications)
