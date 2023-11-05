@@ -49,6 +49,16 @@
             android:name=".ui.drawing.SubmitActivity"
             android:exported="true">
         </activity>
+
+        <activity
+            android:name=".ui.LoginActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".ui.SignupActivity"
+            android:exported="true">
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

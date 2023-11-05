@@ -5,9 +5,11 @@ import com.littlestudio.data.dto.DrawingCreateResponseDto;
 import com.littlestudio.data.dto.DrawingJoinRequestDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
+import com.littlestudio.data.dto.DrawingStartRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.dto.DrawingViewResponseDto;
 
+import okhttp3.Request;
 import retrofit2.Callback;
 
 public interface DrawingDataSource {
@@ -25,4 +27,6 @@ public interface DrawingDataSource {
     void realTimeDrawing(DrawingRealTimeRequestDto request, Callback callback);
     // TODO define more drawing methods
     // TODO create similar interface and remote data source for family and user
+
+    void startDrawing(DrawingStartRequestDto request, Callback callback);
 }

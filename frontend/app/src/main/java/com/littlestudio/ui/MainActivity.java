@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                     int id = response.body().id;
                                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
                                     intent.putExtra(IntentExtraKey.DRAWING_ID, id);
+                                    intent.putExtra(IntentExtraKey.HOST_CODE, true);
                                     startActivityForResult(intent, REQUEST_CODE);
                                 }
 
@@ -145,10 +146,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 return;
             }
             Intent intent = new Intent(this, WaitingRoomActivity.class);
+            // TODO : change userId to real id.
             drawingRepository.joinDrawing(new DrawingJoinRequest(1, invitationCode), new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {
                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
+                    intent.putExtra(IntentExtraKey.HOST_CODE, false);
                     startActivityForResult(intent, REQUEST_CODE);
                     dialog.dismiss();
                 }

@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
-import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.repository.DrawingRepository;
@@ -42,17 +41,10 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Base64;
 import java.util.HashMap;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class DrawingActivity extends AppCompatActivity {
     DrawingRepository drawingRepository;
-    private static final int REQUEST_CODE_DRAW = 101;
-    GalleryFragment galleryFragment;
 
     private Pusher pusher;
 
@@ -209,18 +201,6 @@ public class DrawingActivity extends AppCompatActivity {
             }
         });
     }
-
-    private String bitmapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
-        byte[] imageBytes = baos.toByteArray();
-        String imageString = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            imageString = Base64.getEncoder().encodeToString(imageBytes);
-        }
-        return imageString;
-    }
-
 
     private void setUpDrawTools() {
         ((CircleView) findViewById(R.id.circle_view_opacity)).setCircleRadius(100f);

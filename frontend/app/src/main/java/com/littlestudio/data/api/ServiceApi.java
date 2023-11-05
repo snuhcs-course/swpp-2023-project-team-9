@@ -5,6 +5,7 @@ import com.littlestudio.data.dto.DrawingCreateResponseDto;
 import com.littlestudio.data.dto.DrawingJoinRequestDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
+import com.littlestudio.data.dto.DrawingStartRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.dto.DrawingViewResponseDto;
 import com.littlestudio.data.dto.FamilyListResponseDto;
@@ -12,6 +13,7 @@ import com.littlestudio.data.dto.UserCreateRequestDto;
 import com.littlestudio.data.dto.UserLoginRequestDto;
 import com.littlestudio.data.model.User;
 
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -40,7 +42,7 @@ public interface ServiceApi {
     @POST("/drawing/{id}/canvas")
     Call<Void> uploadRealTimeDrawing(@Path("id") int id, @Body DrawingRealTimeRequestDto request);
 
-    @POST("/user")
+    @POST("/user/")
     Call<User> registerUser(@Body UserCreateRequestDto request);
 
     @POST("/user/login")
@@ -51,5 +53,8 @@ public interface ServiceApi {
 
     @GET("/family")
     Call<FamilyListResponseDto> getFamily();
+
+    @POST("/drawing/1/start")
+    Call<Void> startDrawing(@Body DrawingStartRequestDto request);
 
 }
