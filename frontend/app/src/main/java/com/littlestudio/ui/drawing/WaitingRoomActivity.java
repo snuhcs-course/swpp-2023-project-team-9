@@ -22,7 +22,8 @@ public class WaitingRoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waiting_room);
 
-        String invitationCode = getIntent().getStringExtra("invitationCode");
+        String invitationCode = getIntent().getStringExtra(IntentExtraKey.INVITATION_CODE);
+        int drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0);
         TextView invitationCodeTextView = findViewById(R.id.invitation_code);
         invitationCodeTextView.setText(invitationCode);
 
@@ -37,7 +38,9 @@ public class WaitingRoomActivity extends AppCompatActivity {
         button.setOnClickListener((v) -> {
             Intent intent = new Intent(this, DrawingActivity.class);
             intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
+            intent.putExtra(IntentExtraKey.DRAWING_ID, drawingId);
             startActivityForResult(intent, REQUEST_CODE_DRAW);
+            finish();
         });
     }
 }

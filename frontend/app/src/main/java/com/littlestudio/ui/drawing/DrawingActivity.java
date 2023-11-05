@@ -1,18 +1,13 @@
 package com.littlestudio.ui.drawing;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.os.Environment;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +15,6 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
@@ -29,9 +23,7 @@ import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.repository.DrawingRepository;
-import com.littlestudio.DrawAdapter;
-import com.littlestudio.R;
-import com.littlestudio.ui.MainActivity;
+import com.littlestudio.ui.constant.IntentExtraKey;
 import com.littlestudio.ui.drawing.widget.CircleView;
 import com.littlestudio.ui.drawing.widget.DrawView;
 import com.littlestudio.ui.drawing.widget.PaintOptions;
@@ -49,12 +41,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -87,7 +76,11 @@ public class DrawingActivity extends AppCompatActivity {
             Bitmap bitmap = ((DrawView) findViewById(R.id.draw_view)).getBitmap();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, bStream);
             byte[] byteArray = bStream.toByteArray();
-            showSaveDialog(bitmap, byteArray);
+            Intent intent = new Intent(this, SubmitActivity.class);
+            intent.putExtra(IntentExtraKey.DRAWING_IMAGE_BYTE_ARRAY, byteArray);
+            intent.putExtra(IntentExtraKey.DRAWING_ID, getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0));
+            startActivity(intent);
+            finish();
         });
 
 
@@ -106,16 +99,6 @@ public class DrawingActivity extends AppCompatActivity {
                     .show();
         });
 
-
-        findViewById(R.id.finish_btn).setOnClickListener(v -> {
-            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
-            Bitmap bitmap = ((DrawView) findViewById(R.id.draw_view)).getBitmap();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bStream);
-            byte[] byteArray = bStream.toByteArray();
-            showSaveDialog(bitmap, byteArray);
-
-        });
-
         setUpDrawTools();
         colorSelector();
         setPaintAlpha();
@@ -128,7 +111,6 @@ public class DrawingActivity extends AppCompatActivity {
         super.onStart();
         this.invitationCode = getIntent().getStringExtra("invitationCode");
         connectToChannel(invitationCode);
-
     }
 
     @Override
@@ -160,15 +142,10 @@ public class DrawingActivity extends AppCompatActivity {
                 );
             }
         }, ConnectionState.ALL);
-
-
-
     }
 
     private void connectToChannel(String invitationCode) {
         this.channel = this.pusher.subscribe(invitationCode);
-
-
 
         final HashMap<String, HashMap<String, HashMap<Integer, String>>> events = new HashMap<>();
 
@@ -233,51 +210,6 @@ public class DrawingActivity extends AppCompatActivity {
         });
     }
 
-    private void showSaveDialog(Bitmap bitmap, byte[] byteArray) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_save, null);
-        alertDialog.setView(dialogView);
-        EditText fileNameEditText = dialogView.findViewById(R.id.editText_file_name);
-        EditText descriptionEditText = dialogView.findViewById(R.id.editText_description);
-        String filename = UUID.randomUUID().toString();
-        fileNameEditText.setSelectAllOnFocus(true);
-        fileNameEditText.setText(filename);
-
-        alertDialog.setTitle("Save Drawing")
-                .setPositiveButton("OK", (dialogInterface, i) -> {
-                    submitDrawing(bitmap, fileNameEditText.getText().toString(), descriptionEditText.getText().toString());
-//                    Intent intent = new Intent(this, LoadingActivity.class);
-//                    startActivityForResult(intent, RESULT_OK);
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivityForResult(intent, RESULT_OK);
-                    finish();
-                })
-                .setNegativeButton("Cancel", (dialogInterface, i) -> {
-                    // Do nothing
-                });
-        AlertDialog dialog = alertDialog.create();
-        dialog.show();
-    }
-
-    private void submitDrawing(Bitmap bitmap, String fileName, String description){
-        String bitmapString = bitmapToString(bitmap);
-        drawingRepository.submitDrawing(
-                new DrawingSubmitRequestDto(bitmapString, fileName, description, 123),
-                new Callback() {
-                    @Override
-                    public void onResponse(Call call, Response response) {
-                        Log.d("TETE success", response.body().toString());
-                        pusher.unsubscribe(invitationCode);
-                    }
-
-                    @Override
-                    public void onFailure(Call call, Throwable t) {
-                        Log.e("TETE error", t.toString());
-                    }
-                }
-        );
-
-    }
     private String bitmapToString(Bitmap bitmap){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
@@ -289,18 +221,6 @@ public class DrawingActivity extends AppCompatActivity {
         return imageString;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_CODE_DRAW) {
-                byte[] result = data.getByteArrayExtra("bitmap");
-                Bitmap bitmap = BitmapFactory.decodeByteArray(result, 0, result.length);
-                showSaveDialog(bitmap, result);
-            }
-        }
-    }
 
     private void setUpDrawTools() {
         ((CircleView) findViewById(R.id.circle_view_opacity)).setCircleRadius(100f);

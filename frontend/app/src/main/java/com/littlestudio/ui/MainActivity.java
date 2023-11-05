@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                     String invitationCode = response.body().invitation_code;
                                     int id = response.body().id;
                                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
-                                    intent.putExtra(IntentExtraKey.DRAWING_CODE, id);
+                                    intent.putExtra(IntentExtraKey.DRAWING_ID, id);
                                     startActivityForResult(intent, REQUEST_CODE);
                                 }
 
