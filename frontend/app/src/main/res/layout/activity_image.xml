@@ -9,20 +9,65 @@
 
     <ImageView
         android:id="@+id/image_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/black_border"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
     <ImageView
         android:id="@+id/image_close_drawing"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="10dp"
-        android:background="@color/color_white"
         android:foreground="?selectableItemBackgroundBorderless"
         android:padding="12dp"
         android:src="@drawable/ic_close_black_24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/icon_color" />
+
+    <TextView
+        android:id="@+id/gallery_detail_title_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="36dp"
+        android:text="Title: "
+        android:layout_marginBottom="96dp"
+        />
+
+    <TextView
+        android:id="@+id/gallery_detail_desc_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="36dp"
+        android:text="Description: "
+        android:layout_marginBottom="56dp"
+        />
+
+    <TextView
+        android:id="@+id/gallery_detail_title_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/gallery_detail_title_label"
+        app:layout_constraintLeft_toRightOf="@id/gallery_detail_title_label"
+        android:text=""
+        />
+
+    <TextView
+        android:id="@+id/gallery_detail_desc_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/gallery_detail_desc_label"
+        app:layout_constraintLeft_toRightOf="@id/gallery_detail_desc_label"
+        android:text=""
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

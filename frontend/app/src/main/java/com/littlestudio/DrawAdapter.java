@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.littlestudio.data.model.Drawing;
+import com.littlestudio.ui.constant.IntentExtraKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,12 +19,12 @@ import java.util.Collections;
 public class DrawAdapter extends RecyclerView.Adapter<DrawAdapter.ViewHolder> {
     static final String IMAGE_PATH = "image_path";
     private final Context context;
-    private ArrayList<String> imageList;
+    private ArrayList<Drawing> drawingList;
 
-    public DrawAdapter(Context context, ArrayList<String> imageList) {
+    public DrawAdapter(Context context, ArrayList<Drawing> drawingList) {
         this.context = context;
-        this.imageList = imageList;
-        Collections.reverse(imageList);
+        this.drawingList = drawingList;
+        Collections.reverse(drawingList);
     }
 
     @Override
@@ -32,19 +35,20 @@ public class DrawAdapter extends RecyclerView.Adapter<DrawAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return imageList.size();
+        return drawingList.size();
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final String path = imageList.get(position);
-        Glide.with(context).load(path).into(holder.drawImage);
+        final Drawing drawing = drawingList.get(position);
+        Glide.with(context).load(drawing.image_url).into(holder.drawImage);
 
         holder.drawImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ImageActivity.class);
-                intent.putExtra(IMAGE_PATH, path);
+                intent.putExtra(IntentExtraKey.DRAWING_ID, drawing.id);
+                intent.putExtra(IntentExtraKey.DRAWING_IMAGE_URL, drawing.image_url);
                 context.startActivity(intent);
             }
         });
@@ -59,8 +63,8 @@ public class DrawAdapter extends RecyclerView.Adapter<DrawAdapter.ViewHolder> {
         }
     }
 
-    public void updateItems(ArrayList<String> imageUrls) {
-        imageList = imageUrls;
+    public void updateItems(ArrayList<Drawing> drawingList) {
+        this.drawingList = drawingList;
         notifyDataSetChanged();
     }
 }

@@ -7,6 +7,7 @@ import com.littlestudio.data.dto.DrawingListResponseDto;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
 import com.littlestudio.data.dto.DrawingStartRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
+import com.littlestudio.data.dto.DrawingViewResponseDto;
 
 import okhttp3.Request;
 import retrofit2.Callback;
@@ -15,11 +16,13 @@ public interface DrawingDataSource {
 
     void getDrawings(int userId, Callback<DrawingListResponseDto> callback);
 
+    void getDrawing(int id, Callback<DrawingViewResponseDto> callback);
+
     void createDrawing(DrawingCreateRequestDto request, Callback<DrawingCreateResponseDto> callback);
 
     void joinDrawing(DrawingJoinRequestDto request, Callback callback);
 
-    void submitDrawing(DrawingSubmitRequestDto request, Callback callback);
+    void submitDrawing(DrawingSubmitRequestDto request, Callback<DrawingViewResponseDto> callback);
 
     void realTimeDrawing(DrawingRealTimeRequestDto request, Callback callback);
     // TODO define more drawing methods

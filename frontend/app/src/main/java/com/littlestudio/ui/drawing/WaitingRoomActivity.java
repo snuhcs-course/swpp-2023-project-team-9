@@ -66,9 +66,8 @@ public class WaitingRoomActivity extends AppCompatActivity {
                 new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()))
         );
 
-        String invitationCode = getIntent().getStringExtra("invitationCode");
-        this.drawingId = getIntent().getIntExtra("drawingCode", 1);
-
+        String invitationCode = getIntent().getStringExtra(IntentExtraKey.INVITATION_CODE);
+        int drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0);
         TextView invitationCodeTextView = findViewById(R.id.invitation_code);
         invitationCodeTextView.setText(invitationCode);
 
@@ -85,7 +84,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
 
             Intent intent = new Intent(this, DrawingActivity.class);
             intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
-            intent.putExtra(IntentExtraKey.DRAWING_CODE, drawingId);
+            intent.putExtra(IntentExtraKey.DRAWING_ID, drawingId);
 
 
             drawingRepository.startDrawing(new DrawingStartRequestDto(invitationCode), new Callback() {
@@ -168,7 +167,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
                     if (data.has("start")){
                         Intent intent = new Intent(WaitingRoomActivity.this, DrawingActivity.class);
                         intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
-                        intent.putExtra(IntentExtraKey.DRAWING_CODE, drawingId);
+                        intent.putExtra(IntentExtraKey.DRAWING_ID, drawingId);
                         Log.d("drawingCOde", String.valueOf(drawingId));
                         startActivityForResult(intent, REQUEST_CODE_DRAW);
                         pusher.unsubscribe(invitationCode);
@@ -178,19 +177,6 @@ public class WaitingRoomActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        this.invitationCode = getIntent().getStringExtra(IntentExtraKey.INVITATION_CODE);
-        this.isHost = getIntent().getBooleanExtra(IntentExtraKey.HOST_CODE, false);
-        connectToChannel(invitationCode);
-        Button button = findViewById(R.id.start_drawing);
-        if(!isHost){
-            Toast.makeText(WaitingRoomActivity.this, "Only Host can start drawing", Toast.LENGTH_SHORT).show();
-            button.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override
