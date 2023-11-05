@@ -5,24 +5,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="16dp"
     tools:context=".ImageActivity">
 
     <ImageView
         android:id="@+id/image_view"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        android:layout_marginTop="80dp"
-        android:background="@drawable/black_border"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="64dp"
+        android:foreground="@drawable/black_border"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/image_close_drawing"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_margin="10dp"
         android:foreground="?selectableItemBackgroundBorderless"
         android:padding="12dp"
         android:src="@drawable/ic_close_black_24dp"
@@ -31,43 +31,54 @@
         app:tint="@color/icon_color" />
 
     <TextView
-        android:id="@+id/gallery_detail_title_label"
+        android:id="@+id/gallery_detail_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="36dp"
-        android:text="Title: "
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="24dp"
         android:layout_marginBottom="96dp"
-        />
-
-    <TextView
-        android:id="@+id/gallery_detail_desc_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Title"
+        android:textSize="28dp"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="36dp"
-        android:text="Description: "
+        app:layout_constraintTop_toBottomOf="@+id/image_view" />
+
+    <TextView
+        android:id="@+id/gallery_detail_created_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="56dp"
-        />
+        android:text="Created On"
+        android:textSize="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gallery_detail_title" />
 
     <TextView
-        android:id="@+id/gallery_detail_title_value"
+        android:id="@+id/gallery_detail_participants"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/gallery_detail_title_label"
-        app:layout_constraintLeft_toRightOf="@id/gallery_detail_title_label"
-        android:text=""
-        />
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="56dp"
+        android:text="Participants"
+        android:textSize="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gallery_detail_created_on" />
+
 
     <TextView
-        android:id="@+id/gallery_detail_desc_value"
+        android:id="@+id/gallery_detail_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/gallery_detail_desc_label"
-        app:layout_constraintLeft_toRightOf="@id/gallery_detail_desc_label"
-        android:text=""
-        />
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="56dp"
+        android:text="Description"
+        android:textSize="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gallery_detail_participants" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
