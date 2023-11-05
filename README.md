@@ -15,4 +15,4 @@
 
 ## Design 
 
-![Application Screenshot](https://github.com/snuhcs-course/swpp-2023-project-team-9/assets/52521749/578c533f-6cb7-4f6b-b3e3-b8d18db20703)
+![Application Screenshot](https://github.com/snuhcs-course/swpp-2023-project-team-9/assets/61709732/51aa7278-0ce2-4282-9e1d-b472a521dec0)
