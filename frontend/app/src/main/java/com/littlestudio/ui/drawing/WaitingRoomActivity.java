@@ -32,8 +32,10 @@ import com.pusher.client.channel.SubscriptionEventListener;
 import com.pusher.client.connection.ConnectionEventListener;
 import com.pusher.client.connection.ConnectionState;
 import com.pusher.client.connection.ConnectionStateChange;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -90,8 +92,8 @@ public class WaitingRoomActivity extends AppCompatActivity {
             drawingRepository.startDrawing(new DrawingStartRequestDto(invitationCode), new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {
-                    pusher.unsubscribe(invitationCode);
                     startActivityForResult(intent, REQUEST_CODE_DRAW);
+                    finish();
                 }
 
                 @Override
@@ -116,6 +118,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
                 Log.i("Pusher", "State changed from " + change.getPreviousState() +
                         " to " + change.getCurrentState());
             }
+
             @Override
             public void onError(String message, String code, Exception e) {
                 Log.i("Pusher", "There was a problem connecting! " +
@@ -127,7 +130,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
         }, ConnectionState.ALL);
     }
 
-    private void connectToChannel(String invitationCode){
+    private void connectToChannel(String invitationCode) {
         this.channel = this.pusher.subscribe(invitationCode);
         this.channel.bind("participant", new SubscriptionEventListener() {
 
@@ -136,10 +139,10 @@ public class WaitingRoomActivity extends AppCompatActivity {
             public void onEvent(PusherEvent event) {
                 try {
                     JSONObject data = new JSONObject(event.getData());
-                    if (data.has("username") && data.has("type")){
+                    if (data.has("username") && data.has("type")) {
                         String username = data.getString("username");
                         String type = data.getString("type");
-                        if(type.equals("IN")){
+                        if (type.equals("IN")) {
                             TextView textView = new TextView(WaitingRoomActivity.this);
                             textView.setText(username);
                             textView.setTextSize(20);
@@ -160,17 +163,17 @@ public class WaitingRoomActivity extends AppCompatActivity {
                             );
                             //부모 뷰에 추가
 
-                        }else if(type.equals("OUT")){
+                        } else if (type.equals("OUT")) {
                             Log.d("OUT", username + " OUT!");
                         }
                     }
-                    if (data.has("start")){
+                    if (data.has("start")) {
                         Intent intent = new Intent(WaitingRoomActivity.this, DrawingActivity.class);
                         intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
                         intent.putExtra(IntentExtraKey.DRAWING_ID, drawingId);
                         Log.d("drawingCOde", String.valueOf(drawingId));
                         startActivityForResult(intent, REQUEST_CODE_DRAW);
-                        pusher.unsubscribe(invitationCode);
+                        finish();
                     }
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
@@ -184,11 +187,17 @@ public class WaitingRoomActivity extends AppCompatActivity {
         super.onStart();
         this.invitationCode = getIntent().getStringExtra(IntentExtraKey.INVITATION_CODE);
         this.isHost = getIntent().getBooleanExtra(IntentExtraKey.HOST_CODE, false);
-        connectToChannel(invitationCode);
-        Button button = findViewById(R.id.start_drawing);
-        if(!isHost){
+        if (!isHost) {
+            connectToChannel(invitationCode);
+            Button button = findViewById(R.id.start_drawing);
             Toast.makeText(WaitingRoomActivity.this, "Only Host can start drawing", Toast.LENGTH_SHORT).show();
             button.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        pusher.unsubscribe(invitationCode);
     }
 }

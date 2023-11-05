@@ -11,7 +11,6 @@ import com.littlestudio.data.dto.DrawingStartRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.dto.DrawingViewResponseDto;
 
-import okhttp3.Request;
 import retrofit2.Callback;
 
 public class DrawingRemoteDataSource implements DrawingDataSource {
@@ -30,6 +29,7 @@ public class DrawingRemoteDataSource implements DrawingDataSource {
             callback.onFailure(null, e);
         }
     }
+
     @Override
     public void getDrawing(int id, Callback<DrawingViewResponseDto> callback) {
         try {
@@ -62,10 +62,10 @@ public class DrawingRemoteDataSource implements DrawingDataSource {
 
     // TODO define more drawing methods
     @Override
-    public void submitDrawing(DrawingSubmitRequestDto request, Callback callback){
+    public void submitDrawing(DrawingSubmitRequestDto request, Callback callback) {
         try {
             serviceApi.submitDrawing(request).enqueue(callback);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             callback.onFailure(null, e);
         }
@@ -81,13 +81,12 @@ public class DrawingRemoteDataSource implements DrawingDataSource {
     }
 
     @Override
-    public void startDrawing(DrawingStartRequestDto request, Callback callback){
+    public void startDrawing(DrawingStartRequestDto request, Callback callback) {
 
-        try{
+        try {
             serviceApi.startDrawing(request).enqueue(callback);
 
-        }catch (Exception e) {
-            Log.e("remote2", "remote2");
+        } catch (Exception e) {
             callback.onFailure(null, e);
         }
     }
