@@ -1,7 +1,5 @@
 package com.littlestudio.data.datasource;
 
-import android.util.Log;
-
 import com.littlestudio.data.api.ServiceApi;
 import com.littlestudio.data.api.ServiceApiClient;
 import com.littlestudio.data.dto.DrawingCreateRequestDto;
@@ -10,6 +8,7 @@ import com.littlestudio.data.dto.DrawingJoinRequestDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
+import com.littlestudio.data.dto.DrawingViewResponseDto;
 
 import retrofit2.Callback;
 
@@ -24,6 +23,15 @@ public class DrawingRemoteDataSource implements DrawingDataSource {
     public void getDrawings(int userId, Callback<DrawingListResponseDto> callback) {
         try {
             serviceApi.getDrawings(userId).enqueue(callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+            callback.onFailure(null, e);
+        }
+    }
+    @Override
+    public void getDrawing(int id, Callback<DrawingViewResponseDto> callback) {
+        try {
+            serviceApi.getDrawing(id).enqueue(callback);
         } catch (Exception e) {
             e.printStackTrace();
             callback.onFailure(null, e);
@@ -53,7 +61,7 @@ public class DrawingRemoteDataSource implements DrawingDataSource {
     // TODO define more drawing methods
     @Override
     public void submitDrawing(DrawingSubmitRequestDto request, Callback callback){
-        try{
+        try {
             serviceApi.submitDrawing(request).enqueue(callback);
         }catch (Exception e){
             e.printStackTrace();

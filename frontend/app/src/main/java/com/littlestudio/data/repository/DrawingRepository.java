@@ -7,6 +7,7 @@ import com.littlestudio.data.dto.DrawingCreateResponseDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
+import com.littlestudio.data.dto.DrawingViewResponseDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.model.Drawing;
 import com.littlestudio.data.model.DrawingCreateRequest;
@@ -48,20 +49,39 @@ public class DrawingRepository {
             }
         });
     }
-
-    public void submitDrawing(DrawingSubmitRequestDto request, final Callback callback) {
-        remoteDataSource.submitDrawing(request, new Callback<ResponseBody>() {
+    public void getDrawing(int id, final Callback<Drawing> callback) {
+        remoteDataSource.getDrawing(id, new Callback<DrawingViewResponseDto>() {
             @Override
-            public void onResponse(Call call, Response response) {
+            public void onResponse(Call<DrawingViewResponseDto> call, Response<DrawingViewResponseDto> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    callback.onResponse(null, Response.success(response));
+                    Drawing drawing = drawingMapper.fromDrawingViewResponseDto(response.body());
+                    callback.onResponse(null, Response.success(drawing));
                 } else {
                     callback.onFailure(null, new Throwable("Unsuccessful response"));
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<DrawingViewResponseDto> call, Throwable t) {
+                callback.onFailure(null, t);
+            }
+        });
+    }
+
+    public void submitDrawing(DrawingSubmitRequestDto request, final Callback callback) {
+        remoteDataSource.submitDrawing(request, new Callback<DrawingViewResponseDto>() {
+            @Override
+            public void onResponse(Call<DrawingViewResponseDto> call, Response<DrawingViewResponseDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Drawing drawing = drawingMapper.fromDrawingViewResponseDto(response.body());
+                    callback.onResponse(null, Response.success(drawing));
+                } else {
+                    callback.onFailure(null, new Throwable("Unsuccessful response"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DrawingViewResponseDto> call, Throwable t) {
                 callback.onFailure(null, t);
             }
         });
