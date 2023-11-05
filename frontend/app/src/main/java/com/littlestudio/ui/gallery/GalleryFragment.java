@@ -67,9 +67,7 @@ public class GalleryFragment extends Fragment {
         drawingRepository.getDrawings(1, new Callback<List<Drawing>>() {
             @Override
             public void onResponse(Call<List<Drawing>> call, Response<List<Drawing>> response) {
-                final ArrayList<String> drawingImageUrls = new ArrayList<>();
-                response.body().forEach(drawing -> drawingImageUrls.add(drawing.image_url));
-                adapter.updateItems(drawingImageUrls);
+                adapter.updateItems(new ArrayList<>(response.body()));
             }
 
             @Override
