@@ -82,8 +82,6 @@ public class DrawingActivity extends AppCompatActivity {
                     .setMessage("Are you sure you want to close this drawing? Any unsaved changes will be lost.")
                     .setPositiveButton("Yes", (dialogInterface, i) -> {
                         finish();
-                        Intent intent = new Intent(this, GalleryFragment.class);
-                        startActivityForResult(intent, RESULT_CANCELED);
                     })
                     .setNegativeButton("No", (dialogInterface, i) -> {
                         // Do nothing

@@ -13,5 +13,9 @@ public class User {
 
     public int family_id;
     public Date created_at;
+
+    public String getFullName() {
+        return full_name;
+    }
 }
 

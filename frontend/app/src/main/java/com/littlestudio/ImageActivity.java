@@ -12,8 +12,12 @@ import com.littlestudio.data.datasource.DrawingRemoteDataSource;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.model.Drawing;
+import com.littlestudio.data.model.User;
 import com.littlestudio.data.repository.DrawingRepository;
 import com.littlestudio.ui.constant.IntentExtraKey;
+
+import java.text.SimpleDateFormat;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,10 +44,22 @@ public class ImageActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Drawing> call, Response<Drawing> response) {
                 Drawing drawing = response.body();
-                TextView title = findViewById(R.id.gallery_detail_title_value);
-                TextView description = findViewById(R.id.gallery_detail_desc_value);
+                TextView title = findViewById(R.id.gallery_detail_title);
+                TextView description = findViewById(R.id.gallery_detail_desc);
+                TextView createdOn = findViewById(R.id.gallery_detail_created_on);
+                TextView participants = findViewById(R.id.gallery_detail_participants);
                 title.setText(drawing.title);
                 description.setText(drawing.description);
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String createOn = dateFormat.format(drawing.created_at);
+
+                String combinedString = drawing.participants.stream()
+                        .map(User::getFullName)
+                        .collect(Collectors.joining(", "));
+
+                createdOn.setText("Created on " + createOn);
+                participants.setText("Drawn by " + combinedString);
             }
 
             @Override
