@@ -3,6 +3,8 @@ import hashlib
 import io
 
 from django.shortcuts import get_object_or_404
+from django.db import connection
+from django.db import transaction
 from rest_framework import status, views
 from rest_framework.response import Response
 from django.conf import settings
@@ -22,7 +24,7 @@ class DrawingAPIView(views.APIView):
             return Response({"detail": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         drawings = Drawing.objects.filter(
-            host_id=user_id, 
+            host_id=user_id,
             type=Drawing.TypeChoices.COMPLETED
         ).order_by('-id').prefetch_related('participants')
         serializer = DrawingSerializer(drawings, many=True)
@@ -46,16 +48,18 @@ class DrawingJoinAPIView(views.APIView):
         if not drawing:
             return Response({"detail": "Invalid invitation code"}, status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.get(id=user_id)
-
-
+        cursor = connection.cursor()
         username = user.username
+
+        # Save to UserDrawing table (assuming you have a model named UserDrawing)
+        user_drawing = DrawingUser(user_id=user, drawing_id=drawing)
+        user_drawing.save()
+
+        draw_id = drawing.id
+
         pusher_client = settings.PUSHER_CLIENT
 
         pusher_client.trigger(invitation_code, 'participant', {'username': username, 'type': "IN"})
-        # Save to UserDrawing table (assuming you have a model named UserDrawing)
-        user_drawing = UserDrawing(user_id=user, drawing_id=drawing)
-        user_drawing.save()
-
 
 
         return Response({"detail": "Successfully joined the drawing"}, status=status.HTTP_200_OK)
@@ -95,7 +99,8 @@ class DrawingSubmitAPIView(views.APIView):
         s3_client.upload_fileobj(decode_file, 'little-studio', object_name)
         image_url = f"https://little-studio.s3.amazonaws.com/{object_name}"
         Drawing.objects.filter(id=drawing_id).update(title=title, description=request.data.get('description'),
-                                                             image_url=image_url, type="COMPLETED")
+                                                     image_url=image_url, type="COMPLETED")
+        invitation_code = Drawing.objects.get(id=drawing_id).invitation_code;
         drawing_users = DrawingUser.objects.filter(drawing_id=id)
         for first_user in drawing_users:
             for second_user in drawing_users:
@@ -111,15 +116,12 @@ class DrawingSubmitAPIView(views.APIView):
             "image_url": image_url,
             "type": "COMPLETED"
         }
-
+        pusher_client = settings.PUSHER_CLIENT
+        pusher_client.trigger(invitation_code, 'finish', {'image_url': image_url})
         # serializer = DrawingSerializer(data=drawing_data)
         # if serializer.is_valid():
         #     serializer.save()
         return Response(drawing_data, status=status.HTTP_200_OK)
-
-        
-        
-
 
 
 class DrawingRealTimeAPIView(views.APIView):
