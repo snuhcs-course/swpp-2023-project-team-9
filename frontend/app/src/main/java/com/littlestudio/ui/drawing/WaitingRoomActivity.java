@@ -87,7 +87,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
             Intent intent = new Intent(this, DrawingActivity.class);
             intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
             intent.putExtra(IntentExtraKey.DRAWING_ID, drawingId);
-
+            intent.putExtra(IntentExtraKey.HOST_CODE, isHost);
 
             drawingRepository.startDrawing(new DrawingStartRequestDto(invitationCode), new Callback() {
                 @Override
@@ -171,6 +171,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
                         Intent intent = new Intent(WaitingRoomActivity.this, DrawingActivity.class);
                         intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
                         intent.putExtra(IntentExtraKey.DRAWING_ID, drawingId);
+                        intent.putExtra(IntentExtraKey.HOST_CODE, isHost);
                         Log.d("drawingCOde", String.valueOf(drawingId));
                         startActivityForResult(intent, REQUEST_CODE_DRAW);
                         finish();
