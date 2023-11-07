@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import androidx.core.content.res.ResourcesCompat;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.littlestudio.ImageActivity;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
@@ -52,6 +54,10 @@ public class DrawingActivity extends AppCompatActivity {
 
     private String invitationCode;
 
+    private boolean isHost;
+
+    private int drawingId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +78,7 @@ public class DrawingActivity extends AppCompatActivity {
             intent.putExtra(IntentExtraKey.DRAWING_IMAGE_BYTE_ARRAY, byteArray);
             intent.putExtra(IntentExtraKey.DRAWING_ID, getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0));
             startActivity(intent);
+            pusher.unsubscribe(invitationCode);
             finish();
         });
 
@@ -100,7 +107,13 @@ public class DrawingActivity extends AppCompatActivity {
     protected void onStart(){
         super.onStart();
         this.invitationCode = getIntent().getStringExtra("invitationCode");
+        this.isHost = getIntent().getBooleanExtra(IntentExtraKey.HOST_CODE, false);
+        this.drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0);
         connectToChannel(invitationCode);
+        if(!isHost){
+            Button button = findViewById(R.id.finish_btn);
+            button.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -198,6 +211,27 @@ public class DrawingActivity extends AppCompatActivity {
                 }
             }
         });
+
+        if(!isHost){
+            this.channel.bind("finish", new SubscriptionEventListener() {
+                @Override
+                public void onEvent(PusherEvent event) {
+                    Log.i("Pusher", "finished! " + event.toString());
+                    try {
+                        JSONObject data = new JSONObject(event.getData());
+                        String drawingImageUrl = data.getString("image_url");
+                        Intent intent = new Intent(getApplicationContext(), ImageActivity.class);
+                        intent.putExtra(IntentExtraKey.DRAWING_ID, drawingId);
+                        intent.putExtra(IntentExtraKey.DRAWING_IMAGE_URL, drawingImageUrl);
+                        startActivity(intent);
+                        finish();
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }
+            });
+        }
     }
 
     private void setUpDrawTools() {
