@@ -2,6 +2,7 @@ import base64
 import hashlib
 import io
 
+from django.db import connection, transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import status, views
 from rest_framework.response import Response
@@ -38,6 +39,7 @@ class DrawingAPIView(views.APIView):
 
 class DrawingJoinAPIView(views.APIView):
 
+
     def post(self, request):
         user_id = int(request.data.get('user_id'))
         invitation_code = request.data.get('invitation_code')
@@ -46,19 +48,29 @@ class DrawingJoinAPIView(views.APIView):
         if not drawing:
             return Response({"detail": "Invalid invitation code"}, status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.get(id=user_id)
-
-
         username = user.username
-        pusher_client = settings.PUSHER_CLIENT
 
-        pusher_client.trigger(invitation_code, 'participant', {'username': username, 'type': "IN"})
         # Save to UserDrawing table (assuming you have a model named UserDrawing)
-        user_drawing = UserDrawing(user_id=user, drawing_id=drawing)
+        user_drawing = DrawingUser(user_id=user, drawing_id=drawing)
         user_drawing.save()
 
+        pusher_client = settings.PUSHER_CLIENT
+        pusher_client.trigger(invitation_code, 'participant', {'username': username, 'type': "IN"})
 
+        cursor = connection.cursor()
+        draw_id = drawing.id
 
-        return Response({"detail": "Successfully joined the drawing"}, status=status.HTTP_200_OK)
+        with transaction.atomic():
+            cursor.execute(
+                'SELECT username from drawing_drawinguser, user_user where drawing_drawinguser.drawing_id = %s and drawing_drawinguser.user_id = user_user.id',
+                [draw_id])
+            data = cursor.fetchall()
+
+        participants_list = list(data)
+        participants_list = [second for first in participants_list for second in first]
+        participants_data = {'participants': participants_list}
+
+        return Response(data=participants_data, status=status.HTTP_200_OK)
 
 
 class DrawingDetailAPIView(views.APIView):
