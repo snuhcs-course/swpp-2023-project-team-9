@@ -131,15 +131,15 @@ public class DrawView extends View {
         }
 
         mPaths.put(myPath, paintOptions);
-        Log.d(myPath.toString(), paintOptions.toString());
-        Log.d("TETE", "path: " + myPath.toString());
-        Log.d("TETE", "path: " + myPath.actions.toString());
-        Log.d("TETE", "path: " + myPath.actions.get(0).toString());
-        Log.d("TETE", "path: " + myPath.getFillType());
-        Log.d("TETE", "path: " + myPath.isEmpty());
-        Log.d("TETE", "path: " + myPath.isConvex());
-        Log.d("TETE", "path: " + myPath.isInverseFillType());
-        Log.d("TETE", "mPaths: " + mPaths.toString());
+//        Log.d(myPath.toString(), paintOptions.toString());
+//        Log.d("TETE", "path: " + myPath.toString());
+//        Log.d("TETE", "path: " + myPath.actions.toString());
+//        Log.d("TETE", "path: " + myPath.actions.get(0).toString());
+//        Log.d("TETE", "path: " + myPath.getFillType());
+//        Log.d("TETE", "path: " + myPath.isEmpty());
+//        Log.d("TETE", "path: " + myPath.isConvex());
+//        Log.d("TETE", "path: " + myPath.isInverseFillType());
+//        Log.d("TETE", "mPaths: " + mPaths.toString());
         invalidate();
     }
     public void redo() {

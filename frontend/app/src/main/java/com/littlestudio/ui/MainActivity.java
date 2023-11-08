@@ -19,6 +19,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
+import com.littlestudio.data.dto.DrawingJoinResponseDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.model.DrawingCreateRequest;
@@ -106,6 +107,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                 public void onResponse(Call<DrawingCreateResponse> call, Response<DrawingCreateResponse> response) {
                                     String invitationCode = response.body().invitation_code;
                                     int id = response.body().id;
+                                    ArrayList<String> participants = new ArrayList<>();
+                                    // TODO: change username to localDataSource's username
+                                    participants.add("username");
+                                    intent.putStringArrayListExtra(IntentExtraKey.PARTICIPANTS, participants);
                                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
                                     intent.putExtra(IntentExtraKey.DRAWING_ID, id);
                                     intent.putExtra(IntentExtraKey.HOST_CODE, true);
@@ -147,11 +152,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }
             Intent intent = new Intent(this, WaitingRoomActivity.class);
             // TODO : change userId to real id.
-            drawingRepository.joinDrawing(new DrawingJoinRequest(1, invitationCode), new Callback() {
+            drawingRepository.joinDrawing(new DrawingJoinRequest(1, invitationCode), new Callback<DrawingJoinResponseDto>() {
                 @Override
-                public void onResponse(Call call, Response response) {
+                public void onResponse(Call<DrawingJoinResponseDto> call, Response<DrawingJoinResponseDto> response) {
+                    ArrayList<String> participants = response.body().participants;
+                    Log.d("participant in MainActivity", participants.toString());
                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
                     intent.putExtra(IntentExtraKey.HOST_CODE, false);
+                    intent.putStringArrayListExtra(IntentExtraKey.PARTICIPANTS, participants);
                     startActivityForResult(intent, REQUEST_CODE);
                     dialog.dismiss();
                 }
@@ -160,8 +168,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 public void onFailure(Call call, Throwable t) {
                     Toast.makeText(MainActivity.this, "Invalid Invitation Code", Toast.LENGTH_SHORT).show();
                     Log.e("why error?", t.toString());
-
-
                 }
             });
         });
