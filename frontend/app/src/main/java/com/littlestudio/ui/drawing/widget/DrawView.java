@@ -113,6 +113,7 @@ public class DrawView extends View {
         paintOptions.setColor(strokeData.paint.color);
         paintOptions.setStrokeWidth(strokeData.paint.strokeWidth);
         paintOptions.setAlpha(strokeData.paint.alpha);
+        paintOptions.setEraserOn(strokeData.paint.isEraserOn);
 
         MyPath myPath = new MyPath();
         // Iterate over the actions and perform them on the path
@@ -288,14 +289,16 @@ public class DrawView extends View {
         this.invitationCode = invitationCode;
     }
 
-    public void toggleEraser() {
-        isEraserOn = !isEraserOn;
-        mPaintOptions.setEraserOn(isEraserOn);
+    public void setEraserOn() {
+        isEraserOn = true;
+        mPaintOptions.setEraserOn(true);
         invalidate();
     }
 
-    public boolean isEraserOn() {
-        return isEraserOn;
+    public void setEraserOff() {
+        isEraserOn = false;
+        mPaintOptions.setEraserOn(false);
+        invalidate();
     }
 
 }

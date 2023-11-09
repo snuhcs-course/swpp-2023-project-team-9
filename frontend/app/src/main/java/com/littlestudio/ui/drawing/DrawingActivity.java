@@ -237,10 +237,12 @@ public class DrawingActivity extends AppCompatActivity {
     private void setUpDrawTools() {
         ((CircleView) findViewById(R.id.circle_view_opacity)).setCircleRadius(100f);
         View imageDrawEraser = findViewById(R.id.image_draw_eraser);
+        View imageDrawColor = findViewById(R.id.image_draw_color);
         View drawTools = findViewById(R.id.draw_tools);
         imageDrawEraser.setOnClickListener(v -> {
-            ((DrawView) findViewById(R.id.draw_view)).toggleEraser();
-            imageDrawEraser.setSelected(((DrawView) findViewById(R.id.draw_view)).isEraserOn());
+            ((DrawView) findViewById(R.id.draw_view)).setEraserOn();
+            imageDrawEraser.setSelected(true);
+            imageDrawColor.setSelected(false);
             toggleDrawTools(drawTools, false);
         });
         imageDrawEraser.setOnLongClickListener(v -> {
@@ -260,7 +262,10 @@ public class DrawingActivity extends AppCompatActivity {
             findViewById(R.id.seekBar_opacity).setVisibility(View.GONE);
             findViewById(R.id.draw_color_palette).setVisibility(View.GONE);
         });
-        findViewById(R.id.image_draw_color).setOnClickListener(v -> {
+        imageDrawColor.setOnClickListener(v -> {
+            ((DrawView) findViewById(R.id.draw_view)).setEraserOff();
+            imageDrawEraser.setSelected(false);
+            imageDrawColor.setSelected(true);
             if (drawTools.getTranslationY() == toPx(56)) {
                 toggleDrawTools(drawTools, true);
             } else if (drawTools.getTranslationY() == toPx(0) && findViewById(R.id.draw_color_palette).getVisibility() == View.VISIBLE) {
