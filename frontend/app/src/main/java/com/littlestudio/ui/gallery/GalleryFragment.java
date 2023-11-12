@@ -13,10 +13,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.littlestudio.DrawAdapter;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
+import com.littlestudio.data.datasource.UserLocalDataSource;
+import com.littlestudio.data.datasource.UserRemoteDataSource;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.model.Drawing;
+import com.littlestudio.data.model.User;
 import com.littlestudio.data.repository.DrawingRepository;
+import com.littlestudio.data.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +34,7 @@ public class GalleryFragment extends Fragment {
     DrawAdapter adapter;
     DrawingRepository drawingRepository;
     RecyclerView rcv;
+    User user;
 
     public GalleryFragment() {
         // Required empty public constructor
@@ -42,6 +47,10 @@ public class GalleryFragment extends Fragment {
                 new DrawingRemoteDataSource(),
                 new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()))
         );
+        user = new UserRepository(
+                new UserRemoteDataSource(),
+                new UserLocalDataSource(getContext())
+        ).getUser();
     }
 
     @Override
@@ -64,7 +73,7 @@ public class GalleryFragment extends Fragment {
     }
 
     public void syncGalleryList() {
-        drawingRepository.getDrawings(1, new Callback<List<Drawing>>() {
+        drawingRepository.getDrawings(user.id, new Callback<List<Drawing>>() {
             @Override
             public void onResponse(Call<List<Drawing>> call, Response<List<Drawing>> response) {
                 adapter.updateItems(new ArrayList<>(response.body()));

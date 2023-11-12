@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -15,18 +14,11 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.littlestudio.R;
-import com.littlestudio.data.datasource.DrawingRemoteDataSource;
-import com.littlestudio.data.datasource.UserDataSource;
+import com.littlestudio.data.datasource.UserLocalDataSource;
 import com.littlestudio.data.datasource.UserRemoteDataSource;
 import com.littlestudio.data.dto.UserCreateRequestDto;
-import com.littlestudio.data.mapper.DrawingMapper;
-import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.mapper.UserMapper;
-import com.littlestudio.data.model.DrawingCreateRequest;
-import com.littlestudio.data.model.DrawingCreateResponse;
-import com.littlestudio.data.repository.DrawingRepository;
 import com.littlestudio.data.repository.UserRepository;
-import com.littlestudio.ui.constant.IntentExtraKey;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,7 +54,8 @@ public class SignupActivity extends AppCompatActivity {
         AppCompatButton signupBtn = (AppCompatButton) findViewById(R.id.signupBtn);
 
         userRepository = new UserRepository(
-                new UserRemoteDataSource(), new UserMapper(new ObjectMapper())
+                new UserRemoteDataSource(),
+                new UserLocalDataSource(getApplicationContext())
         );
         userRadioInput();
         signupBtn.setOnClickListener(new View.OnClickListener() {
@@ -75,9 +68,6 @@ public class SignupActivity extends AppCompatActivity {
                         genderToStr + " " + familyToStr);
                 if (isInputValid) {
                     userCreate(fullnameToStr, usernameToStr, passwordToStr, genderToStr, familyToStr);
-                    Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                    Toast.makeText(SignupActivity.this, "USER SUCCESSFULLY CREATED", Toast.LENGTH_SHORT).show();
-                    startActivity(intent);
                 } else {
                     Toast.makeText(SignupActivity.this, inputCheckMessage, Toast.LENGTH_SHORT).show();
                 }
@@ -165,17 +155,19 @@ public class SignupActivity extends AppCompatActivity {
     }
     //TODO: Username 중복 처리
     private void userCreate(String full_name, String username, String password, String gender, String family) {
-        userRepository.userCreateRequest(
+        userRepository.signup(
                 new UserCreateRequestDto(full_name, username, password, gender, family), new Callback() {
                     @Override
                     public void onResponse(Call call, Response response) {
                         Log.d("TETE success", response.body().toString());
+                        Toast.makeText(SignupActivity.this, "USER SUCCESSFULLY CREATED", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                     @Override
                     public void onFailure(Call call, Throwable t) {
                         Log.e("TETE error", t.toString());
                     }
-                   }
+                }
 
                 //full_name username password gender type
         );

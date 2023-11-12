@@ -19,12 +19,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
+import com.littlestudio.data.datasource.UserLocalDataSource;
+import com.littlestudio.data.datasource.UserRemoteDataSource;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.model.DrawingCreateRequest;
 import com.littlestudio.data.model.DrawingCreateResponse;
 import com.littlestudio.data.model.DrawingJoinRequest;
+import com.littlestudio.data.model.User;
 import com.littlestudio.data.repository.DrawingRepository;
+import com.littlestudio.data.repository.UserRepository;
 import com.littlestudio.ui.constant.IntentExtraKey;
 import com.littlestudio.ui.drawing.WaitingRoomActivity;
 import com.littlestudio.ui.gallery.GalleryFragment;
@@ -43,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private final int REQUEST_CODE = 111;
     private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     DrawingRepository drawingRepository;
+    UserRepository userRepository;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +68,22 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 new DrawingRemoteDataSource(),
                 new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()))
         );
+
+        userRepository = new UserRepository(
+                new UserRemoteDataSource(),
+                new UserLocalDataSource(getApplicationContext())
+        );
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!userRepository.isLoggedIn()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        } else {
+            user = userRepository.getUser();
+        }
     }
 
     @Override
@@ -101,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     switch (selectedOption) {
                         case StartDrawingOptions.CREATE:
                             Intent intent = new Intent(this, WaitingRoomActivity.class);
-                            drawingRepository.createDrawing(new DrawingCreateRequest(1), new Callback<DrawingCreateResponse>() {
+                            drawingRepository.createDrawing(new DrawingCreateRequest(user.id), new Callback<DrawingCreateResponse>() {
                                 @Override
                                 public void onResponse(Call<DrawingCreateResponse> call, Response<DrawingCreateResponse> response) {
                                     String invitationCode = response.body().invitation_code;
@@ -147,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }
             Intent intent = new Intent(this, WaitingRoomActivity.class);
             // TODO : change userId to real id.
-            drawingRepository.joinDrawing(new DrawingJoinRequest(1, invitationCode), new Callback() {
+            drawingRepository.joinDrawing(new DrawingJoinRequest(user.id, invitationCode), new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {
                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
