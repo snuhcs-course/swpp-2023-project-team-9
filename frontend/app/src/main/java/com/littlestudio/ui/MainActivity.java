@@ -21,15 +21,16 @@ import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
 import com.littlestudio.data.datasource.UserLocalDataSource;
 import com.littlestudio.data.datasource.UserRemoteDataSource;
+import com.littlestudio.data.dto.DrawingCreateRequestDto;
+import com.littlestudio.data.dto.DrawingCreateResponseDto;
+import com.littlestudio.data.dto.DrawingJoinRequestDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
-import com.littlestudio.data.model.DrawingCreateRequest;
-import com.littlestudio.data.model.DrawingCreateResponse;
-import com.littlestudio.data.model.DrawingJoinRequest;
 import com.littlestudio.data.model.User;
 import com.littlestudio.data.repository.DrawingRepository;
 import com.littlestudio.data.repository.UserRepository;
 import com.littlestudio.ui.constant.IntentExtraKey;
+import com.littlestudio.ui.constant.StartDrawingOptions;
 import com.littlestudio.ui.drawing.WaitingRoomActivity;
 import com.littlestudio.ui.gallery.GalleryFragment;
 
@@ -123,9 +124,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     switch (selectedOption) {
                         case StartDrawingOptions.CREATE:
                             Intent intent = new Intent(this, WaitingRoomActivity.class);
-                            drawingRepository.createDrawing(new DrawingCreateRequest(user.id), new Callback<DrawingCreateResponse>() {
+                            drawingRepository.createDrawing(new DrawingCreateRequestDto(user.id), new Callback<DrawingCreateResponseDto>() {
                                 @Override
-                                public void onResponse(Call<DrawingCreateResponse> call, Response<DrawingCreateResponse> response) {
+                                public void onResponse(Call<DrawingCreateResponseDto> call, Response<DrawingCreateResponseDto> response) {
                                     String invitationCode = response.body().invitation_code;
                                     int id = response.body().id;
                                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
@@ -135,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                 }
 
                                 @Override
-                                public void onFailure(Call<DrawingCreateResponse> call, Throwable t) {
+                                public void onFailure(Call<DrawingCreateResponseDto> call, Throwable t) {
                                     Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
                                 }
                             });
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }
             Intent intent = new Intent(this, WaitingRoomActivity.class);
             // TODO : change userId to real id.
-            drawingRepository.joinDrawing(new DrawingJoinRequest(user.id, invitationCode), new Callback() {
+            drawingRepository.joinDrawing(new DrawingJoinRequestDto(user.id, invitationCode), new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {
                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
@@ -190,7 +191,3 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 }
 
-class StartDrawingOptions {
-    public final static String CREATE = "Create a drawing";
-    public final static String JOIN = "Join a drawing";
-}
