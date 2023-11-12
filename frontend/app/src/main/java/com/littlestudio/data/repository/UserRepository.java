@@ -1,87 +1,83 @@
 package com.littlestudio.data.repository;
 
-import android.util.Log;
+import androidx.annotation.Nullable;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import com.littlestudio.data.datasource.UserDataSource;
+import com.littlestudio.data.datasource.UserLocalDataSource;
+import com.littlestudio.data.datasource.UserRemoteDataSource;
 import com.littlestudio.data.dto.UserCreateRequestDto;
 import com.littlestudio.data.dto.UserLoginRequestDto;
 import com.littlestudio.data.mapper.UserMapper;
 import com.littlestudio.data.model.User;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class UserRepository {
-    private final UserDataSource remoteDataSource;
-    private final UserMapper userMapper;
+    private final UserRemoteDataSource remoteDataSource;
+    private final UserLocalDataSource localDataSource;
+
+    private @Nullable User user;
 
     // Following principle of dependency injection
-    public UserRepository(UserDataSource remoteDataSource, UserMapper userMapper) {
+    public UserRepository(UserRemoteDataSource remoteDataSource, UserLocalDataSource localDataSource) {
         this.remoteDataSource = remoteDataSource;
-        this.userMapper = userMapper;
+        this.localDataSource = localDataSource;
+        this.user = localDataSource.getUser();
     }
-/*
-    public void userLoginRequest(User request, final Callback callback){
-        remoteDataSource.userLoginRequest(userMapper.toUserLoginRequestDto(request), new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call call, Response response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    callback.onResponse(null, Response.success(response));
-                } else {
-                    Log.e("error", response.message());
-                    Log.e("error", response.toString());
-                    callback.onFailure(null, new Throwable("Unsuccessful response"));
-                }
-            }
 
+    public void login(UserLoginRequestDto request, final Callback<User> callback) {
+        remoteDataSource.login(request, new Callback<User>() {
             @Override
-            public void onFailure(Call call, Throwable t) {
-                callback.onFailure(null, t);
-            }
-        });
-    }
-*/
-    public void userLoginRequest(UserLoginRequestDto request, final Callback callback){
-        remoteDataSource.userLoginRequest(request, new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call call, Response response) {
-                Log.d(call.toString(), response.toString());
+            public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    callback.onResponse(null, Response.success(response));
+                    User userData = response.body();
+                    callback.onResponse(null, Response.success(userData));
+                    localDataSource.setUser(userData);
+                    user = userData;
                 } else {
-                    Log.e("Login error", response.message());
                     callback.onFailure(null, new Throwable("Unsuccessful login response"));
                 }
             }
 
             @Override
             public void onFailure(Call call, Throwable t) {
-                Log.e("Login failure", t.getMessage());
                 callback.onFailure(null, t);
             }
         });
     }
 
-    public void userCreateRequest(UserCreateRequestDto request, final Callback callback){
-        remoteDataSource.userCreateRequest(request, new Callback<ResponseBody>() {
+    public void signup(UserCreateRequestDto request, final Callback<User> callback) {
+        remoteDataSource.signup(request, new Callback<User>() {
             @Override
-            public void onResponse(Call call, Response response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    callback.onResponse(null, Response.success(response));
+                    User userData = response.body();
+                    callback.onResponse(null, Response.success(userData));
+                    localDataSource.setUser(userData);
+                    user = userData;
                 } else {
-                    Log.e("error", response.message());
-                    Log.e("error", response.toString());
                     callback.onFailure(null, new Throwable("Unsuccessful response"));
                 }
             }
 
             @Override
-            public void onFailure(Call call, Throwable t) {
-                Log.e("Signup failure", t.getMessage());
+            public void onFailure(Call<User> call, Throwable t) {
                 callback.onFailure(null, t);
             }
         });
+    }
+
+    public void logout() {
+        user = null;
+        localDataSource.clearUser();
+    }
+
+    public Boolean isLoggedIn() {
+        return this.user != null;
+    }
+
+    public @Nullable User getUser() {
+        return this.user;
     }
 }
