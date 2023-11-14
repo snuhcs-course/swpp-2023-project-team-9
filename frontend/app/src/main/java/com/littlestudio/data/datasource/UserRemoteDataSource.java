@@ -4,29 +4,29 @@ import com.littlestudio.data.api.ServiceApi;
 import com.littlestudio.data.api.ServiceApiClient;
 import com.littlestudio.data.dto.UserCreateRequestDto;
 import com.littlestudio.data.dto.UserLoginRequestDto;
+import com.littlestudio.data.model.User;
 
 import retrofit2.Callback;
 
-public class UserRemoteDataSource implements UserDataSource {
+public class UserRemoteDataSource {
     private final ServiceApi serviceApi;
+
     public UserRemoteDataSource() {
         this.serviceApi = ServiceApiClient.getServiceApiInstance();
     }
 
-    public void userLoginRequest(UserLoginRequestDto request, Callback callback) {
+    public void login(UserLoginRequestDto request, Callback<User> callback) {
         try {
-            serviceApi.loginUser(request).enqueue(callback);
-
+            serviceApi.login(request).enqueue(callback);
         } catch (Exception e) {
             e.printStackTrace();
             callback.onFailure(null, e);
         }
     }
 
-    public void userCreateRequest(UserCreateRequestDto request, Callback callback) {
+    public void signup(UserCreateRequestDto request, Callback<User> callback) {
         try {
-            serviceApi.registerUser(request).enqueue(callback);
-
+            serviceApi.signup(request).enqueue(callback);
         } catch (Exception e) {
             e.printStackTrace();
             callback.onFailure(null, e);
