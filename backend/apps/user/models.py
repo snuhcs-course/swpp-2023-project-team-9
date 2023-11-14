@@ -12,6 +12,7 @@ class User(models.Model):
         CHILD = 'CHILD'
 
     id = models.BigAutoField(primary_key=True)
+    full_name = models.CharField(max_length=255)
     username = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
     gender = models.CharField(choices=GenderChoices.choices, max_length=255)

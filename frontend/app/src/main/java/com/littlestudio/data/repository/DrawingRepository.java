@@ -3,7 +3,9 @@ package com.littlestudio.data.repository;
 import android.util.Log;
 
 import com.littlestudio.data.datasource.DrawingDataSource;
+import com.littlestudio.data.dto.DrawingCreateRequestDto;
 import com.littlestudio.data.dto.DrawingCreateResponseDto;
+import com.littlestudio.data.dto.DrawingJoinRequestDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
 import com.littlestudio.data.dto.DrawingStartRequestDto;
@@ -11,9 +13,6 @@ import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.dto.DrawingViewResponseDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.model.Drawing;
-import com.littlestudio.data.model.DrawingCreateRequest;
-import com.littlestudio.data.model.DrawingCreateResponse;
-import com.littlestudio.data.model.DrawingJoinRequest;
 
 import java.util.List;
 
@@ -89,13 +88,12 @@ public class DrawingRepository {
         });
     }
 
-    public void createDrawing(DrawingCreateRequest request, final Callback<DrawingCreateResponse> callback) {
-        remoteDataSource.createDrawing(drawingMapper.toDrawingCreateRequestDto(request), new Callback<DrawingCreateResponseDto>() {
+    public void createDrawing(DrawingCreateRequestDto request, final Callback<DrawingCreateResponseDto> callback) {
+        remoteDataSource.createDrawing(request, new Callback<DrawingCreateResponseDto>() {
             @Override
             public void onResponse(Call<DrawingCreateResponseDto> call, Response<DrawingCreateResponseDto> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    DrawingCreateResponse createResponse = drawingMapper.fromDrawingCreateResponseDto(response.body());
-                    callback.onResponse(null, Response.success(createResponse));
+                    callback.onResponse(null, Response.success(response.body()));
                 } else {
                     callback.onFailure(null, new Throwable("Unsuccessful response"));
                 }
@@ -108,8 +106,8 @@ public class DrawingRepository {
         });
     }
 
-    public void joinDrawing(DrawingJoinRequest request, final Callback callback) {
-        remoteDataSource.joinDrawing(drawingMapper.toDrawingJoinRequestDto(request), new Callback<ResponseBody>() {
+    public void joinDrawing(DrawingJoinRequestDto request, final Callback callback) {
+        remoteDataSource.joinDrawing(request, new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {

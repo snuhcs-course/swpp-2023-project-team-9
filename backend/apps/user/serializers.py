@@ -11,6 +11,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         return {
             'id': instance.id,
+            'full_name': instance.full_name,
             'username': instance.username,
             'gender': instance.gender,
             'type': instance.type,
@@ -26,6 +27,7 @@ class LogInSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         return {
             'id': instance.id,
+            'full_name': instance.full_name,
             'username': instance.username,
             'gender': instance.gender,
             'type': instance.type,
