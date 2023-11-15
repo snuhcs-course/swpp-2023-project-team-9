@@ -4,7 +4,8 @@
 
 ## Documents 
 
-- [Design Document](../../wiki/Design-Document)
+- [Midterm Presentation](https://github.com/snuhcs-course/swpp-2023-project-team-9/files/13366856/Team_09_slide.pdf)
+- [Design Documentation](../../wiki/Design-Documentation)
 - [Requirements and Specifications](../../wiki/Requirements-and-Specifications)
 
 ## Features
