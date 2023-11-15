@@ -245,11 +245,6 @@ public class DrawingActivity extends AppCompatActivity {
             imageDrawColor.setSelected(false);
             toggleDrawTools(drawTools, false);
         });
-        imageDrawEraser.setOnLongClickListener(v -> {
-            ((DrawView) findViewById(R.id.draw_view)).clearCanvas();
-            toggleDrawTools(drawTools, false);
-            return true;
-        });
         findViewById(R.id.image_draw_width).setOnClickListener(v -> {
             if (drawTools.getTranslationY() == toPx(56)) {
                 toggleDrawTools(drawTools, true);
