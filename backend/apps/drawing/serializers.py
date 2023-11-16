@@ -35,4 +35,4 @@ class DrawingCreateSerializer(serializers.ModelSerializer):
         return drawing
 
     def get_invitation_code(self, obj):
-        return hashlib.sha256(str(obj.id).encode()).hexdigest()[:10]  # Taking first 10 characters as an example
+        return hashlib.sha256(str(obj.id).encode()).hexdigest()[:6]
