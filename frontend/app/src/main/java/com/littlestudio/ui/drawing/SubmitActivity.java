@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
@@ -16,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.littlestudio.ImageActivity;
+import com.littlestudio.ui.ImageActivity;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
@@ -28,6 +29,7 @@ import com.littlestudio.ui.constant.IntentExtraKey;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
+import java.util.logging.Logger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,7 +38,6 @@ import retrofit2.Response;
 
 public class SubmitActivity extends AppCompatActivity {
     DrawingRepository drawingRepository;
-
     AppCompatButton finishButton;
     ProgressBar loadingIndicator;
     EditText titleEditText;
@@ -100,6 +101,7 @@ public class SubmitActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(Call call, Throwable t) {
                                 setLoading(false);
+                                Log.d("test", t.toString());
                                 Toast.makeText(getApplicationContext(), "Failed to submit drawing. Please try again later.", Toast.LENGTH_SHORT).show();
                             }
                         });
