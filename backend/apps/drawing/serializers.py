@@ -7,7 +7,7 @@ import hashlib
 class DrawingParticipantSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'gender', 'type')
+        fields = ('full_name', 'username', 'gender', 'type')
 
 
 class DrawingSerializer(serializers.ModelSerializer):
