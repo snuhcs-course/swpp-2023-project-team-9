@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,7 +35,7 @@ public class GalleryFragment extends Fragment {
     DrawAdapter adapter;
     DrawingRepository drawingRepository;
     RecyclerView rcv;
-    User user;
+    @Nullable User user;
 
     public GalleryFragment() {
         // Required empty public constructor
@@ -73,6 +74,9 @@ public class GalleryFragment extends Fragment {
     }
 
     public void syncGalleryList() {
+        if (user == null) {
+            return;
+        }
         drawingRepository.getDrawings(user.id, new Callback<List<Drawing>>() {
             @Override
             public void onResponse(Call<List<Drawing>> call, Response<List<Drawing>> response) {
