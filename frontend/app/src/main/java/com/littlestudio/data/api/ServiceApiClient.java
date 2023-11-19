@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 
 public class ServiceApiClient {
-    private final static String BASE_URL = "http://ec2-54-180-103-195.ap-northeast-2.compute.amazonaws.com:3000";
+    private final static String BASE_URL = "http://ec2-3-35-208-114.ap-northeast-2.compute.amazonaws.com:3000";
 
     private static ServiceApi apiClient = null;
 
