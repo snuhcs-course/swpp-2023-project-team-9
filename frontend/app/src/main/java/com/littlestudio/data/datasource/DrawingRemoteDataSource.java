@@ -60,7 +60,6 @@ public class DrawingRemoteDataSource implements DrawingDataSource {
         }
     }
 
-    // TODO define more drawing methods
     @Override
     public void submitDrawing(DrawingSubmitRequestDto request, Callback callback) {
         try {

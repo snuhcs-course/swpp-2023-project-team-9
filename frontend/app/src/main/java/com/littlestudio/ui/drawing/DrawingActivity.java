@@ -17,7 +17,7 @@ import androidx.core.content.res.ResourcesCompat;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.littlestudio.ImageActivity;
+import com.littlestudio.ui.ImageActivity;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
@@ -28,7 +28,6 @@ import com.littlestudio.ui.constant.IntentExtraKey;
 import com.littlestudio.ui.drawing.widget.CircleView;
 import com.littlestudio.ui.drawing.widget.DrawView;
 import com.littlestudio.ui.drawing.widget.PaintOptions;
-import com.littlestudio.ui.gallery.GalleryFragment;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.Channel;
@@ -271,14 +270,6 @@ public class DrawingActivity extends AppCompatActivity {
             findViewById(R.id.seekBar_width).setVisibility(View.GONE);
             findViewById(R.id.seekBar_opacity).setVisibility(View.GONE);
             findViewById(R.id.draw_color_palette).setVisibility(View.VISIBLE);
-        });
-        findViewById(R.id.image_draw_undo).setOnClickListener(v -> {
-            ((DrawView) findViewById(R.id.draw_view)).undo();
-            toggleDrawTools(drawTools, false);
-        });
-        findViewById(R.id.image_draw_redo).setOnClickListener(v -> {
-            ((DrawView) findViewById(R.id.draw_view)).redo();
-            toggleDrawTools(drawTools, false);
         });
     }
 

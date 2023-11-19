@@ -29,7 +29,6 @@ public interface ServiceApi {
     @POST("/drawing/")
     Call<DrawingCreateResponseDto> createDrawing(@Body DrawingCreateRequestDto request);
 
-    // TODO consider changing to dtos
     @GET("/drawing/{id}")
     Call<DrawingViewResponseDto> getDrawing(@Path("id") int id);
 

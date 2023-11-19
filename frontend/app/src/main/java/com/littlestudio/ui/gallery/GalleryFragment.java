@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.littlestudio.DrawAdapter;
+import com.littlestudio.ui.DrawAdapter;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
 import com.littlestudio.data.datasource.UserLocalDataSource;

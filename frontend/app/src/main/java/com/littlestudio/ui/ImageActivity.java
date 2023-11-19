@@ -1,4 +1,4 @@
-package com.littlestudio;
+package com.littlestudio.ui;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
