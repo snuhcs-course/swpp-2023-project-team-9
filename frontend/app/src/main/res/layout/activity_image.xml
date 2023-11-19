@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,7 +12,7 @@
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="32dp"
         android:foreground="@drawable/black_border"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,23 +25,89 @@
         android:layout_height="48dp"
         android:foreground="?selectableItemBackgroundBorderless"
         android:padding="12dp"
+        android:layout_marginTop="-15dp"
+        android:layout_marginLeft="-10dp"
         android:src="@drawable/ic_close_black_24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/icon_color" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/animated_drawings_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_view"
+        android:layout_marginTop="15dp" />
+
+    <ImageView
+        android:id="@+id/original"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/black_border_thin"
+        app:layout_constraintTop_toTopOf="@id/animated_drawings_linear_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="15dp"/>
+
+    <ImageView
+        android:id="@+id/motion1"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/black_border_thin"
+        app:layout_constraintTop_toTopOf="@id/animated_drawings_linear_layout"
+        app:layout_constraintStart_toEndOf="@id/original"
+        android:layout_marginLeft="12dp"/>
+
+
+    <ImageView
+        android:id="@+id/motion2"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/black_border_thin"
+        app:layout_constraintTop_toTopOf="@id/animated_drawings_linear_layout"
+        app:layout_constraintStart_toEndOf="@id/motion1"
+        android:layout_marginLeft="12dp"/>
+
+    <ImageView
+        android:id="@+id/motion3"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/black_border_thin"
+        app:layout_constraintTop_toTopOf="@id/animated_drawings_linear_layout"
+        app:layout_constraintStart_toEndOf="@id/motion2"
+        android:layout_marginLeft="12dp"/>
+
+    <ImageView
+        android:id="@+id/motion4"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/black_border_thin"
+        app:layout_constraintTop_toTopOf="@id/animated_drawings_linear_layout"
+        app:layout_constraintStart_toEndOf="@id/motion3"
+        android:layout_marginLeft="12dp"/>
+
+<androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:background="@drawable/invitation_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/animated_drawings_linear_layout"
+        android:layout_marginTop="15dp"/>
 
     <TextView
         android:id="@+id/gallery_detail_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="96dp"
+        android:layout_marginTop="8dp"
         android:text="Title"
-        android:textSize="28dp"
+        android:textSize="24dp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_view" />
+        app:layout_constraintTop_toTopOf="@+id/linear_layout" />
 
     <TextView
         android:id="@+id/gallery_detail_created_on"
@@ -49,9 +115,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="56dp"
         android:text="Created On"
-        android:textSize="16dp"
+        android:textSize="14dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gallery_detail_title" />
 
@@ -61,12 +126,10 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="56dp"
         android:text="Drawn by"
-        android:textSize="16dp"
+        android:textSize="14dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gallery_detail_created_on" />
-
 
     <TextView
         android:id="@+id/gallery_detail_desc"
@@ -76,9 +139,10 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="56dp"
         android:text="Description"
-        android:textSize="20dp"
+        android:textSize="18dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gallery_detail_participants" />
 
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
