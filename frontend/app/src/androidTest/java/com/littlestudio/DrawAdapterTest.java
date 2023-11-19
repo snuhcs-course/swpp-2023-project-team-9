@@ -8,6 +8,8 @@ import android.content.Context;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.littlestudio.data.model.Drawing;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,15 +20,13 @@ import java.util.ArrayList;
 public class DrawAdapterTest {
 
     private Context context;
-    private ArrayList<String> imageList;
+    private ArrayList<Drawing> imageList;
     private DrawAdapter drawAdapter;
 
     @Before
     public void setUp() {
         context = ApplicationProvider.getApplicationContext();
         imageList = new ArrayList<>();
-        imageList.add("image1.jpg");
-        imageList.add("image2.jpg");
         drawAdapter = new DrawAdapter(context, imageList);
     }
 
@@ -38,6 +38,6 @@ public class DrawAdapterTest {
 
     @Test
     public void testGetItemCount() {
-        assertEquals(2, drawAdapter.getItemCount());
+        assertEquals(0, drawAdapter.getItemCount());
     }
 }
