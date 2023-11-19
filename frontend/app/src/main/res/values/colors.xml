@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="orange">#FCA100</color>
+    <color name="colorPrimaryDark">#FF8C02</color>
 
     <color name="icon_color">#C2C2C2</color>
     <color name="icon_selected_color">#757575</color>
