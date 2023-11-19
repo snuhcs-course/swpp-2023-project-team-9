@@ -51,16 +51,11 @@ class DrawingJoinAPIView(views.APIView):
         cursor = connection.cursor()
         username = user.username
 
-        # Save to UserDrawing table (assuming you have a model named UserDrawing)
         user_drawing = DrawingUser(user_id=user, drawing_id=drawing)
         user_drawing.save()
 
-        draw_id = drawing.id
-
         pusher_client = settings.PUSHER_CLIENT
-
         pusher_client.trigger(invitation_code, 'participant', {'username': username, 'type': "IN"})
-
 
         return Response({"detail": "Successfully joined the drawing"}, status=status.HTTP_200_OK)
 
@@ -71,6 +66,11 @@ class DrawingDetailAPIView(views.APIView):
         drawing = get_object_or_404(Drawing, id=id)
         serializer = DrawingSerializer(drawing)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def delete(self, request, id):
+        drawing = get_object_or_404(Drawing, id=id)
+        drawing.delete()
+        return Response({"detail": "Drawing deleted successfully"}, status=status.HTTP_200_OK)
 
 
 class DrawingStartAPIView(views.APIView):
