@@ -1,8 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.LittleStudio" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary"> @color/orange</item>
+        <!--<item name="colorPrimaryDark"> @color/colorPrimaryDark</item> -->
+        <item name="android:textViewStyle"> @style/ChesnaGroteskTextViewStyle</item>
+        <item name="android:buttonStyle"> @style/ChesnaGroteskButtonStyle</item>
+        <item name="android:fontFamily">@font/chesnagrotesk</item>
+
+    </style>
+
+    <style name="ChesnaGroteskTextViewStyle" parent="android:Widget.TextView" >
+        <item name="android:fontFamily">@font/chesnagrotesk</item>
+    </style>
+    <style name="ChesnaGroteskButtonStyle" parent= "android:Widget.Holo.Button" >
+        <item name= "android:fontFamily">@font/chesnagrotesk</item>
     </style>
 
     <style name="Theme.LittleStudio" parent="Base.Theme.LittleStudio" />
