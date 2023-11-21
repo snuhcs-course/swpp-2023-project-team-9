@@ -30,6 +30,9 @@ public class User {
         return gson.fromJson(jsonString, User.class);
     }
 
+    public User() {
+    }
+
     public User(
             int id,
             String full_name,
