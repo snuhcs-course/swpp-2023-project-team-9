@@ -11,24 +11,20 @@
         android:id="@+id/mypage_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="30dp"
         android:layout_marginLeft="24dp"
         android:layout_marginTop="24dp"
-        android:text="My Page"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Mypage" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/logout_btn"
-        android:layout_width="125dp"
-        android:layout_height="36dp"
-        android:layout_marginBottom="30dp"
-        android:text="Logout"
-        android:textSize="26sp"
-        android:background="@drawable/rounded_btn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        android:textSize="30dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="80dp"
+        android:text="Logout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

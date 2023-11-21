@@ -71,6 +71,7 @@
         app:layout_constraintTop_toBottomOf="@id/id_signUp"
         android:layout_marginTop="@dimen/button_distance"
         app:layout_constraintLeft_toLeftOf="parent"
+
         >
     </androidx.appcompat.widget.AppCompatEditText>
     <androidx.appcompat.widget.AppCompatEditText

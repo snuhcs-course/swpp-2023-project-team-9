@@ -3,16 +3,13 @@
     <item
         android:id="@+id/gallery"
         android:title="Gallery"
-        android:icon="@drawable/ic_gallery"
-        android:onClick=""/>
-
+        android:icon="@drawable/gallery_icon"/>
     <item
         android:id="@+id/draw"
         android:title="Draw"
-        android:icon="@drawable/ic_plus"/>
-
+        android:icon="@drawable/create_icon"/>
     <item
         android:id="@+id/mypage"
-        android:title="My Page"
-        android:icon="@drawable/ic_my_page"/>
+        android:title="Mypage"
+        android:icon="@drawable/family_icon"/>
 </menu>

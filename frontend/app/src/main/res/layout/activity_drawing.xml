@@ -134,15 +134,16 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/finish_btn"
-        android:layout_width="125dp"
-        android:layout_height="40dp"
+        android:layout_width="150dp"
+        android:layout_height="0dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="90dp"
         android:background="@drawable/rounded_btn"
-        android:text="Finish"
-        android:textSize="26sp"
+        android:paddingVertical="15dp"
+        android:text="FINISH"
         app:layout_constraintBottom_toBottomOf="@id/image_sketchbook"
         app:layout_constraintEnd_toEndOf="parent" />
 

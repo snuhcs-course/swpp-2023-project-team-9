@@ -33,14 +33,15 @@ public class MypageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_my_page, container, false);
+        final View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        Button logoutButton = view.findViewById(R.id.logout_btn);
+        Button logoutButton = view.findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(button -> {
             userRepository.logout();
             Intent intent = new Intent(getContext(), LoginActivity.class);
             startActivity(intent);
         });
+
         return view;
     }
 }
