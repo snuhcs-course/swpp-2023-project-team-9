@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
@@ -60,9 +61,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.gallery);
 
-        FloatingActionButton buttonView = findViewById(R.id.fab_add_draw);
-        buttonView.setOnClickListener((view) -> {
+//        FloatingActionButton buttonView = findViewById(R.id.fab_add_draw);
+//        buttonView.setOnClickListener((view) -> {
+//            showStartDrawingModal();
+//        });
+
+        BottomNavigationView navigation = findViewById(R.id.bottomNavigationView);
+        Menu menu = navigation.getMenu();
+        MenuItem drawItem = menu.findItem(R.id.draw);
+        drawItem.setOnMenuItemClickListener((item) -> {
             showStartDrawingModal();
+            return true;
         });
 
         drawingRepository = new DrawingRepository(
