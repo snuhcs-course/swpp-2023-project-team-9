@@ -2,6 +2,8 @@ package com.littlestudio.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -132,6 +134,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 //.setNegativeButton("Cancel", (dialog, _which) -> dialog.dismiss())
                 .show();
 
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         createDrawingButton.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, WaitingRoomActivity.class);
             drawingRepository.createDrawing(new DrawingCreateRequestDto(user.id), new Callback<DrawingCreateResponseDto>() {
@@ -172,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 .create();
 
         alertDialog.show();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         Button joinButton = customView.findViewById(R.id.join_btn);
         joinButton.setOnClickListener(view -> {
