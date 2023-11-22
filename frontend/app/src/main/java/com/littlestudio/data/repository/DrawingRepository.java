@@ -14,9 +14,7 @@ import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.dto.DrawingViewResponseDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.model.Drawing;
-import com.littlestudio.data.model.DrawingCreateRequest;
-import com.littlestudio.data.model.DrawingCreateResponse;
-import com.littlestudio.data.model.DrawingJoinRequest;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -111,7 +109,7 @@ public class DrawingRepository {
         });
     }
 
-    public void joinDrawing(DrawingJoinRequest request, final Callback<DrawingJoinResponseDto> callback) {
+    public void joinDrawing(DrawingJoinRequestDto request, final Callback<DrawingJoinResponseDto> callback) {
         remoteDataSource.joinDrawing(drawingMapper.toDrawingJoinRequestDto(request), new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

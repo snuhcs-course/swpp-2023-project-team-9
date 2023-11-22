@@ -97,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 */
     private void userLogin(String ID, String PW) {
+        Intent intent = new Intent(this, MainActivity.class);
         userRepository.login(
                 new UserLoginRequestDto(ID, PW), new Callback() {
                     @Override
@@ -104,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             // Handle successful login here
                             Log.d("TETE success", response.body().toString());
-                            finish();
+                            startActivity(intent);
                             // You might want to parse the response body and retrieve the login token or user details
                         } else {
                             // Handle unsuccessful login attempt here, maybe due to incorrect credentials or other issues

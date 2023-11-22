@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }
             Intent intent = new Intent(this, WaitingRoomActivity.class);
             // TODO : change userId to real id.
-            drawingRepository.joinDrawing(new DrawingJoinRequest(user_id, invitationCode), new Callback<DrawingJoinResponseDto>() {
+            drawingRepository.joinDrawing(new DrawingJoinRequestDto(user.id, invitationCode), new Callback<DrawingJoinResponseDto>() {
                 @Override
                 public void onResponse(Call<DrawingJoinResponseDto> call, Response<DrawingJoinResponseDto> response) {
                     ArrayList<String> participants = response.body().participants;
