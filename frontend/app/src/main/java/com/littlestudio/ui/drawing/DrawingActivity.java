@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import androidx.core.content.res.ResourcesCompat;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.littlestudio.ui.ImageActivity;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
@@ -26,7 +28,6 @@ import com.littlestudio.ui.constant.IntentExtraKey;
 import com.littlestudio.ui.drawing.widget.CircleView;
 import com.littlestudio.ui.drawing.widget.DrawView;
 import com.littlestudio.ui.drawing.widget.PaintOptions;
-import com.littlestudio.ui.gallery.GalleryFragment;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.Channel;
@@ -52,6 +53,10 @@ public class DrawingActivity extends AppCompatActivity {
 
     private String invitationCode;
 
+    private boolean isHost;
+
+    private int drawingId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +77,7 @@ public class DrawingActivity extends AppCompatActivity {
             intent.putExtra(IntentExtraKey.DRAWING_IMAGE_BYTE_ARRAY, byteArray);
             intent.putExtra(IntentExtraKey.DRAWING_ID, getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0));
             startActivity(intent);
+            pusher.unsubscribe(invitationCode);
             finish();
         });
 
@@ -100,7 +106,13 @@ public class DrawingActivity extends AppCompatActivity {
     protected void onStart(){
         super.onStart();
         this.invitationCode = getIntent().getStringExtra("invitationCode");
+        this.isHost = getIntent().getBooleanExtra(IntentExtraKey.HOST_CODE, false);
+        this.drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0);
         connectToChannel(invitationCode);
+        if(!isHost){
+            Button button = findViewById(R.id.finish_btn);
+            button.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -198,21 +210,39 @@ public class DrawingActivity extends AppCompatActivity {
                 }
             }
         });
+
+        if(!isHost){
+            this.channel.bind("finish", new SubscriptionEventListener() {
+                @Override
+                public void onEvent(PusherEvent event) {
+                    Log.i("Pusher", "finished! " + event.toString());
+                    try {
+                        JSONObject data = new JSONObject(event.getData());
+                        String drawingImageUrl = data.getString("image_url");
+                        Intent intent = new Intent(getApplicationContext(), ImageActivity.class);
+                        intent.putExtra(IntentExtraKey.DRAWING_ID, drawingId);
+                        intent.putExtra(IntentExtraKey.DRAWING_IMAGE_URL, drawingImageUrl);
+                        startActivity(intent);
+                        finish();
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }
+            });
+        }
     }
 
     private void setUpDrawTools() {
         ((CircleView) findViewById(R.id.circle_view_opacity)).setCircleRadius(100f);
         View imageDrawEraser = findViewById(R.id.image_draw_eraser);
+        View imageDrawColor = findViewById(R.id.image_draw_color);
         View drawTools = findViewById(R.id.draw_tools);
         imageDrawEraser.setOnClickListener(v -> {
-            ((DrawView) findViewById(R.id.draw_view)).toggleEraser();
-            imageDrawEraser.setSelected(((DrawView) findViewById(R.id.draw_view)).isEraserOn());
+            ((DrawView) findViewById(R.id.draw_view)).setEraserOn();
+            imageDrawEraser.setSelected(true);
+            imageDrawColor.setSelected(false);
             toggleDrawTools(drawTools, false);
-        });
-        imageDrawEraser.setOnLongClickListener(v -> {
-            ((DrawView) findViewById(R.id.draw_view)).clearCanvas();
-            toggleDrawTools(drawTools, false);
-            return true;
         });
         findViewById(R.id.image_draw_width).setOnClickListener(v -> {
             if (drawTools.getTranslationY() == toPx(56)) {
@@ -226,7 +256,10 @@ public class DrawingActivity extends AppCompatActivity {
             findViewById(R.id.seekBar_opacity).setVisibility(View.GONE);
             findViewById(R.id.draw_color_palette).setVisibility(View.GONE);
         });
-        findViewById(R.id.image_draw_color).setOnClickListener(v -> {
+        imageDrawColor.setOnClickListener(v -> {
+            ((DrawView) findViewById(R.id.draw_view)).setEraserOff();
+            imageDrawEraser.setSelected(false);
+            imageDrawColor.setSelected(true);
             if (drawTools.getTranslationY() == toPx(56)) {
                 toggleDrawTools(drawTools, true);
             } else if (drawTools.getTranslationY() == toPx(0) && findViewById(R.id.draw_color_palette).getVisibility() == View.VISIBLE) {
@@ -237,14 +270,6 @@ public class DrawingActivity extends AppCompatActivity {
             findViewById(R.id.seekBar_width).setVisibility(View.GONE);
             findViewById(R.id.seekBar_opacity).setVisibility(View.GONE);
             findViewById(R.id.draw_color_palette).setVisibility(View.VISIBLE);
-        });
-        findViewById(R.id.image_draw_undo).setOnClickListener(v -> {
-            ((DrawView) findViewById(R.id.draw_view)).undo();
-            toggleDrawTools(drawTools, false);
-        });
-        findViewById(R.id.image_draw_redo).setOnClickListener(v -> {
-            ((DrawView) findViewById(R.id.draw_view)).redo();
-            toggleDrawTools(drawTools, false);
         });
     }
 

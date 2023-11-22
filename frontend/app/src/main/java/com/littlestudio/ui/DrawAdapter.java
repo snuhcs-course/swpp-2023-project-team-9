@@ -1,4 +1,4 @@
-package com.littlestudio;
+package com.littlestudio.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.littlestudio.R;
 import com.littlestudio.data.model.Drawing;
 import com.littlestudio.ui.constant.IntentExtraKey;
 

@@ -71,48 +71,12 @@ public class DrawView extends View {
         mPaint.setAntiAlias(true);
     }
 
-    public void undo() {
-        if (!mPaths.isEmpty()) {
-            MyPath lastKey = (MyPath) mPaths.keySet().toArray()[mPaths.size() - 1];
-            PaintOptions lastValue = mPaths.get(lastKey);
-
-            mPaths.remove(lastKey);
-
-            if (lastKey != null && lastValue != null) {
-                mUndonePaths.put(lastKey, lastValue);
-            }
-            invalidate();
-        }
-    }
-
-
-    /*
-    public void undo() {
-        if (!mPaths.isEmpty() && mLastPaths.isEmpty()) {
-            mPaths = (LinkedHashMap<MyPath, PaintOptions>) mLastPaths.clone();
-            mLastPaths.clear();
-            invalidate();
-            return;
-        }
-
-        if (!mPaths.isEmpty()) {
-            MyPath lastKey = (MyPath) mPaths.keySet().toArray()[mPaths.size() - 1];
-            PaintOptions lastValue = mPaths.get(lastKey);
-
-            mPaths.remove(lastKey);
-
-            if (lastKey != null && lastValue != null) {
-                mUndonePaths.put(lastKey, lastValue);
-            }
-            invalidate();
-        }
-    }
-     */
     public void addRealTimeStroke(Stroke strokeData){
         PaintOptions paintOptions = new PaintOptions();
         paintOptions.setColor(strokeData.paint.color);
         paintOptions.setStrokeWidth(strokeData.paint.strokeWidth);
         paintOptions.setAlpha(strokeData.paint.alpha);
+        paintOptions.setEraserOn(strokeData.paint.isEraserOn);
 
         MyPath myPath = new MyPath();
         // Iterate over the actions and perform them on the path
@@ -141,16 +105,6 @@ public class DrawView extends View {
 //        Log.d("TETE", "path: " + myPath.isInverseFillType());
 //        Log.d("TETE", "mPaths: " + mPaths.toString());
         invalidate();
-    }
-    public void redo() {
-        if (!mUndonePaths.isEmpty()) {
-            MyPath lastKey = (MyPath) mUndonePaths.keySet().toArray()[mUndonePaths.size() - 1];
-            PaintOptions lastValue = mUndonePaths.get(lastKey);
-
-            mPaths.put(lastKey, lastValue);
-            mUndonePaths.remove(lastKey);
-            invalidate();
-        }
     }
 
     public void setColor(@ColorInt int newColor) {
@@ -288,14 +242,16 @@ public class DrawView extends View {
         this.invitationCode = invitationCode;
     }
 
-    public void toggleEraser() {
-        isEraserOn = !isEraserOn;
-        mPaintOptions.setEraserOn(isEraserOn);
+    public void setEraserOn() {
+        isEraserOn = true;
+        mPaintOptions.setEraserOn(true);
         invalidate();
     }
 
-    public boolean isEraserOn() {
-        return isEraserOn;
+    public void setEraserOff() {
+        isEraserOn = false;
+        mPaintOptions.setEraserOn(false);
+        invalidate();
     }
 
 }

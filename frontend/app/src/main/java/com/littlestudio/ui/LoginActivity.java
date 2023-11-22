@@ -5,17 +5,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.littlestudio.R;
+import com.littlestudio.data.datasource.UserLocalDataSource;
 import com.littlestudio.data.datasource.UserRemoteDataSource;
-import com.littlestudio.data.dto.UserCreateRequestDto;
 import com.littlestudio.data.dto.UserLoginRequestDto;
-import com.littlestudio.data.mapper.UserMapper;
 import com.littlestudio.data.repository.UserRepository;
 
 import retrofit2.Call;
@@ -36,7 +33,8 @@ public class LoginActivity extends AppCompatActivity {
         TextView password = (TextView) findViewById(R.id.pw);
 
         userRepository = new UserRepository(
-                new UserRemoteDataSource(), new UserMapper(new ObjectMapper())
+                new UserRemoteDataSource(),
+                new UserLocalDataSource(getApplicationContext())
         );
 
         AppCompatButton loginBtn = (AppCompatButton) findViewById(R.id.loginBtn);
@@ -45,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 usernameToStr = username.getText().toString();
                 passwordToStr = password.getText().toString();
-                Log.d("IDPW sent"," ID: "+ usernameToStr + " PW:" + passwordToStr) ;
+                Log.d("IDPW sent", " ID: " + usernameToStr + " PW:" + passwordToStr);
                 userLogin(usernameToStr, passwordToStr);
 
                 Log.d("test", "working?");
@@ -79,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
     /*
     public void userLogin(String ID, String PW){
         userRepository.userCreateRequest(
@@ -95,22 +94,21 @@ public class LoginActivity extends AppCompatActivity {
 
                 //full_name username password gender type
         );
-
-
     }
 */
     private void userLogin(String ID, String PW) {
-        userRepository.userLoginRequest(
+        userRepository.login(
                 new UserLoginRequestDto(ID, PW), new Callback() {
                     @Override
                     public void onResponse(Call call, Response response) {
                         if (response.isSuccessful() && response.body() != null) {
                             // Handle successful login here
-                            Log.d("TETE success", response.body().toString() ) ;
+                            Log.d("TETE success", response.body().toString());
+                            finish();
                             // You might want to parse the response body and retrieve the login token or user details
                         } else {
                             // Handle unsuccessful login attempt here, maybe due to incorrect credentials or other issues
-                            Log.e("TETE error here", response.message()+ " ID: "+ ID + " PW:" + PW);
+                            Log.e("TETE error here", response.message() + " ID: " + ID + " PW:" + PW);
                         }
                     }
 

@@ -34,6 +34,7 @@ class LogInAPIView(views.APIView):
             users = User.objects.filter(username=username)
             for user in users:
                 if bcrypt.checkpw(password.encode('utf-8'), user.password.encode("utf-8")):
+                    serializer = LogInSerializer(user) 
                     return Response(serializer.data)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 

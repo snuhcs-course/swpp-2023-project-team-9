@@ -23,7 +23,7 @@ class DrawingAPIView(views.APIView):
             return Response({"detail": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         drawings = Drawing.objects.filter(
-            host_id=user_id, 
+            host_id=user_id,
             type=Drawing.TypeChoices.COMPLETED
         ).order_by('-id').prefetch_related('participants')
         serializer = DrawingSerializer(drawings, many=True)
@@ -38,7 +38,6 @@ class DrawingAPIView(views.APIView):
 
 
 class DrawingJoinAPIView(views.APIView):
-
 
     def post(self, request):
         user_id = int(request.data.get('user_id'))
@@ -80,6 +79,11 @@ class DrawingDetailAPIView(views.APIView):
         serializer = DrawingSerializer(drawing)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def delete(self, request, id):
+        drawing = get_object_or_404(Drawing, id=id)
+        drawing.delete()
+        return Response({"detail": "Drawing deleted successfully"}, status=status.HTTP_200_OK)
+
 
 class DrawingStartAPIView(views.APIView):
 
@@ -107,7 +111,8 @@ class DrawingSubmitAPIView(views.APIView):
         s3_client.upload_fileobj(decode_file, 'little-studio', object_name)
         image_url = f"https://little-studio.s3.amazonaws.com/{object_name}"
         Drawing.objects.filter(id=drawing_id).update(title=title, description=request.data.get('description'),
-                                                             image_url=image_url, type="COMPLETED")
+                                                     image_url=image_url, type="COMPLETED")
+        invitation_code = Drawing.objects.get(id=drawing_id).invitation_code;
         drawing_users = DrawingUser.objects.filter(drawing_id=id)
         for first_user in drawing_users:
             for second_user in drawing_users:
@@ -123,7 +128,8 @@ class DrawingSubmitAPIView(views.APIView):
             "image_url": image_url,
             "type": "COMPLETED"
         }
-
+        pusher_client = settings.PUSHER_CLIENT
+        pusher_client.trigger(invitation_code, 'finish', {'image_url': image_url})
         # serializer = DrawingSerializer(data=drawing_data)
         # if serializer.is_valid():
         #     serializer.save()

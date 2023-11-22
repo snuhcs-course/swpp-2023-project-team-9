@@ -31,7 +31,6 @@ public interface ServiceApi {
     @POST("/drawing/")
     Call<DrawingCreateResponseDto> createDrawing(@Body DrawingCreateRequestDto request);
 
-    // TODO consider changing to dtos
     @GET("/drawing/{id}")
     Call<DrawingViewResponseDto> getDrawing(@Path("id") int id);
 
@@ -48,13 +47,13 @@ public interface ServiceApi {
     Call<Void> uploadRealTimeDrawing(@Path("id") int id, @Body DrawingRealTimeRequestDto request);
 
     @POST("/user/")
-    Call<User> registerUser(@Body UserCreateRequestDto request);
+    Call<User> signup(@Body UserCreateRequestDto request);
 
     @POST("/user/login")
-    Call<User> loginUser(@Body UserLoginRequestDto request);
+    Call<User> login(@Body UserLoginRequestDto request);
 
     @POST("/user/logout")
-    Call<Void> logoutUser();
+    Call<Void> logout();
 
     @GET("/family")
     Call<FamilyListResponseDto> getFamily();

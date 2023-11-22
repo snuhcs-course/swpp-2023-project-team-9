@@ -46,6 +46,7 @@
         android:layout_alignParentTop="true"
 
         android:hint="@string/pw"
+        android:inputType="textPassword"
         android:gravity="center_vertical"
         style="@style/Button"
         app:layout_constraintLeft_toLeftOf="parent"
