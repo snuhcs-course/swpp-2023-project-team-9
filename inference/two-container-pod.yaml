@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: n201432420
+spec:
+  restartPolicy: Never
+  imagePullSecrets:
+    - name: regcred
+  containers:
+  - name: server-run
+    image: registry.ferrari.snucse.org:30443/little-studio/server-run:3.0
+#    command: ["/bin/bash", "-c"]
+#    args: ["conda activate animated_drawings", "cd animated_drawing", "cd examples", "flask run"]
+    command: [ "/bin/bash", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;"]
+    ports:
+      - containerPort: 5000
+        name: http
+    resources:
+      limits:
+        cpu: 8
+        memory: "16Gi"
+        nvidia.com/gpu: 0
+      requests:
+        cpu: 4
+        memory: "8Gi"
+
+  - name: docker-torchserve
+    image: registry.ferrari.snucse.org:30443/little-studio/torch_serve:latest
+    ports:
+      - containerPort: 8080
+    resources:
+      limits:
+        cpu: 4
+        memory: "32Gi"
+        nvidia.com/gpu: 1
+      requests:
+        cpu: 4
+        memory: "16Gi"
