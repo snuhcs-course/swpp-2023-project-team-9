@@ -5,6 +5,7 @@ import android.util.Log;
 import com.littlestudio.data.datasource.DrawingDataSource;
 import com.littlestudio.data.dto.DrawingCreateRequestDto;
 import com.littlestudio.data.dto.DrawingCreateResponseDto;
+import com.littlestudio.data.dto.DrawingJoinResponseDto;
 import com.littlestudio.data.dto.DrawingJoinRequestDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
@@ -14,6 +15,8 @@ import com.littlestudio.data.dto.DrawingViewResponseDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.model.Drawing;
 
+
+import java.io.IOException;
 import java.util.List;
 
 import okhttp3.Request;
@@ -106,12 +109,19 @@ public class DrawingRepository {
         });
     }
 
-    public void joinDrawing(DrawingJoinRequestDto request, final Callback callback) {
-        remoteDataSource.joinDrawing(request, new Callback<ResponseBody>() {
+    public void joinDrawing(DrawingJoinRequestDto request, final Callback<DrawingJoinResponseDto> callback) {
+        remoteDataSource.joinDrawing(drawingMapper.toDrawingJoinRequestDto(request), new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    callback.onResponse(null, Response.success(response));
+
+                if (response.isSuccessful() && response.body() != null) {
+                    DrawingJoinResponseDto drawingJoinResponseDto = null;
+                    try {
+                        drawingJoinResponseDto = drawingMapper.fromJoinResponseDto(response.body().string());
+                    } catch (IOException e) {
+                        callback.onFailure(null, new Throwable("Unsuccessful response"));
+                    }
+                    callback.onResponse(null, Response.success(drawingJoinResponseDto));
                 } else {
                     callback.onFailure(null, new Throwable("Unsuccessful response"));
                 }

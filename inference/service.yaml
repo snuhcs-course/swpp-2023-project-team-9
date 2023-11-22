@@ -1,0 +1,68 @@
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: animated-drawings-service
+#spec:
+#  type: ClusterIP
+#  selector:
+#    app: little-studio
+#  ports:
+#    - name: http
+#      protocol: TCP
+#      port: 80
+#      targetPort: 5000
+#    - name: https
+#      protocol: TCP
+#      port: 443
+#      targetPort: 5000
+#    - name: torchserve
+#      protocol: TCP
+#      port: 8080
+#      targetPort: 8080
+#---
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: my-service
+  spec:
+    type: NodePort
+    selector:
+      app: little-studio
+    ports:
+      - name: http
+#        nodePort: 32111 # 노드의 30001번 포트로 들어오면
+        port: 80 # 서비스의 80번 포트로 전달하고
+        targetPort: 5000 # Pod의 5000번 포트로 전달 30001(Node) -> 80(Service) -> 5000(Pod)
+        protocol: TCP
+    externalIPs:
+      - 147.46.15.75
+#---
+#apiVersion: v1
+#kind: ConfigMap
+#metadata:
+#  namespace: n201432420
+#  name: config
+#data:
+#  config: |
+#    address-pools:
+#    - name: default
+#      protocol: layer2
+#      addresses:
+#      - 192.168.1.146 - 192.168.1.151
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: little-studio
+#spec:
+#  selector:
+#    app: little-studio
+#  ports:
+#    - name: http
+#      port: 80
+#      protocol: TCP
+#      targetPort: 5000
+#      nodePort: 30001
+#  type: LoadBalancer
+#  externalIPs:
+#    - 147.46.15.75

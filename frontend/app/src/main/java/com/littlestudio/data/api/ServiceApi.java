@@ -3,6 +3,7 @@ package com.littlestudio.data.api;
 import com.littlestudio.data.dto.DrawingCreateRequestDto;
 import com.littlestudio.data.dto.DrawingCreateResponseDto;
 import com.littlestudio.data.dto.DrawingJoinRequestDto;
+import com.littlestudio.data.dto.DrawingJoinResponseDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
 import com.littlestudio.data.dto.DrawingStartRequestDto;
@@ -13,7 +14,8 @@ import com.littlestudio.data.dto.UserCreateRequestDto;
 import com.littlestudio.data.dto.UserLoginRequestDto;
 import com.littlestudio.data.model.User;
 
-import okhttp3.Request;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -32,8 +34,11 @@ public interface ServiceApi {
     @GET("/drawing/{id}")
     Call<DrawingViewResponseDto> getDrawing(@Path("id") int id);
 
+    @GET("/drawing/join")
+    Call<DrawingJoinResponseDto> getParticipants(@Query("invitation_code") String invitation_code);
+
     @POST("/drawing/join")
-    Call<Void> joinDrawing(@Body DrawingJoinRequestDto request);
+    Call<ResponseBody> joinDrawing(@Body DrawingJoinRequestDto request);
 
     @POST("/drawing/1/submit")
     Call<DrawingViewResponseDto> submitDrawing(@Body DrawingSubmitRequestDto request);
