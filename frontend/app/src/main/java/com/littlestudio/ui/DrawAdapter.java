@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,14 +54,17 @@ public class DrawAdapter extends RecyclerView.Adapter<DrawAdapter.ViewHolder> {
                 context.startActivity(intent);
             }
         });
+        holder.titleTextView.setText(drawing.title);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         final ImageView drawImage;
+        final TextView titleTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             drawImage = itemView.findViewById(R.id.image_draw);
+            titleTextView = itemView.findViewById(R.id.gallery_title);
         }
     }
 

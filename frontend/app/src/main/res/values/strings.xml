@@ -5,6 +5,8 @@
     <string name="enter_title">Title</string>
     <string name="enter_description">Tell us about your artwork!</string>
     <string name="enter_invitation_code">Enter the invitation code"</string>
+    <string name="my_gallery">My Gallery</string>
+    <string name="my_page">My Page</string>
 
     <string name="title">LittleStudio</string>
     <string name="fullName">Full name</string>
