@@ -68,13 +68,6 @@
             android:layout_height="50dp"
             android:background="@drawable/black_border_thin"
             android:layout_marginLeft="20dp"/>
-
-        <ImageView
-            android:id="@+id/motion4"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/black_border_thin"
-            android:layout_marginLeft="20dp"/>
     </LinearLayout>
 
     <LinearLayout
