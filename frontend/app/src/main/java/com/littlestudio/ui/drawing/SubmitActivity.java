@@ -48,7 +48,10 @@ public class SubmitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit);
 
-        drawingRepository = new DrawingRepository(new DrawingRemoteDataSource(), new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper())));
+        drawingRepository = DrawingRepository.getInstance(
+                DrawingRemoteDataSource.getInstance(),
+                new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()))
+        );
 
         byte[] imageByteArray = getIntent().getByteArrayExtra(IntentExtraKey.DRAWING_IMAGE_BYTE_ARRAY);
         int drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0);

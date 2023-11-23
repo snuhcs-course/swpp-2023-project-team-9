@@ -1,6 +1,7 @@
 package com.littlestudio.data.repository;
 
 import android.util.Log;
+import android.util.Printer;
 
 import com.littlestudio.data.datasource.DrawingDataSource;
 import com.littlestudio.data.dto.DrawingCreateRequestDto;
@@ -26,11 +27,22 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DrawingRepository {
+    private static volatile DrawingRepository instance;
     private final DrawingDataSource remoteDataSource;
     private final DrawingMapper drawingMapper;
 
-    // Following principle of dependency injection
-    public DrawingRepository(DrawingDataSource remoteDataSource, DrawingMapper drawingMapper) {
+    public static DrawingRepository getInstance(DrawingDataSource remoteDataSource, DrawingMapper drawingMapper){
+        if (instance == null){
+            synchronized (DrawingRepository.class) {
+                if (instance == null) {
+                    instance = new DrawingRepository(remoteDataSource, drawingMapper);
+                }
+            }
+        }
+        return instance;
+    }
+
+    private DrawingRepository(DrawingDataSource remoteDataSource, DrawingMapper drawingMapper) {
         this.remoteDataSource = remoteDataSource;
         this.drawingMapper = drawingMapper;
     }

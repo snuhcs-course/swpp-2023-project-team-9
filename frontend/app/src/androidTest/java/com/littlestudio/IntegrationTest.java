@@ -38,7 +38,7 @@ public class IntegrationTest {
 
     @Before
     public void setup() {
-        userLocalDataSource = new UserLocalDataSource(InstrumentationRegistry.getInstrumentation().getTargetContext());
+        userLocalDataSource = UserLocalDataSource.getInstance(InstrumentationRegistry.getInstrumentation().getTargetContext());
         User testUser = new User(1, "test", "test", "test", "test", 1, new Date());
         userLocalDataSource.setUser(testUser);
     }

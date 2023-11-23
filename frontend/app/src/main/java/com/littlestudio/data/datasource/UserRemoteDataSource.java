@@ -9,10 +9,22 @@ import com.littlestudio.data.model.User;
 import retrofit2.Callback;
 
 public class UserRemoteDataSource {
+    private static volatile UserRemoteDataSource instance;
     private final ServiceApi serviceApi;
 
-    public UserRemoteDataSource() {
-        this.serviceApi = ServiceApiClient.getServiceApiInstance();
+    public static UserRemoteDataSource getInstance(){
+        if (instance == null){
+            synchronized (UserRemoteDataSource.class) {
+                if (instance == null) {
+                    instance = new UserRemoteDataSource();
+                }
+            }
+        }
+        return instance;
+    }
+
+    private UserRemoteDataSource() {
+        this.serviceApi = ServiceApiClient.getInstance();
     }
 
     public void login(UserLoginRequestDto request, Callback<User> callback) {
