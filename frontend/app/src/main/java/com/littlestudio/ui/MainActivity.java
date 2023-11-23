@@ -66,14 +66,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             showStartDrawingModal();
         });
 
-        drawingRepository = new DrawingRepository(
-                new DrawingRemoteDataSource(),
+        drawingRepository = DrawingRepository.getInstance(
+                DrawingRemoteDataSource.getInstance(),
                 new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()))
         );
 
-        userRepository = new UserRepository(
-                new UserRemoteDataSource(),
-                new UserLocalDataSource(getApplicationContext())
+        userRepository = UserRepository.getInstance(
+                UserRemoteDataSource.getInstance(),
+                UserLocalDataSource.getInstance(getApplicationContext())
         );
     }
 

@@ -10,32 +10,36 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 
 public class ServiceApiClient {
+    private static volatile ServiceApi instance;
     private final static String BASE_URL = "http://ec2-3-35-208-114.ap-northeast-2.compute.amazonaws.com:3000";
 
-    private static ServiceApi apiClient = null;
-
-    private ServiceApiClient() {
+    public static ServiceApi getInstance() {
+        if (instance == null) {
+            synchronized (ServiceApiClient.class) {
+                if (instance == null) {
+                    instance = new ServiceApiClient().ServiceApi();
+                }
+            }
+        }
+        return instance;
     }
 
-    public static ServiceApi getServiceApiInstance() {
-        if (apiClient == null) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    private ServiceApi ServiceApi() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-            OkHttpClient httpClient = new OkHttpClient.Builder()
-                    .addInterceptor(logging)
-                    .build();
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .build();
 
-            apiClient = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-                    .client(httpClient)
-                    .build()
-                    .create(ServiceApi.class);
-        }
-        return apiClient;
+        return new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+                .client(httpClient)
+                .build()
+                .create(ServiceApi.class);
     }
 }

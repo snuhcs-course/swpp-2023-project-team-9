@@ -32,9 +32,9 @@ public class LoginActivity extends AppCompatActivity {
         TextView username = (TextView) findViewById(R.id.id);
         TextView password = (TextView) findViewById(R.id.pw);
 
-        userRepository = new UserRepository(
-                new UserRemoteDataSource(),
-                new UserLocalDataSource(getApplicationContext())
+        userRepository = UserRepository.getInstance(
+                UserRemoteDataSource.getInstance(),
+                UserLocalDataSource.getInstance(getApplicationContext())
         );
 
         AppCompatButton loginBtn = (AppCompatButton) findViewById(R.id.loginBtn);

@@ -19,10 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.littlestudio.JoinAdapter;
+import com.littlestudio.ui.JoinAdapter;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
-import com.littlestudio.data.dto.DrawingJoinResponseDto;
 import com.littlestudio.data.dto.DrawingStartRequestDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
@@ -73,10 +72,8 @@ public class WaitingRoomActivity extends AppCompatActivity {
         connectToPusher();
         setContentView(R.layout.activity_waiting_room);
 
-
-
-        drawingRepository = new DrawingRepository(
-                new DrawingRemoteDataSource(),
+        drawingRepository = DrawingRepository.getInstance(
+                DrawingRemoteDataSource.getInstance(),
                 new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()))
         );
 

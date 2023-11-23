@@ -23,7 +23,3 @@ public interface Action extends Serializable {
 
     void perform(Writer writer) throws IOException;
 }
-
-enum ActionType {
-    LINE, MOVE, QUAD
-}

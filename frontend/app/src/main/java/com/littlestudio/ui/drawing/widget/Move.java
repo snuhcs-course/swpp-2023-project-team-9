@@ -2,6 +2,8 @@ package com.littlestudio.ui.drawing.widget;
 
 import android.graphics.Path;
 
+import com.littlestudio.ui.constant.ActionType;
+
 import java.io.IOException;
 import java.io.Writer;
 

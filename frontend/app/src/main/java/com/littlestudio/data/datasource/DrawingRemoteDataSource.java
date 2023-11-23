@@ -18,10 +18,22 @@ import okhttp3.ResponseBody;
 import retrofit2.Callback;
 
 public class DrawingRemoteDataSource implements DrawingDataSource {
+    private static volatile DrawingRemoteDataSource instance;
     private final ServiceApi serviceApi;
 
-    public DrawingRemoteDataSource() {
-        this.serviceApi = ServiceApiClient.getServiceApiInstance();
+    public static DrawingRemoteDataSource getInstance(){
+        if (instance == null){
+            synchronized (DrawingRemoteDataSource.class) {
+                if (instance == null) {
+                    instance = new DrawingRemoteDataSource();
+                }
+            }
+        }
+        return instance;
+    }
+
+    private DrawingRemoteDataSource() {
+        this.serviceApi = ServiceApiClient.getInstance();
     }
 
     @Override

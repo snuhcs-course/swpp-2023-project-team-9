@@ -34,7 +34,10 @@ public class ImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
 
-        drawingRepository = new DrawingRepository(new DrawingRemoteDataSource(), new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper())));
+        drawingRepository = DrawingRepository.getInstance(
+                DrawingRemoteDataSource.getInstance(),
+                new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()))
+        );
 
         int drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0);
         String imageUrl = getIntent().getStringExtra(IntentExtraKey.DRAWING_IMAGE_URL);
