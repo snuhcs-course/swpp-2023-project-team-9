@@ -10,137 +10,106 @@
         android:id="@+id/signUpTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         android:text="@string/signUp"
-        android:textSize="67sp"
-        android:paddingTop = "50dp"
+        android:layout_marginTop="15dp"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-
-        tools:layout_editor_absoluteY="58dp" />
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/name_signUp"
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/margin_sign"
-        android:layout_marginRight="@dimen/margin_sign"
-        android:layout_height="53dp"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginHorizontal="50dp"
         android:hint= "@string/fullName"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="62dp"
-        android:textAppearance="@style/infoText"
-        android:gravity="center_vertical"
+        android:textAppearance="@style/signUpinfoText"
         style="@style/Button"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >    </androidx.appcompat.widget.AppCompatEditText>
+        app:layout_constraintTop_toBottomOf="@id/signUpTitle">
+    </androidx.appcompat.widget.AppCompatEditText>
+
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/id_signUp"
-
-        android:layout_height="53dp"
-        android:layout_alignParentStart="true"
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/margin_sign"
-        android:layout_marginRight="@dimen/margin_sign"
-        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
+        android:layout_marginHorizontal="50dp"
         android:hint= "@string/id"
-        android:textAppearance="@style/infoText"
-        android:gravity="center_vertical"
+        android:textAppearance="@style/signUpinfoText"
         style="@style/Button"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/name_signUp"
-        android:layout_marginTop="@dimen/button_distance"
-        >
+        android:layout_marginTop="@dimen/button_distance">
     </androidx.appcompat.widget.AppCompatEditText>
+
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/pw_signUp"
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/margin_sign"
-        android:layout_marginRight="@dimen/margin_sign"
-        android:layout_height="53dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
+        android:layout_marginHorizontal="50dp"
         android:hint="@string/pw"
-        android:textAppearance="@style/infoText"
-        android:gravity="center_vertical"
+        android:textAppearance="@style/signUpinfoText"
         style="@style/Button"
         app:layout_constraintTop_toBottomOf="@id/id_signUp"
         android:layout_marginTop="@dimen/button_distance"
-        app:layout_constraintLeft_toLeftOf="parent"
-
-        >
+        app:layout_constraintLeft_toLeftOf="parent">
     </androidx.appcompat.widget.AppCompatEditText>
+
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/confirmPw"
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/margin_sign"
-        android:layout_marginRight="@dimen/margin_sign"
-        android:layout_height="53dp"
-        android:layout_alignParentStart="true"
-
-        android:layout_alignParentTop="true"
-
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
+        android:layout_marginHorizontal="50dp"
         android:hint="@string/confirmPw"
-        android:textAppearance="@style/infoText"
-        android:gravity="center_vertical"
+        android:textAppearance="@style/signUpinfoText"
         style="@style/Button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pw_signUp"
-        android:layout_marginTop="@dimen/button_distance"
-        >
+        android:layout_marginTop="@dimen/button_distance">
     </androidx.appcompat.widget.AppCompatEditText>
-
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/signupBtn"
         style="@style/LogButton"
         android:layout_width="match_parent"
-        android:layout_height="23dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="@dimen/margin_sign"
-        android:layout_marginRight="@dimen/margin_sign"
-
-        android:gravity="center_horizontal|center_vertical"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="50dp"
         android:text="@string/signUp"
-        android:textAppearance="@style/loginText"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/yesAccount">
-
-
-
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/checkGender">
     </androidx.appcompat.widget.AppCompatButton>
 
     <TextView
-
         android:id="@+id/parentChild"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/parentChild"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="@dimen/margin_sign"
         app:layout_constraintTop_toBottomOf="@id/confirmPw"
-        android:layout_marginTop="@dimen/button_distance"
-        />
+        android:layout_marginTop="@dimen/button_distance"/>
+
     <RadioGroup
         android:id="@+id/parentOrChild"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        android:orientation = "horizontal"
+        android:orientation="horizontal"
         android:layout_marginStart="@dimen/margin_sign"
         app:layout_constraintTop_toBottomOf="@id/parentChild">
+
         <RadioButton
             android:id="@+id/isParent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/parent"
-
-            />
+            android:text="@string/parent"/>
 
         <RadioButton
             android:id="@+id/isChild"
@@ -149,8 +118,7 @@
             android:text="@string/child"
             android:layout_marginStart="50sp"
             app:layout_constraintTop_toTopOf="@id/isParent"
-            app:layout_constraintStart_toEndOf="@id/isParent"
-            />
+            app:layout_constraintStart_toEndOf="@id/isParent"/>
     </RadioGroup>
 
     <TextView
@@ -158,86 +126,62 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/gender"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/radio_button_distance"
         android:layout_marginStart="@dimen/margin_sign"
-        app:layout_constraintTop_toBottomOf="@id/parentOrChild"
-        />
+        app:layout_constraintTop_toBottomOf="@id/parentOrChild"/>
 
     <RadioGroup
         android:id="@+id/checkGender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/radio_button_distance"
         android:layout_marginStart="@dimen/margin_sign"
         android:layout_marginEnd="@dimen/margin_sign"
         app:layout_constraintTop_toBottomOf="@id/gender"
-        android:orientation = "horizontal"
-        >
+        android:orientation = "horizontal">
         <RadioButton
             android:id="@+id/isMale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/male"
-            android:layout_weight = "1"
-            />
+            android:layout_weight="1"/>
         <RadioButton
             android:id="@+id/isOther"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/other"
-
-            android:layout_weight = "1" />
+            android:layout_weight="1"/>
         <RadioButton
             android:id="@+id/isFemale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/female"
-            android:layout_weight = "1"
-            />
+            android:layout_weight="1"/>
     </RadioGroup>
-
-
 
     <TextView
         android:id="@+id/yesAccount"
-        android:layout_width="227dp"
-        android:layout_height="21dp"
-
-        android:layout_alignParentStart="true"
-
-        android:layout_alignParentTop="true"
-
-        android:layout_marginBottom="72dp"
-        android:gravity="top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
         android:text="@string/yesAccount"
-
         android:textAppearance="@style/smallText"
         app:layout_constraintBottom_toBottomOf="parent"
-
         app:layout_constraintEnd_toStartOf="@+id/logInLink"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent" />
-
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
         android:id="@+id/logInLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="68dp"
-        android:gravity="top"
-        android:paddingStart="10sp"
+        android:layout_marginBottom="25dp"
+        android:paddingStart="10dp"
         android:text="@string/login"
         android:textAppearance="@style/signUpText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/yesAccount" />
-
-
-
-
-
+        app:layout_constraintStart_toEndOf="@+id/yesAccount"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

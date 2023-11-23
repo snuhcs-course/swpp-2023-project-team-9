@@ -12,16 +12,16 @@
     <string name="fullName">Full name</string>
     <string name="id">ID</string>
     <string name="pw">Password</string>
-    <string name="confirmPw">Confirm your Password</string>
+    <string name="confirmPw">Confirm your password</string>
     <string name="login">Login</string>
     <string name="signUp">Sign Up</string>
     <string name="noAccount">Don\'t have an account?</string>
     <string name="yesAccount">Already have an account?</string>
-    <string name="parent">parent</string>
-    <string name="child">child</string>
-    <string name="male">male</string>
-    <string name="female">female</string>
-    <string name="other">other</string>
-    <string name="parentChild">parent/child</string>
+    <string name="parentChild">Parent/Child</string>
+    <string name="parent">Parent</string>
+    <string name="child">Child</string>
     <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="other">Other</string>
 </resources>
