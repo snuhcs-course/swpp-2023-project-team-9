@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     intent.putExtra(IntentExtraKey.DRAWING_ID, id);
                     intent.putExtra(IntentExtraKey.HOST_CODE, true);
                     startActivityForResult(intent, REQUEST_CODE);
+                    alertDialog.dismiss();
                 }
 
                 @Override
@@ -160,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         joinDrawingButton.setOnClickListener(view -> {
             showInvitationCodeInputDialog();
+            alertDialog.dismiss();
         });
 
         cancelButton.setOnClickListener(view -> {
