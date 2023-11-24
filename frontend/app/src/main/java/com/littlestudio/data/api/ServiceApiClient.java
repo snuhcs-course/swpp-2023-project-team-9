@@ -10,8 +10,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 
 public class ServiceApiClient {
+
     private static volatile ServiceApi instance;
     private final static String BASE_URL = "http://ec2-3-35-208-114.ap-northeast-2.compute.amazonaws.com:3000";
+
 
     public static ServiceApi getInstance() {
         if (instance == null) {

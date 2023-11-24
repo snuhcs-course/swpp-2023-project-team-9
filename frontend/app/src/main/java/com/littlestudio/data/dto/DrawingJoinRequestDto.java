@@ -6,6 +6,9 @@ public class DrawingJoinRequestDto {
         this.invitation_code = invitationCode;
     }
 
+    public DrawingJoinRequestDto() {
+    }
+
     public int user_id;
     public String invitation_code;
 }
