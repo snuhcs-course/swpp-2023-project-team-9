@@ -26,8 +26,9 @@ class Drawing(models.Model):
     invitation_code = models.CharField(max_length=255, null=True, blank=True)
 
     image_url = models.TextField(null=True, blank=True)
-    ai_image_url = models.TextField(null=True, blank=True)
-    gif_url = models.TextField(null=True, blank=True)
+    gif_dab_url = models.TextField(null=True, blank=True)
+    gif_jumping_url = models.TextField(null=True, blank=True)
+    gif_wave_hello_url = models.TextField(null=True, blank=True)
     type = models.CharField(choices=TypeChoices.choices, max_length=255, default=TypeChoices.NOT_STARTED)
 
     voice_id = models.OneToOneField(Voice, on_delete=models.CASCADE, db_column="voice_id", null=True, blank=True)
