@@ -1,6 +1,5 @@
 package com.littlestudio.ui.drawing;
 
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -16,6 +15,7 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.littlestudio.ui.JoinAdapter;
 import com.littlestudio.R;
@@ -119,25 +119,15 @@ public class WaitingRoomActivity extends AppCompatActivity {
         this.invitationCode = getIntent().getStringExtra(IntentExtraKey.INVITATION_CODE);
         this.isHost = getIntent().getBooleanExtra(IntentExtraKey.HOST_CODE, false);
         this.participants = getIntent().getStringArrayListExtra(IntentExtraKey.PARTICIPANTS);
-        this.joinAdapter = new JoinAdapter(getApplicationContext(), participants);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager((Context) this);
-        this.waitRecycleView.setLayoutManager(linearLayoutManager);
-        this.waitRecycleView.setAdapter(joinAdapter);
-        connectToChannel(invitationCode);
-        if (!isHost) {
-            Button button = findViewById(R.id.start_drawing);
-            Toast.makeText(WaitingRoomActivity.this, "Only Host can start drawing", Toast.LENGTH_SHORT).show();
-            button.setVisibility(View.INVISIBLE);
-        }
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        this.waitRecycleView = findViewById(R.id.wait_recycler_view);
-        waitRecycleView.addItemDecoration(new RecyclerViewDecoration(20));
-        this.invitationCode = getIntent().getStringExtra(IntentExtraKey.INVITATION_CODE);
-        this.isHost = getIntent().getBooleanExtra(IntentExtraKey.HOST_CODE, false);
-        this.participants = getIntent().getStringArrayListExtra(IntentExtraKey.PARTICIPANTS);
+
+//        // test
+//        this.isHost = getIntent().getBooleanExtra(IntentExtraKey.HOST_CODE, false);
+//        this.participants = new ArrayList<>();
+//        participants.add("Gunhee Cho");
+//        participants.add("Jonghyun Choe");
+//        participants.add("Seongho Eom");
+//        participants.add("Woojun Park");
+//        participants.add("Yenah Cho");
 
         this.joinAdapter = new JoinAdapter(getApplicationContext(), participants);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager((Context) this);
@@ -225,4 +215,19 @@ public class WaitingRoomActivity extends AppCompatActivity {
     }
 }
 
-
+//class RecyclerViewDecoration extends RecyclerView.ItemDecoration {
+//
+//    private final int divHeight;
+//
+//    public RecyclerViewDecoration(int divHeight)
+//    {
+//        this.divHeight = divHeight;
+//    }
+//
+//    @Override
+//    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
+//    {
+//        super.getItemOffsets(outRect, view, parent, state);
+//        outRect.top = divHeight;
+//    }
+//}
