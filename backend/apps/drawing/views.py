@@ -107,7 +107,7 @@ class DrawingSubmitAPIView(views.APIView):
             'Accept': 'application/json'
         }
         data = {'file': file}
-        res = requests.post('http://147.46.15.75:32111', json=data, headers=headers, timeout=15)
+        res = requests.post('http://147.46.15.75:30001', json=data, headers=headers, timeout=120)
         json_response = res.json()
         dab_url = json_response['dab']
         jumping_url = json_response['jumping']

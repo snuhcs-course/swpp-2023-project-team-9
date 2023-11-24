@@ -9,6 +9,8 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 
+import java.util.concurrent.TimeUnit;
+
 public class ServiceApiClient {
 
     private static volatile ServiceApi instance;
@@ -35,6 +37,9 @@ public class ServiceApiClient {
 
         OkHttpClient httpClient = new OkHttpClient.Builder()
                 .addInterceptor(logging)
+                .connectTimeout(2, TimeUnit.MINUTES)
+                .readTimeout(2, TimeUnit.MINUTES)
+                .writeTimeout(2, TimeUnit.MINUTES)
                 .build();
 
         return new Retrofit.Builder()
