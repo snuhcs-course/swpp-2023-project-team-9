@@ -49,7 +49,6 @@ class DrawingJoinAPIView(views.APIView):
             return Response({"detail": "Invalid invitation code"}, status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.get(id=user_id)
 
-        # Save to UserDrawing table (assuming you have a model named UserDrawing)
         user_drawing = DrawingUser(user_id=user, drawing_id=drawing)
         user_drawing.save()
 
@@ -101,13 +100,12 @@ class DrawingSubmitAPIView(views.APIView):
     def post(self, request, id):
         s3_client = settings.S3_CLIENT
         file = request.data.get('file')
-        # In Testing
         headers = {
             'Content-type': 'application/json',
             'Accept': 'application/json'
         }
         data = {'file': file}
-        res = requests.post('http://147.46.15.75:30001', json=data, headers=headers, timeout=120)
+        res = requests.post('http://147.46.15.75:30001', json=data, headers=headers, timeout=300)
         json_response = res.json()
         dab_url = json_response['dab']
         jumping_url = json_response['jumping']
@@ -163,8 +161,8 @@ class DrawingRealTimeAPIView(views.APIView):
         invitation_code = request.data.get('invitationCode')
         serialized_data = json.dumps({'stroke_data': stroke_data})
 
-        chunk_size = 5000  # Adjust this size
-        msg_id = str(id)  # Drawing ID
+        chunk_size = 5000 
+        msg_id = str(id) 
         stroke_id = str(uuid.uuid4())  # Unique ID for each stroke
 
         if len(serialized_data) <= chunk_size:

@@ -13,7 +13,6 @@ import com.littlestudio.data.dto.DrawingStartRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.dto.DrawingViewResponseDto;
 
-
 import okhttp3.ResponseBody;
 import retrofit2.Callback;
 

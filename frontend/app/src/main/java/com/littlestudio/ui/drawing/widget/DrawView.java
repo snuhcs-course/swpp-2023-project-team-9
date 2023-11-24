@@ -16,7 +16,6 @@ import androidx.core.graphics.ColorUtils;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
 import com.littlestudio.data.repository.DrawingRepository;
 
-
 import java.util.LinkedHashMap;
 
 import retrofit2.Call;

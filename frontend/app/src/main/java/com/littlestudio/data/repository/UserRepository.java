@@ -2,13 +2,10 @@ package com.littlestudio.data.repository;
 
 import androidx.annotation.Nullable;
 
-import com.littlestudio.data.datasource.DrawingDataSource;
 import com.littlestudio.data.datasource.UserLocalDataSource;
 import com.littlestudio.data.datasource.UserRemoteDataSource;
 import com.littlestudio.data.dto.UserCreateRequestDto;
 import com.littlestudio.data.dto.UserLoginRequestDto;
-import com.littlestudio.data.mapper.DrawingMapper;
-import com.littlestudio.data.mapper.UserMapper;
 import com.littlestudio.data.model.User;
 
 import retrofit2.Call;

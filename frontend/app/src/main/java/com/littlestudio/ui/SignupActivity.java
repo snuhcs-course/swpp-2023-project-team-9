@@ -12,12 +12,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.UserLocalDataSource;
 import com.littlestudio.data.datasource.UserRemoteDataSource;
 import com.littlestudio.data.dto.UserCreateRequestDto;
-import com.littlestudio.data.mapper.UserMapper;
 import com.littlestudio.data.repository.UserRepository;
 
 import retrofit2.Call;

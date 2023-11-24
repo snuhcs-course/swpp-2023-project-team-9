@@ -2,8 +2,6 @@ package com.littlestudio.ui.drawing.widget;
 
 import android.graphics.Path;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
