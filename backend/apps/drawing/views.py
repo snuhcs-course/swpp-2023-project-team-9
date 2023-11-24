@@ -48,21 +48,20 @@ class DrawingJoinAPIView(views.APIView):
         if not drawing:
             return Response({"detail": "Invalid invitation code"}, status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.get(id=user_id)
-        username = user.username
 
         # Save to UserDrawing table (assuming you have a model named UserDrawing)
         user_drawing = DrawingUser(user_id=user, drawing_id=drawing)
         user_drawing.save()
 
         pusher_client = settings.PUSHER_CLIENT
-        pusher_client.trigger(invitation_code, 'participant', {'username': username, 'type': "IN"})
+        pusher_client.trigger(invitation_code, 'participant', {'full_name': user.full_name, 'type': "IN"})
 
         cursor = connection.cursor()
         draw_id = drawing.id
 
         with transaction.atomic():
             cursor.execute(
-                'SELECT username from drawing_drawinguser, user_user where drawing_drawinguser.drawing_id = %s and drawing_drawinguser.user_id = user_user.id',
+                'SELECT full_name from drawing_drawinguser, user_user where drawing_drawinguser.drawing_id = %s and drawing_drawinguser.user_id = user_user.id',
                 [draw_id])
             data = cursor.fetchall()
 
