@@ -2,6 +2,7 @@ import base64
 import hashlib
 import io
 
+import requests
 from django.db import connection, transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import status, views
@@ -47,21 +48,19 @@ class DrawingJoinAPIView(views.APIView):
         if not drawing:
             return Response({"detail": "Invalid invitation code"}, status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.get(id=user_id)
-        username = user.username
 
-        # Save to UserDrawing table (assuming you have a model named UserDrawing)
         user_drawing = DrawingUser(user_id=user, drawing_id=drawing)
         user_drawing.save()
 
         pusher_client = settings.PUSHER_CLIENT
-        pusher_client.trigger(invitation_code, 'participant', {'username': username, 'type': "IN"})
+        pusher_client.trigger(invitation_code, 'participant', {'full_name': user.full_name, 'type': "IN"})
 
         cursor = connection.cursor()
         draw_id = drawing.id
 
         with transaction.atomic():
             cursor.execute(
-                'SELECT username from drawing_drawinguser, user_user where drawing_drawinguser.drawing_id = %s and drawing_drawinguser.user_id = user_user.id',
+                'SELECT full_name from drawing_drawinguser, user_user where drawing_drawinguser.drawing_id = %s and drawing_drawinguser.user_id = user_user.id',
                 [draw_id])
             data = cursor.fetchall()
 
@@ -101,6 +100,18 @@ class DrawingSubmitAPIView(views.APIView):
     def post(self, request, id):
         s3_client = settings.S3_CLIENT
         file = request.data.get('file')
+        headers = {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+        }
+        data = {'file': file}
+        res = requests.post('http://147.46.15.75:30001', json=data, headers=headers, timeout=300)
+        json_response = res.json()
+        dab_url = json_response['dab']
+        jumping_url = json_response['jumping']
+        wave_hello_url = json_response['wave_hello']
+
+
         drawing_id = request.data.get('host_id')
         title = request.data.get('title')
         decode_file = io.BytesIO()
@@ -111,8 +122,10 @@ class DrawingSubmitAPIView(views.APIView):
         s3_client.upload_fileobj(decode_file, 'little-studio', object_name)
         image_url = f"https://little-studio.s3.amazonaws.com/{object_name}"
         Drawing.objects.filter(id=drawing_id).update(title=title, description=request.data.get('description'),
-                                                     image_url=image_url, type="COMPLETED")
-        invitation_code = Drawing.objects.get(id=drawing_id).invitation_code;
+                                                     image_url=image_url, type="COMPLETED",
+                                                     gif_dab_url=dab_url, gif_jumping_url=jumping_url,
+                                                     gif_wave_hello_url=wave_hello_url)
+        invitation_code = Drawing.objects.get(id=drawing_id).invitation_code
         drawing_users = DrawingUser.objects.filter(drawing_id=id)
         for first_user in drawing_users:
             for second_user in drawing_users:
@@ -148,8 +161,8 @@ class DrawingRealTimeAPIView(views.APIView):
         invitation_code = request.data.get('invitationCode')
         serialized_data = json.dumps({'stroke_data': stroke_data})
 
-        chunk_size = 5000  # Adjust this size
-        msg_id = str(id)  # Drawing ID
+        chunk_size = 5000 
+        msg_id = str(id) 
         stroke_id = str(uuid.uuid4())  # Unique ID for each stroke
 
         if len(serialized_data) <= chunk_size:

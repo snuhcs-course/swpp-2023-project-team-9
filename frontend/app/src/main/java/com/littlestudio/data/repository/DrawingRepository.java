@@ -1,13 +1,12 @@
 package com.littlestudio.data.repository;
 
 import android.util.Log;
-import android.util.Printer;
 
 import com.littlestudio.data.datasource.DrawingDataSource;
 import com.littlestudio.data.dto.DrawingCreateRequestDto;
 import com.littlestudio.data.dto.DrawingCreateResponseDto;
-import com.littlestudio.data.dto.DrawingJoinResponseDto;
 import com.littlestudio.data.dto.DrawingJoinRequestDto;
+import com.littlestudio.data.dto.DrawingJoinResponseDto;
 import com.littlestudio.data.dto.DrawingListResponseDto;
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
 import com.littlestudio.data.dto.DrawingStartRequestDto;
@@ -16,11 +15,9 @@ import com.littlestudio.data.dto.DrawingViewResponseDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.model.Drawing;
 
-
 import java.io.IOException;
 import java.util.List;
 
-import okhttp3.Request;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;

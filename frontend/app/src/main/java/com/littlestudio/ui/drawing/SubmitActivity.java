@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.littlestudio.ui.ImageActivity;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
@@ -25,11 +24,11 @@ import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.model.Drawing;
 import com.littlestudio.data.repository.DrawingRepository;
+import com.littlestudio.ui.ImageActivity;
 import com.littlestudio.ui.constant.IntentExtraKey;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
-import java.util.logging.Logger;
 
 import retrofit2.Call;
 import retrofit2.Callback;

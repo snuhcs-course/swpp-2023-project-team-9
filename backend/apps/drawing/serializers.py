@@ -16,7 +16,7 @@ class DrawingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Drawing
         fields = (
-            'id', 'title', 'description', 'image_url', 'ai_image_url', 'gif_url', 'type', 'participants', 'created_at',
+            'id', 'title', 'description', 'image_url', 'gif_dab_url', 'gif_jumping_url', 'gif_wave_hello_url', 'type', 'participants', 'created_at',
             'updated_at')
 
 

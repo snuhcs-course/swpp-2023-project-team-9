@@ -1,7 +1,5 @@
 package com.littlestudio.data.dto;
 
-import java.io.File;
-
 public class DrawingSubmitRequestDto {
     public String file;
     public String title;
