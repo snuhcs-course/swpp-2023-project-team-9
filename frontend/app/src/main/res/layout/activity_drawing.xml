@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_sketchbook" />
+        app:layout_constraintTop_toBottomOf="@id/image_sketchbook"/>
 
     <ImageView
         android:id="@+id/image_sketchbook"
@@ -25,7 +25,7 @@
         android:foreground="?selectableItemBackgroundBorderless"
         android:src="@drawable/sketchbook"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
         android:id="@+id/image_close_drawing"
@@ -35,10 +35,10 @@
         android:background="@color/color_white"
         android:foreground="?selectableItemBackgroundBorderless"
         android:padding="12dp"
-        android:src="@drawable/ic_close_black_24dp"
+        android:src="@drawable/ic_close"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/icon_color" />
+        app:tint="@color/icon_color"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/draw_tools"
@@ -62,7 +62,7 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/icon_color_selector" />
+            app:tint="@color/icon_color_selector"/>
 
         <ImageView
             android:id="@+id/image_draw_width"
@@ -85,7 +85,7 @@
             android:src="@drawable/ic_color_lens_black_24dp"
             app:layout_constraintStart_toEndOf="@id/image_draw_width"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/icon_color_selector" />
+            app:tint="@color/icon_color_selector"/>
 
         <SeekBar
             android:id="@+id/seekBar_width"
@@ -96,14 +96,14 @@
             android:progress="8"
             app:layout_constraintEnd_toStartOf="@+id/circle_view_width"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_draw_eraser" />
+            app:layout_constraintTop_toBottomOf="@id/image_draw_eraser"/>
 
         <com.littlestudio.ui.drawing.widget.CircleView
             android:id="@+id/circle_view_width"
             android:layout_width="56dp"
             android:layout_height="56dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_draw_eraser" />
+            app:layout_constraintTop_toBottomOf="@id/image_draw_eraser"/>
 
         <SeekBar
             android:id="@+id/seekBar_opacity"
@@ -114,14 +114,14 @@
             android:progress="100"
             app:layout_constraintEnd_toStartOf="@+id/circle_view_opacity"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_draw_eraser" />
+            app:layout_constraintTop_toBottomOf="@id/image_draw_eraser"/>
 
         <com.littlestudio.ui.drawing.widget.CircleView
             android:id="@+id/circle_view_opacity"
             android:layout_width="56dp"
             android:layout_height="56dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_draw_eraser" />
+            app:layout_constraintTop_toBottomOf="@id/image_draw_eraser"/>
 
         <include
             android:id="@+id/draw_color_palette"
@@ -130,21 +130,21 @@
             android:layout_height="56dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_draw_eraser" />
+            app:layout_constraintTop_toBottomOf="@id/image_draw_eraser"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/finish_btn"
-        android:layout_width="150dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="90dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Finish"
+        android:textSize="28sp"
         android:background="@drawable/rounded_btn"
-        android:paddingVertical="15dp"
-        android:text="FINISH"
+        android:paddingHorizontal="30dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="90dp"
         app:layout_constraintBottom_toBottomOf="@id/image_sketchbook"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

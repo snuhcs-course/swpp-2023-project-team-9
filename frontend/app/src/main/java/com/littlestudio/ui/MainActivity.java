@@ -2,16 +2,22 @@ package com.littlestudio.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,9 +67,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.gallery);
 
-        FloatingActionButton buttonView = findViewById(R.id.fab_add_draw);
-        buttonView.setOnClickListener((view) -> {
+//        FloatingActionButton buttonView = findViewById(R.id.fab_add_draw);
+//        buttonView.setOnClickListener((view) -> {
+//            showStartDrawingModal();
+//        });
+
+        BottomNavigationView navigation = findViewById(R.id.bottomNavigationView);
+        Menu menu = navigation.getMenu();
+        MenuItem drawItem = menu.findItem(R.id.draw);
+        drawItem.setOnMenuItemClickListener((item) -> {
             showStartDrawingModal();
+            return true;
         });
 
         drawingRepository = DrawingRepository.getInstance(
@@ -110,6 +124,93 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 .commit();
     }
 
+    private void showStartDrawingModal() {
+        View customView = getLayoutInflater().inflate(R.layout.modal_start_drawing, null);
+
+        AppCompatButton createDrawingButton = customView.findViewById(R.id.create_drawing_btn);
+        AppCompatButton joinDrawingButton = customView.findViewById(R.id.join_drawing_btn);
+        AppCompatButton cancelButton = customView.findViewById(R.id.cancel_start_drawing_button);
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setView(customView)
+                //.setNegativeButton("Cancel", (dialog, _which) -> dialog.dismiss())
+                .show();
+
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        createDrawingButton.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, WaitingRoomActivity.class);
+            drawingRepository.createDrawing(new DrawingCreateRequestDto(user.id), new Callback<DrawingCreateResponseDto>() {
+                @Override
+                public void onResponse(Call<DrawingCreateResponseDto> call, Response<DrawingCreateResponseDto> response) {
+                    String invitationCode = response.body().invitation_code;
+                    int id = response.body().id;
+                    intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
+                    intent.putExtra(IntentExtraKey.DRAWING_ID, id);
+                    intent.putExtra(IntentExtraKey.HOST_CODE, true);
+                    startActivityForResult(intent, REQUEST_CODE);
+                }
+
+                @Override
+                public void onFailure(Call<DrawingCreateResponseDto> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        joinDrawingButton.setOnClickListener(view -> {
+            showInvitationCodeInputDialog();
+        });
+
+        cancelButton.setOnClickListener(view -> {
+            alertDialog.dismiss();
+        });
+    }
+
+    private void showInvitationCodeInputDialog() {
+        View customView = getLayoutInflater().inflate(R.layout.modal_input_invitation_code, null);
+
+        EditText invitationCodeInput = customView.findViewById(R.id.editText_invitation_code);
+        AppCompatButton cancelButton = customView.findViewById(R.id.cancel_join_drawing_button);
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setView(customView)
+                .create();
+
+        alertDialog.show();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        Button joinButton = customView.findViewById(R.id.join_btn);
+        joinButton.setOnClickListener(view -> {
+            String invitationCode = invitationCodeInput.getText().toString();
+            if (invitationCode.isEmpty()) {
+                Toast.makeText(MainActivity.this, "Please enter an invitation code.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Intent intent = new Intent(this, WaitingRoomActivity.class);
+            drawingRepository.joinDrawing(new DrawingJoinRequestDto(user.id, invitationCode), new Callback() {
+                @Override
+                public void onResponse(Call call, Response response) {
+                    intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
+                    intent.putExtra(IntentExtraKey.HOST_CODE, false);
+                    startActivityForResult(intent, REQUEST_CODE);
+                    alertDialog.dismiss();
+                }
+
+                @Override
+                public void onFailure(Call call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "Invalid Invitation Code", Toast.LENGTH_SHORT).show();
+                    Log.e("why error?", t.toString());
+                }
+            });
+        });
+
+        cancelButton.setOnClickListener(view -> {
+            alertDialog.dismiss();
+        });
+    }
+    /*
     private void showStartDrawingModal() {
         final List<String> startDrawingOptions = new ArrayList<String>() {{
             add(StartDrawingOptions.CREATE);
@@ -195,5 +296,5 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             });
         });
     }
+     */
 }
-

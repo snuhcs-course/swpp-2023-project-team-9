@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="button_distance">10sp</dimen>
-    <dimen name="radio_button_distance">5sp</dimen>
-    <dimen name="margin_login">60sp</dimen>
-    <dimen name="margin_sign">60sp</dimen>
+    <dimen name="button_distance">20dp</dimen>
+    <dimen name="radio_button_distance">5dp</dimen>
+    <dimen name="margin_login">60dp</dimen>
+    <dimen name="margin_sign">60dp</dimen>
 </resources>

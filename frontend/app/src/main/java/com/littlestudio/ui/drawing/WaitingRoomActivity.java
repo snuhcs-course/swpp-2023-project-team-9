@@ -16,12 +16,11 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.littlestudio.ui.JoinAdapter;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
+import com.littlestudio.data.dto.DrawingJoinRequestDto;
 import com.littlestudio.data.dto.DrawingStartRequestDto;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
@@ -67,7 +66,6 @@ public class WaitingRoomActivity extends AppCompatActivity {
     // TODO : make finish button and out.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         connectToPusher();
         setContentView(R.layout.activity_waiting_room);
@@ -112,7 +110,25 @@ public class WaitingRoomActivity extends AppCompatActivity {
             });
 
         });
-
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        this.waitRecycleView = findViewById(R.id.wait_recycler_view);
+        //waitRecycleView.addItemDecoration(new RecyclerViewDecoration(20));
+        this.invitationCode = getIntent().getStringExtra(IntentExtraKey.INVITATION_CODE);
+        this.isHost = getIntent().getBooleanExtra(IntentExtraKey.HOST_CODE, false);
+        this.participants = getIntent().getStringArrayListExtra(IntentExtraKey.PARTICIPANTS);
+        this.joinAdapter = new JoinAdapter(getApplicationContext(), participants);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager((Context) this);
+        this.waitRecycleView.setLayoutManager(linearLayoutManager);
+        this.waitRecycleView.setAdapter(joinAdapter);
+        connectToChannel(invitationCode);
+        if (!isHost) {
+            Button button = findViewById(R.id.start_drawing);
+            Toast.makeText(WaitingRoomActivity.this, "Only Host can start drawing", Toast.LENGTH_SHORT).show();
+            button.setVisibility(View.INVISIBLE);
+        }
     }
     @Override
     protected void onStart() {
@@ -207,23 +223,6 @@ public class WaitingRoomActivity extends AppCompatActivity {
             }
         });
     }
-
-
 }
 
-class RecyclerViewDecoration extends RecyclerView.ItemDecoration {
 
-    private final int divHeight;
-
-    public RecyclerViewDecoration(int divHeight)
-    {
-        this.divHeight = divHeight;
-    }
-
-    @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
-    {
-        super.getItemOffsets(outRect, view, parent, state);
-        outRect.top = divHeight;
-    }
-}

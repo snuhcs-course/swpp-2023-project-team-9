@@ -1,15 +1,20 @@
 package com.littlestudio.ui.gallery;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.littlestudio.ui.DrawAdapter;
 import com.littlestudio.R;
@@ -22,6 +27,7 @@ import com.littlestudio.data.model.Drawing;
 import com.littlestudio.data.model.User;
 import com.littlestudio.data.repository.DrawingRepository;
 import com.littlestudio.data.repository.UserRepository;
+import com.littlestudio.ui.constant.IntentExtraKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,9 +73,8 @@ public class GalleryFragment extends Fragment {
         adapter = new DrawAdapter(getContext(), new ArrayList<>());
 
         rcv = (RecyclerView) view.findViewById(R.id.recycler_view);
-        rcv.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        //rcv.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         rcv.setAdapter(adapter);
-
         return view;
     }
 

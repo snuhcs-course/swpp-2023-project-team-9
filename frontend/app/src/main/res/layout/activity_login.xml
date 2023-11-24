@@ -10,101 +10,82 @@
         android:id="@+id/littleStudio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:text="@string/title"
-        android:fontFamily = "@font/kgprimarywhimsy"
-        android:textSize ="73sp"
-        android:paddingTop = "160dp"
+        android:fontFamily="@font/kgprimarywhimsy"
+        android:textSize="73sp"
+        android:layout_marginTop="120dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/id"
-
-        android:layout_height="53dp"
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/margin_login"
-        android:layout_marginRight="@dimen/margin_login"
-        android:layout_marginTop="322dp"
+        android:layout_height="wrap_content"
+        android:paddingVertical="15dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginHorizontal="50dp"
         android:hint="@string/id"
         android:textAppearance="@style/infoText"
-        android:gravity="center_vertical"
         style="@style/Button"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
+        app:layout_constraintTop_toBottomOf="@id/littleStudio"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
     </androidx.appcompat.widget.AppCompatEditText>
+
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/pw"
-        android:layout_height="53dp"
-        android:layout_alignParentLeft="true"
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/margin_login"
-        android:layout_marginRight="@dimen/margin_login"
-        android:layout_alignParentTop="true"
-
+        android:layout_height="wrap_content"
+        android:paddingVertical="15dp"
+        android:layout_marginHorizontal="50dp"
         android:hint="@string/pw"
+        android:textAppearance="@style/infoText"
         android:inputType="textPassword"
-        android:gravity="center_vertical"
         style="@style/Button"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/id"
         android:layout_marginTop="40dp"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
     </androidx.appcompat.widget.AppCompatEditText>
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/loginBtn"
-
-        android:layout_height="53dp"
-        android:layout_alignParentLeft="true"
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/margin_login"
-        android:layout_marginRight="@dimen/margin_login"
-        android:layout_alignParentTop="true"
-
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
+        android:layout_marginHorizontal="50dp"
         android:text="@string/login"
         android:textAppearance="@style/loginText"
-        android:gravity="center_horizontal|center_vertical"
         style="@style/LogButton"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pw"
         android:layout_marginTop="50dp"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
     </androidx.appcompat.widget.AppCompatButton>
 
     <TextView
         android:id="@+id/noAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="25dp"
         android:text="@string/noAccount"
         android:textAppearance="@style/smallText"
-        android:gravity="top"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintEnd_toStartOf="@id/signUpLink"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/signUpLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="25dp"
+        android:paddingStart="10dp"
         android:text="@string/signUp"
         android:textAppearance="@style/signUpText"
-        android:gravity="top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/noAccount"
-        app:layout_constraintBottom_toBottomOf="parent"
-
-        android:paddingLeft = "10sp"
-
-
-        />
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
