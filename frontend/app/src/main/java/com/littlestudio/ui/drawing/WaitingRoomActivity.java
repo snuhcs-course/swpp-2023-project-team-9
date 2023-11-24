@@ -177,15 +177,15 @@ public class WaitingRoomActivity extends AppCompatActivity {
             public void onEvent(PusherEvent event) {
                 try {
                     JSONObject data = new JSONObject(event.getData());
-                    if (data.has("username") && data.has("type")) {
-                        String username = data.getString("username");
+                    if (data.has("full_name") && data.has("type")) {
+                        String full_name = data.getString("full_name");
                         String type = data.getString("type");
                         if (type.equals("IN")) {
                             runOnUiThread(
                                     new Runnable() {
                                         @Override
                                         public void run() {
-                                            participants.add(username);
+                                            participants.add(full_name);
                                             joinAdapter.setParticipants(participants);
                                             waitRecycleView.setAdapter(joinAdapter);
                                             joinAdapter.notifyDataSetChanged();

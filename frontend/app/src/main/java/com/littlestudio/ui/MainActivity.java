@@ -145,6 +145,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 public void onResponse(Call<DrawingCreateResponseDto> call, Response<DrawingCreateResponseDto> response) {
                     String invitationCode = response.body().invitation_code;
                     int id = response.body().id;
+                    ArrayList<String> participants = new ArrayList<>();
+                    participants.add(user.full_name);
+                    intent.putStringArrayListExtra(IntentExtraKey.PARTICIPANTS, participants);
                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
                     intent.putExtra(IntentExtraKey.DRAWING_ID, id);
                     intent.putExtra(IntentExtraKey.HOST_CODE, true);
@@ -191,9 +194,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }
 
             Intent intent = new Intent(this, WaitingRoomActivity.class);
-            drawingRepository.joinDrawing(new DrawingJoinRequestDto(user.id, invitationCode), new Callback() {
+            drawingRepository.joinDrawing(new DrawingJoinRequestDto(user.id, invitationCode), new Callback<DrawingJoinResponseDto>() {
                 @Override
-                public void onResponse(Call call, Response response) {
+                public void onResponse(Call<DrawingJoinResponseDto> call, Response<DrawingJoinResponseDto> response) {
+                    ArrayList<String> participants = response.body().participants;
+                    Log.d("participant in MainActivity", participants.toString());
+                    intent.putExtra(IntentExtraKey.PARTICIPANTS, participants);
                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
                     intent.putExtra(IntentExtraKey.HOST_CODE, false);
                     startActivityForResult(intent, REQUEST_CODE);
