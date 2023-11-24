@@ -53,9 +53,9 @@ public class SignupActivity extends AppCompatActivity {
 
         AppCompatButton signupBtn = (AppCompatButton) findViewById(R.id.signupBtn);
 
-        userRepository = new UserRepository(
-                new UserRemoteDataSource(),
-                new UserLocalDataSource(getApplicationContext())
+        userRepository = UserRepository.getInstance(
+                UserRemoteDataSource.getInstance(),
+                UserLocalDataSource.getInstance(getApplicationContext())
         );
         userRadioInput();
         signupBtn.setOnClickListener(new View.OnClickListener() {

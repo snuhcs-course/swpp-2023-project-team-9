@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: animated-drawings-deployment
+  labels:
+    app: little-studio #n201432420
+spec:
+
+  replicas: 1
+  selector:
+    matchLabels:
+      app: little-studio #n201432420
+  template:
+    metadata:
+      labels:
+        app: little-studio #n201432420
+    spec:
+      containers:
+        - name: api-server
+          image: registry.ferrari.snucse.org:30443/little-studio/server-run:3.0
+          command: [ "/bin/bash", "-c", "--" ]
+          args: [ "while true; do sleep 30; done;" ]
+          ports:
+            - containerPort: 5000
+              name: http
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 16
+              memory: "16Gi"
+              nvidia.com/gpu: 0
+        - name: torchserve
+          image: registry.ferrari.snucse.org:30443/little-studio/torch_serve:latest
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 8
+              memory: "32Gi"
+              nvidia.com/gpu: 1
+      imagePullSecrets:
+        - name: regcred

@@ -24,9 +24,9 @@ public class MypageFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userRepository = new UserRepository(
-                new UserRemoteDataSource(),
-                new UserLocalDataSource(getContext())
+        userRepository = UserRepository.getInstance(
+                UserRemoteDataSource.getInstance(),
+                UserLocalDataSource.getInstance(getContext())
         );
     }
 

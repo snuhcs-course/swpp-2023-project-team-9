@@ -65,7 +65,10 @@ public class DrawingActivity extends AppCompatActivity {
         ObjectMapper mapper = new ObjectMapper();
         FamilyMapper familyMapper = new FamilyMapper(mapper);
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-        drawingRepository = new DrawingRepository(new DrawingRemoteDataSource(), new DrawingMapper(mapper, new FamilyMapper(mapper)));
+        drawingRepository = DrawingRepository.getInstance(
+                DrawingRemoteDataSource.getInstance(),
+                new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()))
+        );
         ((DrawView) findViewById(R.id.draw_view)).setDrawingRepository(drawingRepository);
 
         findViewById(R.id.finish_btn).setOnClickListener(v -> {

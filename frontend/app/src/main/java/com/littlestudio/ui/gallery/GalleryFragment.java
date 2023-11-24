@@ -50,13 +50,13 @@ public class GalleryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        drawingRepository = new DrawingRepository(
-                new DrawingRemoteDataSource(),
+        drawingRepository = DrawingRepository.getInstance(
+                DrawingRemoteDataSource.getInstance(),
                 new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()))
         );
-        user = new UserRepository(
-                new UserRemoteDataSource(),
-                new UserLocalDataSource(getContext())
+        user = UserRepository.getInstance(
+                UserRemoteDataSource.getInstance(),
+                UserLocalDataSource.getInstance(getContext())
         ).getUser();
     }
 

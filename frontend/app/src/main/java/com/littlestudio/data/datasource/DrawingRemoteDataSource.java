@@ -1,5 +1,7 @@
 package com.littlestudio.data.datasource;
 
+import android.util.Log;
+
 import com.littlestudio.data.api.ServiceApi;
 import com.littlestudio.data.api.ServiceApiClient;
 import com.littlestudio.data.dto.DrawingCreateRequestDto;
@@ -11,13 +13,27 @@ import com.littlestudio.data.dto.DrawingStartRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.dto.DrawingViewResponseDto;
 
+
+import okhttp3.ResponseBody;
 import retrofit2.Callback;
 
 public class DrawingRemoteDataSource implements DrawingDataSource {
+    private static volatile DrawingRemoteDataSource instance;
     private final ServiceApi serviceApi;
 
-    public DrawingRemoteDataSource() {
-        this.serviceApi = ServiceApiClient.getServiceApiInstance();
+    public static DrawingRemoteDataSource getInstance(){
+        if (instance == null){
+            synchronized (DrawingRemoteDataSource.class) {
+                if (instance == null) {
+                    instance = new DrawingRemoteDataSource();
+                }
+            }
+        }
+        return instance;
+    }
+
+    private DrawingRemoteDataSource() {
+        this.serviceApi = ServiceApiClient.getInstance();
     }
 
     @Override
@@ -51,11 +67,12 @@ public class DrawingRemoteDataSource implements DrawingDataSource {
     }
 
     @Override
-    public void joinDrawing(DrawingJoinRequestDto request, Callback callback) {
+    public void joinDrawing(DrawingJoinRequestDto request, Callback<ResponseBody> callback) {
         try {
             serviceApi.joinDrawing(request).enqueue(callback);
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d("drawingJoin", callback.toString());
             callback.onFailure(null, e);
         }
     }

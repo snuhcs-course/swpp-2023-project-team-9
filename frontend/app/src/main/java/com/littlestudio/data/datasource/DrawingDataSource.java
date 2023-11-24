@@ -9,7 +9,7 @@ import com.littlestudio.data.dto.DrawingStartRequestDto;
 import com.littlestudio.data.dto.DrawingSubmitRequestDto;
 import com.littlestudio.data.dto.DrawingViewResponseDto;
 
-import okhttp3.Request;
+import okhttp3.ResponseBody;
 import retrofit2.Callback;
 
 public interface DrawingDataSource {
@@ -20,9 +20,9 @@ public interface DrawingDataSource {
 
     void createDrawing(DrawingCreateRequestDto request, Callback<DrawingCreateResponseDto> callback);
 
-    void joinDrawing(DrawingJoinRequestDto request, Callback callback);
+    void joinDrawing(DrawingJoinRequestDto request, Callback<ResponseBody> callback);
 
-    void submitDrawing(DrawingSubmitRequestDto request, Callback<DrawingViewResponseDto> callback);
+    void submitDrawing(DrawingSubmitRequestDto request, Callback callback);
 
     void realTimeDrawing(DrawingRealTimeRequestDto request, Callback callback);
     // TODO define more drawing methods
