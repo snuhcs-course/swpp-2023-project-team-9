@@ -43,31 +43,38 @@
         android:gravity="center">
 
         <ImageView
-            android:id="@+id/original"
+            android:id="@+id/original_image_view"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/black_border_thin"/>
+            android:foreground="@drawable/black_border_thin"
+            android:scaleType="fitCenter"/>
 
         <ImageView
-            android:id="@+id/dance1"
+            android:id="@+id/dab_image_view"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/black_border_thin"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginLeft="20dp"
+            android:scaleType="fitCenter"
+            android:tag="dab_image_url"/>
 
         <ImageView
-            android:id="@+id/dance2"
+            android:id="@+id/jumping_image_view"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/black_border_thin"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginLeft="20dp"
+            android:scaleType="fitCenter"
+            android:tag="jumping_image_url"/>
 
         <ImageView
-            android:id="@+id/dance3"
+            android:id="@+id/wave_hello_image_view"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/black_border_thin"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginLeft="20dp"
+            android:scaleType="fitCenter"
+            android:tag="wave_hello_image_url"/>
     </LinearLayout>
 
     <LinearLayout
@@ -129,52 +136,51 @@
         android:layout_marginBottom="10dp"
         android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/gallery_detail_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="8dp"
-        android:text="Title"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/linear_layout"/>
+        <TextView
+            android:id="@+id/gallery_detail_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="8dp"
+            android:text="Title"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/linear_layout"/>
 
-    <TextView
-        android:id="@+id/gallery_detail_created_on"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="8dp"
-        android:text="Created On"
-        android:textSize="12sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gallery_detail_title"/>
+        <TextView
+            android:id="@+id/gallery_detail_created_on"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="8dp"
+            android:text="Created On"
+            android:textSize="12sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gallery_detail_title"/>
 
-    <TextView
-        android:id="@+id/gallery_detail_participants"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="8dp"
-        android:text="Drawn by"
-        android:textSize="12sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gallery_detail_created_on"/>
+        <TextView
+            android:id="@+id/gallery_detail_participants"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="8dp"
+            android:text="Drawn by"
+            android:textSize="12sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gallery_detail_created_on"/>
 
-    <TextView
-        android:id="@+id/gallery_detail_desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="56dp"
-        android:text="Description"
-        android:textSize="16sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gallery_detail_participants"/>
+        <TextView
+            android:id="@+id/gallery_detail_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="56dp"
+            android:text="Description"
+            android:textSize="16sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gallery_detail_participants"/>
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
