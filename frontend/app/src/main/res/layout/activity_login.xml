@@ -86,6 +86,9 @@
         android:textAppearance="@style/signUpText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/noAccount"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:clickable="true"
+        android:focusable="true"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
