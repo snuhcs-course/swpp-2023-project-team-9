@@ -51,6 +51,9 @@ public class DrawAdapter extends RecyclerView.Adapter<DrawAdapter.ViewHolder> {
                 Intent intent = new Intent(context, ImageActivity.class);
                 intent.putExtra(IntentExtraKey.DRAWING_ID, drawing.id);
                 intent.putExtra(IntentExtraKey.DRAWING_IMAGE_URL, drawing.image_url);
+                intent.putExtra(IntentExtraKey.DRAWING_DAB_URL, drawing.gif_dab_url);
+                intent.putExtra(IntentExtraKey.DRAWING_JUMPING_URL, drawing.gif_jumping_url);
+                intent.putExtra(IntentExtraKey.DRAWING_WAVE_HELLO_URL, drawing.gif_wave_hello_url);
                 context.startActivity(intent);
             }
         });
