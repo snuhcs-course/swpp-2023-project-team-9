@@ -61,20 +61,21 @@ public class LoginActivity extends AppCompatActivity {
 
         });
   */
-                TextView signUpLink = (TextView) findViewById(R.id.signUpLink);
-                signUpLink.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        {
-                            Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-                            startActivity(intent);
 
-                        }
-                    }
-
-                });
                 //Send user to Sign-up Page
             }
+        });
+        TextView signUpLink = (TextView) findViewById(R.id.signUpLink);
+        signUpLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                {
+                    Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+                    startActivity(intent);
+
+                }
+            }
+
         });
     }
 
