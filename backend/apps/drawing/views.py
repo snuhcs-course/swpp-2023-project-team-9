@@ -106,21 +106,19 @@ class DrawingSubmitAPIView(views.APIView):
         jumping_url = json_response['jumping']
         wave_hello_url = json_response['wave_hello']
 
-        # check if host_id is necessary 
-        drawing_id = request.data.get('host_id')
         title = request.data.get('title')
         decode_file = io.BytesIO()
         decode_file.write(base64.b64decode(file))
         decode_file.seek(0)
 
-        object_name = f"drawings/{drawing_id}/{hashlib.sha256(title.encode()).hexdigest()[:10]}"
+        object_name = f"drawings/{id}/{hashlib.sha256(title.encode()).hexdigest()[:10]}"
         s3_client.upload_fileobj(decode_file, 'little-studio', object_name)
         image_url = f"https://little-studio.s3.amazonaws.com/{object_name}"
-        Drawing.objects.filter(id=drawing_id).update(title=title, description=request.data.get('description'),
+        Drawing.objects.filter(id=id).update(title=title, description=request.data.get('description'),
                                                      image_url=image_url, type="COMPLETED",
                                                      gif_dab_url=dab_url, gif_jumping_url=jumping_url,
                                                      gif_wave_hello_url=wave_hello_url)
-        invitation_code = Drawing.objects.get(id=drawing_id).invitation_code
+        invitation_code = Drawing.objects.get(id=id).invitation_code
         drawing_users = DrawingUser.objects.filter(drawing_id=id)
         for first_user in drawing_users:
             for second_user in drawing_users:
@@ -130,9 +128,8 @@ class DrawingSubmitAPIView(views.APIView):
                     second_family_id = Family.objects.filter(user_id=second_user.user_id.id).first()
                     FamilyUser.objects.get_or_create(user_id=first_user.user_id, family_id=second_family_id)
 
-        # Modify previous data instead of saving new data
         drawing_data = {
-            "id": drawing_id,
+            "id": id,
             "title": title,
             "description": request.data.get('description'),
             "image_url": image_url,

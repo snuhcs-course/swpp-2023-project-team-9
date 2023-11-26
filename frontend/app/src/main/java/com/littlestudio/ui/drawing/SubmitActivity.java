@@ -84,11 +84,12 @@ public class SubmitActivity extends AppCompatActivity {
                             return;
                         }
                         setLoading(true);
-                        drawingRepository.submitDrawing(new DrawingSubmitRequestDto(
-                                bitmapToString(bitmap),
-                                title,
-                                description,
-                                drawingId
+                        drawingRepository.submitDrawing(
+                                drawingId,
+                                new DrawingSubmitRequestDto(
+                                    bitmapToString(bitmap),
+                                    title,
+                                    description
                         ), new Callback<Drawing>() {
                             @Override
                             public void onResponse(Call<Drawing> call, Response<Drawing> response) {

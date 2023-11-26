@@ -22,7 +22,7 @@ public interface DrawingDataSource {
 
     void joinDrawing(DrawingJoinRequestDto request, Callback<ResponseBody> callback);
 
-    void submitDrawing(DrawingSubmitRequestDto request, Callback callback);
+    void submitDrawing(int id, DrawingSubmitRequestDto request, Callback callback);
 
     void realTimeDrawing(DrawingRealTimeRequestDto request, Callback callback);
 

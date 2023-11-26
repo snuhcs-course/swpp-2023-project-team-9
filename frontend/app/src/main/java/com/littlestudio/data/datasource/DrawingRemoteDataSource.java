@@ -77,9 +77,9 @@ public class DrawingRemoteDataSource implements DrawingDataSource {
     }
 
     @Override
-    public void submitDrawing(DrawingSubmitRequestDto request, Callback callback) {
+    public void submitDrawing(int id, DrawingSubmitRequestDto request, Callback callback) {
         try {
-            serviceApi.submitDrawing(request).enqueue(callback);
+            serviceApi.submitDrawing(id, request).enqueue(callback);
         } catch (Exception e) {
             e.printStackTrace();
             callback.onFailure(null, e);
