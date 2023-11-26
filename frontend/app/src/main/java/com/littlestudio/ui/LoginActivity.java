@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -14,6 +15,7 @@ import com.littlestudio.data.datasource.UserLocalDataSource;
 import com.littlestudio.data.datasource.UserRemoteDataSource;
 import com.littlestudio.data.dto.UserLoginRequestDto;
 import com.littlestudio.data.repository.UserRepository;
+import com.littlestudio.ui.constant.ErrorMessage;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,25 +45,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 usernameToStr = username.getText().toString();
                 passwordToStr = password.getText().toString();
-                Log.d("IDPW sent", " ID: " + usernameToStr + " PW:" + passwordToStr);
                 userLogin(usernameToStr, passwordToStr);
-
-                Log.d("test", "working?");
-/*
-                if (username.getText().toString().equals("admin") && password.getText().toString().equals("admin")) {
-                    //correct
-                    Toast.makeText(LoginActivity.this, "LOGIN SUCCESSFUL", Toast.LENGTH_SHORT).show();
-                    //Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-                    //startActivity(intent);
-
-                } else
-                    //incorrect
-                    Toast.makeText(LoginActivity.this, "LOGIN FAILED !!!", Toast.LENGTH_SHORT).show();
-            }
-
-        });
-  */
-
                 //Send user to Sign-up Page
             }
         });
@@ -79,45 +63,18 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    /*
-    public void userLogin(String ID, String PW){
-        userRepository.userCreateRequest(
-                new UserLoginRequestDto(ID, PW), new Callback() {
-                    @Override
-                    public void onResponse(Call call, Response response) {
-                        Log.d("TETE success", response.body().toString());
-                    }
-                    @Override
-                    public void onFailure(Call call, Throwable t) {
-                        Log.e("TETE error", t.toString());
-                    }
-                }
-
-                //full_name username password gender type
-        );
-    }
-*/
     private void userLogin(String ID, String PW) {
         Intent intent = new Intent(this, MainActivity.class);
         userRepository.login(
                 new UserLoginRequestDto(ID, PW), new Callback() {
                     @Override
                     public void onResponse(Call call, Response response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            // Handle successful login here
-                            Log.d("TETE success", response.body().toString());
-                            startActivity(intent);
-                            // You might want to parse the response body and retrieve the login token or user details
-                        } else {
-                            // Handle unsuccessful login attempt here, maybe due to incorrect credentials or other issues
-                            Log.e("TETE error here", response.message() + " ID: " + ID + " PW:" + PW);
-                        }
+                        startActivity(intent);
                     }
 
                     @Override
                     public void onFailure(Call call, Throwable t) {
-                        // Handle failure to communicate with the server or other errors here
-                        Log.e("TETE failure", t.toString());
+                        Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
                     }
                 }
         );

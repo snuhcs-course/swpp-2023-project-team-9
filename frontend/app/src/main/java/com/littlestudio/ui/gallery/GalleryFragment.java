@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -21,6 +22,7 @@ import com.littlestudio.data.model.User;
 import com.littlestudio.data.repository.DrawingRepository;
 import com.littlestudio.data.repository.UserRepository;
 import com.littlestudio.ui.DrawAdapter;
+import com.littlestudio.ui.constant.ErrorMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +85,7 @@ public class GalleryFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<Drawing>> call, Throwable t) {
-                // 에러 시 처리
+                Toast.makeText(getContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
             }
         });
     }

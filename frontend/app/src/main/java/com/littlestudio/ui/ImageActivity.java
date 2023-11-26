@@ -3,6 +3,7 @@ package com.littlestudio.ui;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -16,6 +17,7 @@ import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.model.Drawing;
 import com.littlestudio.data.model.User;
 import com.littlestudio.data.repository.DrawingRepository;
+import com.littlestudio.ui.constant.ErrorMessage;
 import com.littlestudio.ui.constant.IntentExtraKey;
 
 import java.text.SimpleDateFormat;
@@ -104,7 +106,7 @@ public class ImageActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Drawing> call, Throwable t) {
-                //
+                Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
             }
         });
 

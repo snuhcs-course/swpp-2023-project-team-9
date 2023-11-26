@@ -9,12 +9,14 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.core.graphics.ColorUtils;
 
 import com.littlestudio.data.dto.DrawingRealTimeRequestDto;
 import com.littlestudio.data.repository.DrawingRepository;
+import com.littlestudio.ui.constant.ErrorMessage;
 
 import java.util.LinkedHashMap;
 
@@ -94,15 +96,6 @@ public class DrawView extends View {
         }
 
         mPaths.put(myPath, paintOptions);
-//        Log.d(myPath.toString(), paintOptions.toString());
-//        Log.d("TETE", "path: " + myPath.toString());
-//        Log.d("TETE", "path: " + myPath.actions.toString());
-//        Log.d("TETE", "path: " + myPath.actions.get(0).toString());
-//        Log.d("TETE", "path: " + myPath.getFillType());
-//        Log.d("TETE", "path: " + myPath.isEmpty());
-//        Log.d("TETE", "path: " + myPath.isConvex());
-//        Log.d("TETE", "path: " + myPath.isInverseFillType());
-//        Log.d("TETE", "mPaths: " + mPaths.toString());
         invalidate();
     }
 
@@ -202,12 +195,12 @@ public class DrawView extends View {
                 new Callback() {
                     @Override
                     public void onResponse(Call call, Response response) {
-                        Log.d("TETE success", response.body().toString());
+                        //
                     }
 
                     @Override
                     public void onFailure(Call call, Throwable t) {
-                        Log.e("TETE error", t.toString());
+                        Toast.makeText(getContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
                     }
                 });
         mPath = new MyPath();
