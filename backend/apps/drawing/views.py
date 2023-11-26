@@ -133,6 +133,9 @@ class DrawingSubmitAPIView(views.APIView):
             "title": title,
             "description": request.data.get('description'),
             "image_url": image_url,
+            "gif_dab_url": dab_url,
+            "gif_jumping_url": jumping_url,
+            "gif_wave_hello_url": wave_hello_url,
             "type": "COMPLETED"
         }
         pusher_client = settings.PUSHER_CLIENT
