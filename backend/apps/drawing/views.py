@@ -14,6 +14,7 @@ from ..family.models import Family, FamilyUser
 from .serializers import DrawingSerializer, DrawingCreateSerializer
 import json
 import uuid
+import time
 
 
 class DrawingAPIView(views.APIView):
@@ -100,7 +101,24 @@ class DrawingSubmitAPIView(views.APIView):
             'Accept': 'application/json'
         }
         data = {'file': file}
-        res = requests.post('http://147.46.15.75:30001', json=data, headers=headers, timeout=300)
+
+        max_retries = 3
+        retry_delay = 5 
+        for attempt in range(max_retries):
+            try:
+                res = requests.post('http://147.46.15.75:30001', json=data, headers=headers, timeout=300)
+                if res.status_code == 200:
+                    break 
+            except requests.exceptions.ConnectionError as e:
+                if attempt < max_retries - 1:
+                    time.sleep(retry_delay) 
+                    continue
+                else:
+                    return Response({'error': 'Failed to connect to the server after multiple attempts'}, 
+                                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except Exception as e:
+                return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         json_response = res.json()
         dab_url = json_response['dab']
         jumping_url = json_response['jumping']
