@@ -78,11 +78,6 @@ class DrawingDetailAPIView(views.APIView):
         serializer = DrawingSerializer(drawing)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def delete(self, request, id):
-        drawing = get_object_or_404(Drawing, id=id)
-        drawing.delete()
-        return Response({"detail": "Drawing deleted successfully"}, status=status.HTTP_200_OK)
-
 
 class DrawingStartAPIView(views.APIView):
 
@@ -130,8 +125,10 @@ class DrawingSubmitAPIView(views.APIView):
         for first_user in drawing_users:
             for second_user in drawing_users:
                 if first_user.user_id.id != second_user.user_id.id:
-                    family_id = Family.objects.filter(user_id=first_user.user_id.id).first()
-                    FamilyUser.objects.get_or_create(user_id=first_user.user_id, family_id=family_id)
+                    first_family_id = Family.objects.filter(user_id=first_user.user_id.id).first()
+                    FamilyUser.objects.get_or_create(user_id=second_user.user_id, family_id=first_family_id)
+                    second_family_id = Family.objects.filter(user_id=second_user.user_id.id).first()
+                    FamilyUser.objects.get_or_create(user_id=first_user.user_id, family_id=second_family_id)
 
         # Modify previous data instead of saving new data
         drawing_data = {
@@ -149,10 +146,6 @@ class DrawingSubmitAPIView(views.APIView):
         return Response(drawing_data, status=status.HTTP_200_OK)
 
         
-        
-
-
-
 class DrawingRealTimeAPIView(views.APIView):
 
     def post(self, request, id):
