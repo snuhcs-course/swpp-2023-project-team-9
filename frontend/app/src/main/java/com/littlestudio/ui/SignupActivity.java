@@ -17,6 +17,7 @@ import com.littlestudio.data.datasource.UserLocalDataSource;
 import com.littlestudio.data.datasource.UserRemoteDataSource;
 import com.littlestudio.data.dto.UserCreateRequestDto;
 import com.littlestudio.data.repository.UserRepository;
+import com.littlestudio.ui.constant.ErrorMessage;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,8 +63,6 @@ public class SignupActivity extends AppCompatActivity {
                 userInput();
                 //collect User Input: fullname, username, pw, confirmpw, gender, family.
                 inputValidate();
-                Log.d("TETE success", fullnameToStr + " " + usernameToStr + " " + passwordToStr + " " +
-                        genderToStr + " " + familyToStr);
                 if (isInputValid) {
                     userCreate(fullnameToStr, usernameToStr, passwordToStr, genderToStr, familyToStr);
                 } else {
@@ -71,7 +70,6 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
             //USER CREATE 조건 성공시 (with TOAST) or 실패시 에러 메세지 TOAST
-
         });
 
 
@@ -119,10 +117,11 @@ public class SignupActivity extends AppCompatActivity {
         confirmPasswordToStr = confirmPassword.getText().toString();
 
     }
+
     private void userRadioInput() {
 
-        radioGenderGroup = (RadioGroup)findViewById(R.id.checkGender);
-        radioFamilyGroup = (RadioGroup)findViewById(R.id.parentOrChild);
+        radioGenderGroup = (RadioGroup) findViewById(R.id.checkGender);
+        radioFamilyGroup = (RadioGroup) findViewById(R.id.parentOrChild);
         radioGenderGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -142,28 +141,25 @@ public class SignupActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
     private void inputValidate() {
         inputState = checkInput_result(fullnameToStr, usernameToStr, passwordToStr, confirmPasswordToStr);
         inputCheckMessage = checkInput_message(inputState);
         isInputValid = checkInput_valid(inputState);
     }
+
     //TODO: Username 중복 처리
     private void userCreate(String full_name, String username, String password, String gender, String family) {
         userRepository.signup(
                 new UserCreateRequestDto(full_name, username, password, gender, family), new Callback() {
                     @Override
                     public void onResponse(Call call, Response response) {
-                        Log.d("TETE success", response.body().toString());
                         Toast.makeText(SignupActivity.this, "USER SUCCESSFULLY CREATED", Toast.LENGTH_SHORT).show();
                         finish();
                     }
+
                     @Override
                     public void onFailure(Call call, Throwable t) {
-                        Log.e("TETE error", t.toString());
+                        Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
                     }
                 }
 

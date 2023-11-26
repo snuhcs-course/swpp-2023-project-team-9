@@ -33,6 +33,7 @@ import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.model.User;
 import com.littlestudio.data.repository.DrawingRepository;
 import com.littlestudio.data.repository.UserRepository;
+import com.littlestudio.ui.constant.ErrorMessage;
 import com.littlestudio.ui.constant.IntentExtraKey;
 import com.littlestudio.ui.drawing.WaitingRoomActivity;
 import com.littlestudio.ui.gallery.GalleryFragment;
@@ -61,11 +62,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.gallery);
-
-//        FloatingActionButton buttonView = findViewById(R.id.fab_add_draw);
-//        buttonView.setOnClickListener((view) -> {
-//            showStartDrawingModal();
-//        });
 
         BottomNavigationView navigation = findViewById(R.id.bottomNavigationView);
         Menu menu = navigation.getMenu();
@@ -128,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setView(customView)
-                //.setNegativeButton("Cancel", (dialog, _which) -> dialog.dismiss())
                 .show();
 
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -152,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
                 @Override
                 public void onFailure(Call<DrawingCreateResponseDto> call, Throwable t) {
-                    Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -193,7 +188,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 @Override
                 public void onResponse(Call<DrawingJoinResponseDto> call, Response<DrawingJoinResponseDto> response) {
                     ArrayList<String> participants = response.body().participants;
-                    Log.d("participant in MainActivity", participants.toString());
                     intent.putExtra(IntentExtraKey.PARTICIPANTS, participants);
                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
                     intent.putExtra(IntentExtraKey.HOST_CODE, false);
@@ -204,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 @Override
                 public void onFailure(Call call, Throwable t) {
                     Toast.makeText(MainActivity.this, "Invalid Invitation Code", Toast.LENGTH_SHORT).show();
-                    Log.e("why error?", t.toString());
                 }
             });
         });
@@ -213,91 +206,4 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             alertDialog.dismiss();
         });
     }
-    /*
-    private void showStartDrawingModal() {
-        final List<String> startDrawingOptions = new ArrayList<String>() {{
-            add(StartDrawingOptions.CREATE);
-            add(StartDrawingOptions.JOIN);
-        }};
-
-        final CharSequence[] optionItems = startDrawingOptions.toArray(new String[startDrawingOptions.size()]);
-
-        new AlertDialog.Builder(this)
-                .setTitle("What would you like to do?")
-                .setItems(optionItems, (DialogInterface dialog, int pos) -> {
-                    String selectedOption = optionItems[pos].toString();
-                    switch (selectedOption) {
-                        case StartDrawingOptions.CREATE:
-                            Intent intent = new Intent(this, WaitingRoomActivity.class);
-                            drawingRepository.createDrawing(new DrawingCreateRequestDto(user.id), new Callback<DrawingCreateResponseDto>() {
-                                @Override
-                                public void onResponse(Call<DrawingCreateResponseDto> call, Response<DrawingCreateResponseDto> response) {
-                                    String invitationCode = response.body().invitation_code;
-                                    int id = response.body().id;
-                                    ArrayList<String> participants = new ArrayList<>();
-                                    // TODO: change username to localDataSource's username
-                                    participants.add("username");
-                                    intent.putStringArrayListExtra(IntentExtraKey.PARTICIPANTS, participants);
-                                    intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
-                                    intent.putExtra(IntentExtraKey.DRAWING_ID, id);
-                                    intent.putExtra(IntentExtraKey.HOST_CODE, true);
-                                    startActivityForResult(intent, REQUEST_CODE);
-                                }
-
-                                @Override
-                                public void onFailure(Call<DrawingCreateResponseDto> call, Throwable t) {
-                                    Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            break;
-                        case StartDrawingOptions.JOIN:
-                            showInvitationCodeInputDialog();
-                            break;
-                    }
-                })
-                .setNegativeButton("Cancel", (dialog, _which) -> dialog.dismiss())
-                .show();
-    }
-
-    private void showInvitationCodeInputDialog() {
-        final EditText invitationCodeInput = new EditText(this);
-
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("Enter Invitation Code")
-                .setView(invitationCodeInput)
-                .create();
-
-        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Join", (_dialog, _which) -> {});
-        dialog.show();
-
-        Button joinButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        joinButton.setOnClickListener(view -> {
-            String invitationCode = invitationCodeInput.getText().toString();
-            if (invitationCode.isEmpty()) {
-                Toast.makeText(MainActivity.this, "Please enter invitation code.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Intent intent = new Intent(this, WaitingRoomActivity.class);
-            // TODO : change userId to real id.
-            drawingRepository.joinDrawing(new DrawingJoinRequestDto(user.id, invitationCode), new Callback<DrawingJoinResponseDto>() {
-                @Override
-                public void onResponse(Call<DrawingJoinResponseDto> call, Response<DrawingJoinResponseDto> response) {
-                    ArrayList<String> participants = response.body().participants;
-                    Log.d("participant in MainActivity", participants.toString());
-                    intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
-                    intent.putExtra(IntentExtraKey.HOST_CODE, false);
-                    intent.putStringArrayListExtra(IntentExtraKey.PARTICIPANTS, participants);
-                    startActivityForResult(intent, REQUEST_CODE);
-                    dialog.dismiss();
-                }
-
-                @Override
-                public void onFailure(Call call, Throwable t) {
-                    Toast.makeText(MainActivity.this, "Invalid Invitation Code", Toast.LENGTH_SHORT).show();
-                    Log.e("why error?", t.toString());
-                }
-            });
-        });
-    }
-     */
 }

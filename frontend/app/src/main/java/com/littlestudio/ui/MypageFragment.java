@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import com.littlestudio.data.datasource.UserRemoteDataSource;
 import com.littlestudio.data.dto.FamilyListResponseDto;
 import com.littlestudio.data.model.User;
 import com.littlestudio.data.repository.UserRepository;
+import com.littlestudio.ui.constant.ErrorMessage;
 
 import java.util.List;
 
@@ -55,7 +57,7 @@ public class MypageFragment extends Fragment {
 
             @Override
             public void onFailure(Call<FamilyListResponseDto> call, Throwable t) {
-                //
+                Toast.makeText(getContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
             }
         });
     }

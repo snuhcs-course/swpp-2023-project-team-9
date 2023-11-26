@@ -25,6 +25,7 @@ import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.model.Drawing;
 import com.littlestudio.data.repository.DrawingRepository;
 import com.littlestudio.ui.ImageActivity;
+import com.littlestudio.ui.constant.ErrorMessage;
 import com.littlestudio.ui.constant.IntentExtraKey;
 
 import java.io.ByteArrayOutputStream;
@@ -103,8 +104,7 @@ public class SubmitActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(Call call, Throwable t) {
                                 setLoading(false);
-                                Log.d("test", t.toString());
-                                Toast.makeText(getApplicationContext(), "Failed to submit drawing. Please try again later.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
                             }
                         });
 

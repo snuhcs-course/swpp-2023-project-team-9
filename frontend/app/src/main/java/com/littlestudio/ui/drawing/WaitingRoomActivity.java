@@ -23,6 +23,7 @@ import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.repository.DrawingRepository;
 import com.littlestudio.ui.JoinAdapter;
+import com.littlestudio.ui.constant.ErrorMessage;
 import com.littlestudio.ui.constant.IntentExtraKey;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
@@ -104,7 +105,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
-                    Log.e("error!!!!!!!!!!!!!", t.toString());
+                    Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
                 }
             });
 

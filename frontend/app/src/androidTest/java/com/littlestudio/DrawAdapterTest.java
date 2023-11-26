@@ -21,6 +21,7 @@ public class DrawAdapterTest {
 
     private Context context;
     private ArrayList<Drawing> imageList;
+    // TODO: 코드 변경으로 테스트가 깨짐. 테스트 코드 수정 필요.
 //    private DrawAdapter drawAdapter;
 //
 //    @Before
