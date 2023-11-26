@@ -16,18 +16,36 @@
         android:text="@string/my_page"
         android:textSize="36sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginVertical="25dp"
+        android:background="@drawable/rounded_gray_bg"
+        android:paddingVertical="20dp"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@id/logout_btn"
+        app:layout_constraintTop_toBottomOf="@id/mypage_title"
+        app:layout_constraintVertical_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/family_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/logout_btn"
         android:layout_width="125dp"
         android:layout_height="36dp"
         android:layout_marginBottom="30dp"
+        android:background="@drawable/rounded_btn"
         android:text="Logout"
         android:textSize="26sp"
-        android:background="@drawable/rounded_btn"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -55,7 +55,7 @@ public interface ServiceApi {
     Call<Void> logout();
 
     @GET("/family")
-    Call<FamilyListResponseDto> getFamily();
+    Call<FamilyListResponseDto> getFamily(@Query("user_id") int user_id);
 
     @POST("/drawing/1/start")
     Call<Void> startDrawing(@Body DrawingStartRequestDto request);

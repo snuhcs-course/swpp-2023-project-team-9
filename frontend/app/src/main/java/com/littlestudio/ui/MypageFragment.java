@@ -8,14 +8,29 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.UserLocalDataSource;
 import com.littlestudio.data.datasource.UserRemoteDataSource;
+import com.littlestudio.data.dto.FamilyListResponseDto;
+import com.littlestudio.data.model.User;
 import com.littlestudio.data.repository.UserRepository;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MypageFragment extends Fragment {
     UserRepository userRepository;
+
+    List<User> familyMembers;
+    FamilyMembersAdapter familyMembersAdapter;
+    private RecyclerView familyRecyclerView;
+
 
     public MypageFragment() {
         // Required empty public constructor
@@ -28,12 +43,32 @@ public class MypageFragment extends Fragment {
                 UserRemoteDataSource.getInstance(),
                 UserLocalDataSource.getInstance(getContext())
         );
+
+        familyMembersAdapter = new FamilyMembersAdapter(familyMembers, userRepository.getUser());
+
+        userRepository.getFamily(new Callback<FamilyListResponseDto>() {
+            @Override
+            public void onResponse(Call<FamilyListResponseDto> call, Response<FamilyListResponseDto> response) {
+                familyMembers = response.body().users;
+                familyMembersAdapter.setFamilyMembers(familyMembers);
+            }
+
+            @Override
+            public void onFailure(Call<FamilyListResponseDto> call, Throwable t) {
+                //
+            }
+        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_my_page, container, false);
+
+        this.familyRecyclerView = view.findViewById(R.id.family_recycler_view);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        this.familyRecyclerView.setLayoutManager(linearLayoutManager);
+        this.familyRecyclerView.setAdapter(familyMembersAdapter);
 
         Button logoutButton = view.findViewById(R.id.logout_btn);
         logoutButton.setOnClickListener(button -> {

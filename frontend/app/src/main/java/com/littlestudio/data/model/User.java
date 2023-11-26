@@ -16,8 +16,19 @@ public class User {
     public int family_id;
     public Date created_at;
 
-    public String getFullName() {
-        return full_name;
+    public String getFamilyDisplayName() {
+        switch (type) {
+            case UserType.PARENT:
+                if (gender.equals(Gender.FEMALE)) {
+                    return "Mom";
+                } else if (gender.equals(Gender.MALE)) {
+                    return "Dad";
+                }
+                return "Parent";
+            case UserType.CHILD:
+            default:
+                return full_name;
+        }
     }
 
     public static String toJson(User user) {

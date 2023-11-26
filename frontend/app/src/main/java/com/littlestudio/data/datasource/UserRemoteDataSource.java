@@ -2,6 +2,7 @@ package com.littlestudio.data.datasource;
 
 import com.littlestudio.data.api.ServiceApi;
 import com.littlestudio.data.api.ServiceApiClient;
+import com.littlestudio.data.dto.FamilyListResponseDto;
 import com.littlestudio.data.dto.UserCreateRequestDto;
 import com.littlestudio.data.dto.UserLoginRequestDto;
 import com.littlestudio.data.model.User;
@@ -39,6 +40,15 @@ public class UserRemoteDataSource {
     public void signup(UserCreateRequestDto request, Callback<User> callback) {
         try {
             serviceApi.signup(request).enqueue(callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+            callback.onFailure(null, e);
+        }
+    }
+
+    public void getFamily(int userId, Callback<FamilyListResponseDto> callback) {
+        try {
+            serviceApi.getFamily(userId).enqueue(callback);
         } catch (Exception e) {
             e.printStackTrace();
             callback.onFailure(null, e);

@@ -6,5 +6,8 @@ import java.util.List;
 
 public class FamilyListResponseDto {
     public List<User> users;
+
+    public FamilyListResponseDto() {
+    }
 }
 
