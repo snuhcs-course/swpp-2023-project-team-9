@@ -95,7 +95,7 @@ public class ImageActivity extends AppCompatActivity {
 
                 // TODO show participants other than current user as family relationships ex. Mom, Dad
                 String combinedString = drawing.participants.stream()
-                        .map(User::getFullName)
+                        .map(User::getFamilyDisplayName)
                         .collect(Collectors.joining(", "));
 
                 createdOn.setText("Created on " + createOn);
