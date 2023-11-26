@@ -147,11 +147,9 @@ public class DrawingRepository {
         remoteDataSource.realTimeDrawing(request, new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call call, Response response) {
-                if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful()) {
                     callback.onResponse(null, Response.success(response));
                 } else {
-                    Log.e("error", response.message());
-                    Log.e("error", response.toString());
                     callback.onFailure(null, new Throwable("Unsuccessful response"));
                 }
             }
