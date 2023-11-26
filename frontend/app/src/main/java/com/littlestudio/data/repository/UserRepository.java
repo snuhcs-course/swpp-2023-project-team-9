@@ -1,9 +1,12 @@
 package com.littlestudio.data.repository;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import com.littlestudio.data.datasource.UserLocalDataSource;
 import com.littlestudio.data.datasource.UserRemoteDataSource;
+import com.littlestudio.data.dto.FamilyListResponseDto;
 import com.littlestudio.data.dto.UserCreateRequestDto;
 import com.littlestudio.data.dto.UserLoginRequestDto;
 import com.littlestudio.data.model.User;
@@ -19,7 +22,7 @@ public class UserRepository {
     private @Nullable User user;
 
     public static UserRepository getInstance(UserRemoteDataSource remoteDataSource, UserLocalDataSource localDataSource) {
-        if (instance == null){
+        if (instance == null) {
             synchronized (UserRepository.class) {
                 if (instance == null) {
                     instance = new UserRepository(remoteDataSource, localDataSource);
@@ -72,6 +75,24 @@ public class UserRepository {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
+                callback.onFailure(null, t);
+            }
+        });
+    }
+
+    public void getFamily(final Callback<FamilyListResponseDto> callback) {
+        remoteDataSource.getFamily(user.id, new Callback<FamilyListResponseDto>() {
+            @Override
+            public void onResponse(Call<FamilyListResponseDto> call, Response<FamilyListResponseDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onResponse(null, Response.success(response.body()));
+                } else {
+                    callback.onFailure(null, new Throwable("Unsuccessful response"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FamilyListResponseDto> call, Throwable t) {
                 callback.onFailure(null, t);
             }
         });
