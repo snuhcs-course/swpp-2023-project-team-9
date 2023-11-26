@@ -5,7 +5,6 @@ public class DrawingSubmitRequestDto {
     public String title;
     public String description;
     public int host_id;
-//    public int voice_id;
 
     public DrawingSubmitRequestDto(String file, String title, String description, int host_id) {
         this.file = file;

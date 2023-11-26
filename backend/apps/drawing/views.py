@@ -106,7 +106,7 @@ class DrawingSubmitAPIView(views.APIView):
         jumping_url = json_response['jumping']
         wave_hello_url = json_response['wave_hello']
 
-
+        # check if host_id is necessary 
         drawing_id = request.data.get('host_id')
         title = request.data.get('title')
         decode_file = io.BytesIO()
