@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,7 +38,7 @@ import retrofit2.Response;
 public class SubmitActivity extends AppCompatActivity {
     DrawingRepository drawingRepository;
     AppCompatButton finishButton;
-    ProgressBar loadingIndicator;
+    LinearLayout loadingIndicator;
     EditText titleEditText;
     EditText descriptionEditText;
 
