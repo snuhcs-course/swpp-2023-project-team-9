@@ -1,16 +1,25 @@
 package com.littlestudio.ui.gallery;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.littlestudio.ui.DrawAdapter;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
 import com.littlestudio.data.datasource.UserLocalDataSource;
@@ -21,6 +30,8 @@ import com.littlestudio.data.model.Drawing;
 import com.littlestudio.data.model.User;
 import com.littlestudio.data.repository.DrawingRepository;
 import com.littlestudio.data.repository.UserRepository;
+import com.littlestudio.ui.TutorialActivity;
+import com.littlestudio.ui.constant.IntentExtraKey;
 import com.littlestudio.ui.DrawAdapter;
 import com.littlestudio.ui.constant.ErrorMessage;
 
@@ -70,6 +81,15 @@ public class GalleryFragment extends Fragment {
         rcv = (RecyclerView) view.findViewById(R.id.recycler_view);
         //rcv.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         rcv.setAdapter(adapter);
+
+        AppCompatImageView questionmark = view.findViewById(R.id.questionMark);
+        questionmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), TutorialActivity.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 

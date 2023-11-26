@@ -61,7 +61,11 @@
             android:exported="true"
             android:screenOrientation="portrait">
         </activity>
-
+        <activity
+            android:name=".ui.TutorialActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+        </activity>
         <activity
             android:name=".ui.SignupActivity"
             android:exported="true"
