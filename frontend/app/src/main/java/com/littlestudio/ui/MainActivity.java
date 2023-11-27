@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         joinButton.setOnClickListener(view -> {
             String invitationCode = invitationCodeInput.getText().toString();
             if (invitationCode.isEmpty()) {
-                Toast.makeText(MainActivity.this, "Please enter an invitation code.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, ErrorMessage.EMPTY_INVITATION_CODE, Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
-                    Toast.makeText(MainActivity.this, "Invalid Invitation Code", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, ErrorMessage.WRONG_INVITATION_CODE, Toast.LENGTH_SHORT).show();
                 }
             });
         });

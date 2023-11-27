@@ -26,6 +26,12 @@ public class User {
                 }
                 return "Parent";
             case UserType.CHILD:
+                if (gender.equals(Gender.FEMALE)) {
+                    return "Daughter";
+                } else if (gender.equals(Gender.MALE)) {
+                    return "Son";
+                }
+                return "Child";
             default:
                 return full_name;
         }

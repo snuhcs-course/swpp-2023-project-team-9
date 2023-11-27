@@ -3,6 +3,7 @@ from .models import Family, FamilyUser
 
 
 class FamilyMemberSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='user_id.id')
     full_name = serializers.CharField(source='user_id.full_name')
     username = serializers.CharField(source='user_id.username')
     gender = serializers.CharField(source='user_id.gender')
@@ -10,7 +11,7 @@ class FamilyMemberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FamilyUser
-        fields = ['full_name', 'username', 'gender', 'type']
+        fields = ['id', 'full_name', 'username', 'gender', 'type']
 
 
 class FamilyListSerializer(serializers.ModelSerializer):
