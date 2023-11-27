@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.drawing.models import Drawing, DrawingUser, Voice
+from apps.drawing.models import Drawing, DrawingUser
 
 
 class DrawingAdmin(admin.ModelAdmin):
@@ -11,12 +11,6 @@ class DrawingUserAdmin(admin.ModelAdmin):
     pass
 
 
-class VoiceAdmin(admin.ModelAdmin):
-    pass
-
-
 admin.site.register(Drawing, DrawingAdmin)
 
 admin.site.register(DrawingUser, DrawingUserAdmin)
-
-admin.site.register(Voice, VoiceAdmin)

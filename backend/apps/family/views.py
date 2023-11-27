@@ -15,5 +15,5 @@ class FamilyAPIView(APIView):
         except Family.DoesNotExist:
             return Response({'error': 'Family not found'}, status=404)
 
-        serializer = FamilyListSerializer(family)
+        serializer = FamilyListSerializer(family, context={'user_id_to_exclude': user_id})
         return Response(serializer.data)

@@ -12,11 +12,14 @@ import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.littlestudio.R;
 import com.littlestudio.data.datasource.DrawingRemoteDataSource;
+import com.littlestudio.data.datasource.UserLocalDataSource;
+import com.littlestudio.data.datasource.UserRemoteDataSource;
 import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.model.Drawing;
 import com.littlestudio.data.model.User;
 import com.littlestudio.data.repository.DrawingRepository;
+import com.littlestudio.data.repository.UserRepository;
 import com.littlestudio.ui.constant.ErrorMessage;
 import com.littlestudio.ui.constant.IntentExtraKey;
 
@@ -29,6 +32,7 @@ import retrofit2.Response;
 
 public class ImageActivity extends AppCompatActivity {
     DrawingRepository drawingRepository;
+    UserRepository userRepository;
     private int selectedImageViewId;
 
     @Override
@@ -39,6 +43,11 @@ public class ImageActivity extends AppCompatActivity {
         drawingRepository = DrawingRepository.getInstance(
                 DrawingRemoteDataSource.getInstance(),
                 new DrawingMapper(new ObjectMapper(), new FamilyMapper(new ObjectMapper()))
+        );
+
+        userRepository = UserRepository.getInstance(
+                UserRemoteDataSource.getInstance(),
+                UserLocalDataSource.getInstance(getApplicationContext())
         );
 
         int drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0);
@@ -96,7 +105,7 @@ public class ImageActivity extends AppCompatActivity {
                 String createOn = dateFormat.format(drawing.created_at);
 
                 String combinedString = drawing.participants.stream()
-                        .map(User::getFamilyDisplayName)
+                        .map(participant -> participant.getFamilyDisplayName(userRepository.getUser()))
                         .collect(Collectors.joining(", "));
 
                 createdOn.setText("Created on " + createOn);

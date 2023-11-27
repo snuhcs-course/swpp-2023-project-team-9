@@ -153,7 +153,7 @@ public class SignupActivity extends AppCompatActivity {
                 new UserCreateRequestDto(full_name, username, password, gender, family), new Callback() {
                     @Override
                     public void onResponse(Call call, Response response) {
-                        Toast.makeText(SignupActivity.this, "USER SUCCESSFULLY CREATED", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignupActivity.this, "Account successfully created", Toast.LENGTH_SHORT).show();
                         finish();
                     }
 

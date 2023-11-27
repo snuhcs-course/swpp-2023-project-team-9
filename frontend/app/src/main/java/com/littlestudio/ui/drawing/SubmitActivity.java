@@ -80,7 +80,7 @@ public class SubmitActivity extends AppCompatActivity {
                         String description = descriptionEditText.getText().toString();
 
                         if (title.isEmpty() || description.isEmpty()) {
-                            Toast.makeText(getApplicationContext(), "Please input title and description.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), ErrorMessage.EMPTY_TITLE_AND_DESCRIPTION, Toast.LENGTH_SHORT).show();
                             return;
                         }
                         setLoading(true);

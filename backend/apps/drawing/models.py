@@ -1,16 +1,6 @@
 from django.db import models
 from apps.user.models import User
 
-class Voice(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    title = models.CharField(max_length=255)
-    file = models.FileField(upload_to="voice/")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.title
-
 
 class Drawing(models.Model):
     class TypeChoices(models.TextChoices):
