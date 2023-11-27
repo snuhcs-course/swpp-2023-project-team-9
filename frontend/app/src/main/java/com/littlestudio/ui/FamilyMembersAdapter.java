@@ -55,8 +55,7 @@ public class FamilyMembersAdapter extends RecyclerView.Adapter<FamilyMembersAdap
         }
 
         public void bind(User familyMember) {
-            boolean isMe = +me.id == familyMember.id;
-            familyMember_tv.setText(familyMember.getFamilyDisplayName() + (isMe ? " (me)" : ""));
+            familyMember_tv.setText(familyMember.getFamilyDisplayName(me));
         }
     }
 }

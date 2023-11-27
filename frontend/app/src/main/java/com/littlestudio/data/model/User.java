@@ -16,22 +16,30 @@ public class User {
     public int family_id;
     public Date created_at;
 
-    public String getFamilyDisplayName() {
-        switch (type) {
+    public String getFamilyDisplayName(User currentUser) {
+        switch (currentUser.type) {
             case UserType.PARENT:
-                if (gender.equals(Gender.FEMALE)) {
-                    return "Mom";
-                } else if (gender.equals(Gender.MALE)) {
-                    return "Dad";
+                if (type.equals(UserType.PARENT)) {
+                    return full_name;
+                } else if (type.equals(UserType.CHILD)) {
+                    if (gender.equals(Gender.FEMALE))
+                        return "Daughter";
+                    else if (gender.equals(Gender.MALE))
+                        return "Son";
+                    else
+                        return full_name;
                 }
-                return "Parent";
             case UserType.CHILD:
-                if (gender.equals(Gender.FEMALE)) {
-                    return "Daughter";
-                } else if (gender.equals(Gender.MALE)) {
-                    return "Son";
+                if (type.equals(UserType.CHILD)) {
+                    return full_name;
+                } else if (type.equals(UserType.PARENT)) {
+                    if (gender.equals(Gender.FEMALE))
+                        return "Mom";
+                    else if (gender.equals(Gender.MALE))
+                        return "Dad";
+                    else
+                        return "Parent";
                 }
-                return "Child";
             default:
                 return full_name;
         }
