@@ -34,31 +34,17 @@
             android:text=""
             android:textSize="22sp"/>
 
-        <!--
         <ImageView
             android:id="@+id/copy_invitation_code"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="14dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"
             android:foreground="?selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_copy"/>
-            -->
+            android:src="@drawable/ic_copy"
+            app:layout_constraintEnd_toEndOf="@id/linear_layout"
+            app:layout_constraintTop_toTopOf="@id/linear_layout"/>
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/copy_invitation_code"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="14dp"
-        android:layout_marginBottom="14dp"
-        android:foreground="?selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_copy"
-        app:layout_constraintEnd_toEndOf="@id/linear_layout"
-        app:layout_constraintTop_toTopOf="@id/linear_layout"
-        android:layout_marginEnd="20dp"/>
 
     <TextView
         android:id="@+id/joined_members"
@@ -73,26 +59,32 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingVertical="20dp"
-        android:layout_marginTop="25dp"
+        android:layout_height="match_parent"
         android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="30dp"
         android:background="@drawable/rounded_gray_bg"
-        app:layout_constraintTop_toBottomOf="@id/joined_members">
+        android:paddingVertical="20dp"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@id/start_drawing_btn"
+        app:layout_constraintTop_toBottomOf="@id/joined_members"
+        app:layout_constraintVertical_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/wait_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
     <Button
-        android:id="@+id/start_drawing"
+        android:id="@+id/start_drawing_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:text="Start Drawing"
+        android:textSize="18sp"
+        android:background="@drawable/rounded_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="25dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
