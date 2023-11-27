@@ -79,7 +79,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Invitation code copied to clipboard", Toast.LENGTH_SHORT).show();
         });
 
-        Button button = findViewById(R.id.start_drawing);
+        Button button = findViewById(R.id.start_drawing_btn);
 
         button.setOnClickListener((v) -> {
 
@@ -117,7 +117,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
         this.waitRecycleView.setAdapter(joinAdapter);
         connectToChannel(invitationCode);
         if (!isHost) {
-            Button button = findViewById(R.id.start_drawing);
+            Button button = findViewById(R.id.start_drawing_btn);
             Toast.makeText(WaitingRoomActivity.this, "Only host can start drawing", Toast.LENGTH_SHORT).show();
             button.setVisibility(View.INVISIBLE);
         }

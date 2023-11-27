@@ -7,25 +7,26 @@
     android:background="@color/white"
     tools:context=".ui.drawing.DrawingActivity">
 
-    <com.littlestudio.ui.drawing.widget.DrawView
-        android:id="@+id/draw_view"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        android:background="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.454"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_sketchbook"/>
-
     <ImageView
         android:id="@+id/image_sketchbook"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="172dp"
+        android:layout_marginTop="120dp"
         android:foreground="?selectableItemBackgroundBorderless"
         android:src="@drawable/sketchbook"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/draw_view"/>
+
+    <com.littlestudio.ui.drawing.widget.DrawView
+        android:id="@+id/draw_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/view_separator"/>
 
     <ImageView
         android:id="@+id/image_close_drawing"
@@ -39,6 +40,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/icon_color"/>
+
+    <View
+        android:id="@+id/view_separator"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="112dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/draw_tools"
@@ -137,14 +148,14 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/finish_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:text="Finish"
-        android:textSize="28sp"
+        android:textSize="24sp"
         android:background="@drawable/rounded_btn"
         android:paddingHorizontal="30dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="90dp"
-        app:layout_constraintBottom_toBottomOf="@id/image_sketchbook"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/image_sketchbook"
         app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
