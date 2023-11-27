@@ -17,6 +17,9 @@ public class User {
     public Date created_at;
 
     public String getFamilyDisplayName(User currentUser) {
+        if (currentUser.id == id) {
+            return full_name;
+        }
         switch (currentUser.type) {
             case UserType.PARENT:
                 if (type.equals(UserType.PARENT)) {
