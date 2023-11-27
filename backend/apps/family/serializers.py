@@ -1,16 +1,20 @@
 from rest_framework import serializers
-from .models import Family
-from apps.user.models import User
+from .models import Family, FamilyUser 
 
 
 class FamilyMemberSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(source='user_id.full_name')
+    username = serializers.CharField(source='user_id.username')
+    gender = serializers.CharField(source='user_id.gender')
+    type = serializers.CharField(source='user_id.type')
+
     class Meta:
-        model = User
-        exclude = ("id", "family_id", "password")
+        model = FamilyUser
+        fields = ['full_name', 'username', 'gender', 'type']
 
 
 class FamilyListSerializer(serializers.ModelSerializer):
-    users = FamilyMemberSerializer(many=True, read_only=True, source='family_members')
+    users = FamilyMemberSerializer(many=True, read_only=True, source='family_users')
 
     class Meta:
         model = Family
