@@ -4,6 +4,7 @@ import io
 
 import requests
 from django.db import connection, transaction
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status, views
 from rest_framework.response import Response
@@ -25,9 +26,9 @@ class DrawingAPIView(views.APIView):
             return Response({"detail": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         drawings = Drawing.objects.filter(
-            host_id=user_id,
+            Q(host_id=user_id) | Q(participants__id=user_id),
             type=Drawing.TypeChoices.COMPLETED
-        ).order_by('-id').prefetch_related('participants')
+        ).distinct().order_by('-id').prefetch_related('participants')
         serializer = DrawingSerializer(drawings, many=True)
         return Response({"drawings": serializer.data}, status=status.HTTP_200_OK)
 
