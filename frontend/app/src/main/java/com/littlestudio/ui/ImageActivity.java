@@ -95,7 +95,6 @@ public class ImageActivity extends AppCompatActivity {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String createOn = dateFormat.format(drawing.created_at);
 
-                // TODO show participants other than current user as family relationships ex. Mom, Dad
                 String combinedString = drawing.participants.stream()
                         .map(User::getFamilyDisplayName)
                         .collect(Collectors.joining(", "));

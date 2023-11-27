@@ -31,7 +31,6 @@ class Drawing(models.Model):
     gif_wave_hello_url = models.TextField(null=True, blank=True)
     type = models.CharField(choices=TypeChoices.choices, max_length=255, default=TypeChoices.NOT_STARTED)
 
-    voice_id = models.OneToOneField(Voice, on_delete=models.CASCADE, db_column="voice_id", null=True, blank=True)
     host_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column="host_id")
     participants = models.ManyToManyField(User, blank=True, related_name='drawing_user', through='DrawingUser')
 

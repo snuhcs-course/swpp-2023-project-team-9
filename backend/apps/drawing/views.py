@@ -14,6 +14,7 @@ from ..family.models import Family, FamilyUser
 from .serializers import DrawingSerializer, DrawingCreateSerializer
 import json
 import uuid
+import time
 
 
 class DrawingAPIView(views.APIView):
@@ -78,11 +79,6 @@ class DrawingDetailAPIView(views.APIView):
         serializer = DrawingSerializer(drawing)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def delete(self, request, id):
-        drawing = get_object_or_404(Drawing, id=id)
-        drawing.delete()
-        return Response({"detail": "Drawing deleted successfully"}, status=status.HTTP_200_OK)
-
 
 class DrawingStartAPIView(views.APIView):
 
@@ -105,40 +101,59 @@ class DrawingSubmitAPIView(views.APIView):
             'Accept': 'application/json'
         }
         data = {'file': file}
-        res = requests.post('http://147.46.15.75:30001', json=data, headers=headers, timeout=300)
+
+        max_retries = 3
+        retry_delay = 5 
+        for attempt in range(max_retries):
+            try:
+                res = requests.post('http://147.46.15.75:30001', json=data, headers=headers, timeout=300)
+                if res.status_code == 200:
+                    break 
+            except requests.exceptions.ConnectionError as e:
+                if attempt < max_retries - 1:
+                    time.sleep(retry_delay) 
+                    continue
+                else:
+                    return Response({'error': 'Failed to connect to the server after multiple attempts'}, 
+                                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except Exception as e:
+                return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         json_response = res.json()
         dab_url = json_response['dab']
         jumping_url = json_response['jumping']
         wave_hello_url = json_response['wave_hello']
 
-
-        drawing_id = request.data.get('host_id')
         title = request.data.get('title')
         decode_file = io.BytesIO()
         decode_file.write(base64.b64decode(file))
         decode_file.seek(0)
 
-        object_name = f"drawings/{drawing_id}/{hashlib.sha256(title.encode()).hexdigest()[:10]}"
+        object_name = f"drawings/{id}/{hashlib.sha256(title.encode()).hexdigest()[:10]}"
         s3_client.upload_fileobj(decode_file, 'little-studio', object_name)
         image_url = f"https://little-studio.s3.amazonaws.com/{object_name}"
-        Drawing.objects.filter(id=drawing_id).update(title=title, description=request.data.get('description'),
+        Drawing.objects.filter(id=id).update(title=title, description=request.data.get('description'),
                                                      image_url=image_url, type="COMPLETED",
                                                      gif_dab_url=dab_url, gif_jumping_url=jumping_url,
                                                      gif_wave_hello_url=wave_hello_url)
-        invitation_code = Drawing.objects.get(id=drawing_id).invitation_code
+        invitation_code = Drawing.objects.get(id=id).invitation_code
         drawing_users = DrawingUser.objects.filter(drawing_id=id)
         for first_user in drawing_users:
             for second_user in drawing_users:
                 if first_user.user_id.id != second_user.user_id.id:
-                    family_id = Family.objects.filter(user_id=first_user.user_id.id).first()
-                    FamilyUser.objects.get_or_create(user_id=first_user.user_id, family_id=family_id)
+                    first_family_id = Family.objects.filter(user_id=first_user.user_id.id).first()
+                    FamilyUser.objects.get_or_create(user_id=second_user.user_id, family_id=first_family_id)
+                    second_family_id = Family.objects.filter(user_id=second_user.user_id.id).first()
+                    FamilyUser.objects.get_or_create(user_id=first_user.user_id, family_id=second_family_id)
 
-        # Modify previous data instead of saving new data
         drawing_data = {
-            "id": drawing_id,
+            "id": id,
             "title": title,
             "description": request.data.get('description'),
             "image_url": image_url,
+            "gif_dab_url": dab_url,
+            "gif_jumping_url": jumping_url,
+            "gif_wave_hello_url": wave_hello_url,
             "type": "COMPLETED"
         }
         pusher_client = settings.PUSHER_CLIENT
@@ -149,10 +164,6 @@ class DrawingSubmitAPIView(views.APIView):
         return Response(drawing_data, status=status.HTTP_200_OK)
 
         
-        
-
-
-
 class DrawingRealTimeAPIView(views.APIView):
 
     def post(self, request, id):

@@ -84,19 +84,26 @@ public class SubmitActivity extends AppCompatActivity {
                             return;
                         }
                         setLoading(true);
-                        drawingRepository.submitDrawing(new DrawingSubmitRequestDto(
-                                bitmapToString(bitmap),
-                                title,
-                                description,
-                                drawingId
+                        drawingRepository.submitDrawing(
+                                drawingId,
+                                new DrawingSubmitRequestDto(
+                                    bitmapToString(bitmap),
+                                    title,
+                                    description
                         ), new Callback<Drawing>() {
                             @Override
                             public void onResponse(Call<Drawing> call, Response<Drawing> response) {
                                 setLoading(false);
                                 String drawingImageUrl = response.body().image_url;
+                                String gifDabUrl = response.body().gif_dab_url;
+                                String gifJumpingUrl = response.body().gif_jumping_url;
+                                String gifWaveHelloUrl = response.body().gif_wave_hello_url;
                                 Intent intent = new Intent(getApplicationContext(), ImageActivity.class);
                                 intent.putExtra(IntentExtraKey.DRAWING_ID, drawingId);
                                 intent.putExtra(IntentExtraKey.DRAWING_IMAGE_URL, drawingImageUrl);
+                                intent.putExtra(IntentExtraKey.DRAWING_DAB_URL, gifDabUrl);
+                                intent.putExtra(IntentExtraKey.DRAWING_JUMPING_URL, gifJumpingUrl);
+                                intent.putExtra(IntentExtraKey.DRAWING_WAVE_HELLO_URL, gifWaveHelloUrl);
                                 startActivity(intent);
                                 finish();
                             }

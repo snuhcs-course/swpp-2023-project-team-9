@@ -45,23 +45,15 @@ import retrofit2.Response;
 
 public class WaitingRoomActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_DRAW = 101;
-
     private DrawingRepository drawingRepository;
     private boolean isHost;
     private String invitationCode;
     private Pusher pusher;
     private Channel channel;
-
-
     private int drawingId;
-
     private RecyclerView waitRecycleView;
-
     private JoinAdapter joinAdapter;
-
     private ArrayList<String> participants;
-
-
 
     // TODO : make finish button and out.
     @Override
@@ -115,19 +107,9 @@ public class WaitingRoomActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         this.waitRecycleView = findViewById(R.id.wait_recycler_view);
-        //waitRecycleView.addItemDecoration(new RecyclerViewDecoration(20));
         this.invitationCode = getIntent().getStringExtra(IntentExtraKey.INVITATION_CODE);
         this.isHost = getIntent().getBooleanExtra(IntentExtraKey.HOST_CODE, false);
         this.participants = getIntent().getStringArrayListExtra(IntentExtraKey.PARTICIPANTS);
-
-//        // test
-//        this.isHost = getIntent().getBooleanExtra(IntentExtraKey.HOST_CODE, false);
-//        this.participants = new ArrayList<>();
-//        participants.add("Gunhee Cho");
-//        participants.add("Jonghyun Choe");
-//        participants.add("Seongho Eom");
-//        participants.add("Woojun Park");
-//        participants.add("Yenah Cho");
 
         this.joinAdapter = new JoinAdapter(getApplicationContext(), participants);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager((Context) this);
@@ -136,7 +118,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
         connectToChannel(invitationCode);
         if (!isHost) {
             Button button = findViewById(R.id.start_drawing);
-            Toast.makeText(WaitingRoomActivity.this, "Only Host can start drawing", Toast.LENGTH_SHORT).show();
+            Toast.makeText(WaitingRoomActivity.this, "Only host can start drawing", Toast.LENGTH_SHORT).show();
             button.setVisibility(View.INVISIBLE);
         }
     }
@@ -214,20 +196,3 @@ public class WaitingRoomActivity extends AppCompatActivity {
         });
     }
 }
-
-//class RecyclerViewDecoration extends RecyclerView.ItemDecoration {
-//
-//    private final int divHeight;
-//
-//    public RecyclerViewDecoration(int divHeight)
-//    {
-//        this.divHeight = divHeight;
-//    }
-//
-//    @Override
-//    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
-//    {
-//        super.getItemOffsets(outRect, view, parent, state);
-//        outRect.top = divHeight;
-//    }
-//}

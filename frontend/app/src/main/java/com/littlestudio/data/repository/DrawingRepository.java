@@ -81,8 +81,8 @@ public class DrawingRepository {
         });
     }
 
-    public void submitDrawing(DrawingSubmitRequestDto request, final Callback callback) {
-        remoteDataSource.submitDrawing(request, new Callback<DrawingViewResponseDto>() {
+    public void submitDrawing(int id, DrawingSubmitRequestDto request, final Callback callback) {
+        remoteDataSource.submitDrawing(id, request, new Callback<DrawingViewResponseDto>() {
             @Override
             public void onResponse(Call<DrawingViewResponseDto> call, Response<DrawingViewResponseDto> response) {
                 if (response.isSuccessful() && response.body() != null) {
