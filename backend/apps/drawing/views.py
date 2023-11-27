@@ -103,7 +103,7 @@ class DrawingSubmitAPIView(views.APIView):
         data = {'file': file}
 
         max_retries = 3
-        retry_delay = 5 
+        retry_delay = 1
         for attempt in range(max_retries):
             try:
                 res = requests.post('http://147.46.15.75:30001', json=data, headers=headers, timeout=300)

@@ -37,7 +37,7 @@ public class ServiceApiClient {
 
         OkHttpClient httpClient = new OkHttpClient.Builder()
                 .addInterceptor(logging)
-                .connectTimeout(5, TimeUnit.MINUTES)
+                .connectTimeout(1, TimeUnit.MINUTES)
                 .readTimeout(5, TimeUnit.MINUTES)
                 .writeTimeout(5, TimeUnit.MINUTES)
                 .build();
