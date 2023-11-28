@@ -130,7 +130,7 @@ class DrawingSubmitAPIView(views.APIView):
         json_response = res.json()
         dab_url = json_response['dab']
         jumping_url = json_response['jumping']
-        wave_hello_url = json_response['wave_hello']
+        zombie_url = json_response['zombie']
 
         title = request.data.get('title')
         decode_file = io.BytesIO()
@@ -143,7 +143,7 @@ class DrawingSubmitAPIView(views.APIView):
         Drawing.objects.filter(id=id).update(title=title, description=request.data.get('description'),
                                                      image_url=image_url, type="COMPLETED",
                                                      gif_dab_url=dab_url, gif_jumping_url=jumping_url,
-                                                     gif_wave_hello_url=wave_hello_url)
+                                                     gif_zombie_url=zombie_url)
         invitation_code = Drawing.objects.get(id=id).invitation_code
         drawing_users = DrawingUser.objects.filter(drawing_id=id)
         for first_user in drawing_users:
@@ -161,7 +161,7 @@ class DrawingSubmitAPIView(views.APIView):
             "image_url": image_url,
             "gif_dab_url": dab_url,
             "gif_jumping_url": jumping_url,
-            "gif_wave_hello_url": wave_hello_url,
+            "gif_zombie_url": zombie_url,
             "type": "COMPLETED"
         }
         pusher_client = settings.PUSHER_CLIENT

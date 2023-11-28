@@ -10,7 +10,7 @@ public class Drawing {
     public String image_url;
     public String gif_dab_url;
     public String gif_jumping_url;
-    public String gif_wave_hello_url;
+    public String gif_zombie_url;
     public String type;
     public int host_id;
     public List<User> participants;

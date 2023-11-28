@@ -33,7 +33,7 @@ def index():
     remove_file_list.append(f'{cur_path}/static/input/{ts}.png')
     s3_client = S3_CLIENT
 
-    motion_list = ["dab", "jumping", "wave_hello"] # , "jesse_dance"]
+    motion_list = ["dab", "jumping", "zombie"]
 
     print("here")
     for motion in motion_list:
