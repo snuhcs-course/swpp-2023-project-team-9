@@ -2,7 +2,6 @@ package com.littlestudio.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -44,11 +43,6 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-
-        // currently checking password >= 4 & password == confirmPassword,
-        // len(fullname) < 20, len(username) < 15
-        //TODO: Username 중복 처리
-
         AppCompatButton signupBtn = (AppCompatButton) findViewById(R.id.signupBtn);
 
         userRepository = UserRepository.getInstance(
@@ -60,15 +54,13 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 userInput();
-                //collect User Input: fullname, username, pw, confirmpw, gender, family.
-                inputValidate();
+                validateInput();
                 if (isInputValid) {
                     userCreate(fullnameToStr, usernameToStr, passwordToStr, genderToStr, familyToStr);
                 } else {
                     Toast.makeText(SignupActivity.this, inputCheckMessage, Toast.LENGTH_SHORT).show();
                 }
             }
-            //USER CREATE 조건 성공시 (with TOAST) or 실패시 에러 메세지 TOAST
         });
 
 
@@ -102,7 +94,6 @@ public class SignupActivity extends AppCompatActivity {
         usernameToStr = username.getText().toString();
         passwordToStr = password.getText().toString();
         confirmPasswordToStr = confirmPassword.getText().toString();
-
     }
 
     private void userRadioInput() {
@@ -128,7 +119,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
 
-    private void inputValidate() {
+    private void validateInput() {
         inputCheckMessage = checkInput_result(fullnameToStr, usernameToStr, passwordToStr, confirmPasswordToStr, genderToStr, familyToStr);
         if (inputCheckMessage == "validated")
             isInputValid = true;
@@ -136,7 +127,6 @@ public class SignupActivity extends AppCompatActivity {
             isInputValid = false;
     }
 
-    //TODO: Username 중복 처리
     private void userCreate(String full_name, String username, String password, String gender, String family) {
         userRepository.signup(
                 new UserCreateRequestDto(full_name, username, password, gender, family), new Callback() {
@@ -154,10 +144,6 @@ public class SignupActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
                     }
                 }
-
-                //full_name username password gender type
         );
-
     }
-    //CREATE USER
 }
