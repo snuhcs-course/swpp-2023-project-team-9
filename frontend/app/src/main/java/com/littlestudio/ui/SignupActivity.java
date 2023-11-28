@@ -148,7 +148,10 @@ public class SignupActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
+                        if (t.getMessage().equals("{\"error\":\"Username already taken\"}"))
+                            Toast.makeText(getApplicationContext(), ErrorMessage.USERNAME_DUPLICATE, Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
                     }
                 }
 
