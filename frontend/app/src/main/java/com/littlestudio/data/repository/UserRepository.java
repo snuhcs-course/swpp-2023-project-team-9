@@ -11,6 +11,11 @@ import com.littlestudio.data.dto.UserCreateRequestDto;
 import com.littlestudio.data.dto.UserLoginRequestDto;
 import com.littlestudio.data.model.User;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -69,7 +74,13 @@ public class UserRepository {
                     localDataSource.setUser(userData);
                     user = userData;
                 } else {
-                    callback.onFailure(null, new Throwable("Unsuccessful response"));
+                    String responseBody = null;
+                    try {
+                        responseBody = response.errorBody().string();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    callback.onFailure(null, new Throwable(responseBody));
                 }
             }
 

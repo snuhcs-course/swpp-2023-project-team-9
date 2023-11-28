@@ -2,7 +2,6 @@ package com.littlestudio.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -35,7 +34,6 @@ public class SignupActivity extends AppCompatActivity {
     private String confirmPasswordToStr;
     private String genderToStr;
     private String familyToStr;
-    private int inputState;
     private boolean isInputValid;
     private String inputCheckMessage;
     UserRepository userRepository;
@@ -44,11 +42,6 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-
-
-        // currently checking password >= 4 & password == confirmPassword,
-        // len(fullname) < 20, len(username) < 15
-        //TODO: Username 중복 처리
 
         AppCompatButton signupBtn = (AppCompatButton) findViewById(R.id.signupBtn);
 
@@ -61,15 +54,13 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 userInput();
-                //collect User Input: fullname, username, pw, confirmpw, gender, family.
-                inputValidate();
+                validateInput();
                 if (isInputValid) {
                     userCreate(fullnameToStr, usernameToStr, passwordToStr, genderToStr, familyToStr);
                 } else {
                     Toast.makeText(SignupActivity.this, inputCheckMessage, Toast.LENGTH_SHORT).show();
                 }
             }
-            //USER CREATE 조건 성공시 (with TOAST) or 실패시 에러 메세지 TOAST
         });
 
 
@@ -85,25 +76,13 @@ public class SignupActivity extends AppCompatActivity {
 
     }
 
-    private int checkInput_result(String fullname, String username, String pw, String pw_check) {
-        if (pw.length() < 4) return 1;
-        if (!pw.equals(pw_check)) return 2;
-        if (fullname.length() > 20) return 3;
-        if (username.length() > 15) return 4;
-        return 0;
-    }
-
-    private String checkInput_message(int cases) {
-        if (cases == 0) return "";
-        if (cases == 1) return "PASSWORD LENGTH < 4";
-        if (cases == 2) return "CONFIRM PASSWORD DO NOT MATCH";
-        if (cases == 3) return "FULLNAME LENGTH > 20";
-        if (cases == 4) return "USERNAME LENGTH > 15";
-        return "";
-    }
-
-    private Boolean checkInput_valid(int cases) {
-        return cases == 0;
+    private String checkInput_result(String fullname, String username, String pw, String pw_check, String gender, String type) {
+        if (fullname.length() == 0 || username.length() == 0 || pw.length() == 0 || pw_check.length() == 0 || gender == null || type == null) return ErrorMessage.EMPTY_FIELDS;
+        if (pw.length() < 4) return ErrorMessage.PASSWORD_LENGTH;
+        if (!pw.equals(pw_check)) return ErrorMessage.PASSWORD_MISMATCH;
+        if (fullname.length() > 20) return ErrorMessage.FULLNAME_LENGTH;
+        if (username.length() > 15) return ErrorMessage.USERNAME_LENGTH;
+        return "validated";
     }
 
     private void userInput() {
@@ -115,7 +94,6 @@ public class SignupActivity extends AppCompatActivity {
         usernameToStr = username.getText().toString();
         passwordToStr = password.getText().toString();
         confirmPasswordToStr = confirmPassword.getText().toString();
-
     }
 
     private void userRadioInput() {
@@ -141,13 +119,14 @@ public class SignupActivity extends AppCompatActivity {
     }
 
 
-    private void inputValidate() {
-        inputState = checkInput_result(fullnameToStr, usernameToStr, passwordToStr, confirmPasswordToStr);
-        inputCheckMessage = checkInput_message(inputState);
-        isInputValid = checkInput_valid(inputState);
+    private void validateInput() {
+        inputCheckMessage = checkInput_result(fullnameToStr, usernameToStr, passwordToStr, confirmPasswordToStr, genderToStr, familyToStr);
+        if (inputCheckMessage == "validated")
+            isInputValid = true;
+        else
+            isInputValid = false;
     }
 
-    //TODO: Username 중복 처리
     private void userCreate(String full_name, String username, String password, String gender, String family) {
         userRepository.signup(
                 new UserCreateRequestDto(full_name, username, password, gender, family), new Callback() {
@@ -159,13 +138,12 @@ public class SignupActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
+                        if (t.getMessage().equals("{\"error\":\"Username already taken\"}"))
+                            Toast.makeText(getApplicationContext(), ErrorMessage.USERNAME_DUPLICATE, Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
                     }
                 }
-
-                //full_name username password gender type
         );
-
     }
-    //CREATE USER
 }

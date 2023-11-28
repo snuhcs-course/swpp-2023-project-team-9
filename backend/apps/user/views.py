@@ -10,6 +10,10 @@ class SignUpAPIView(views.APIView):
     def post(self, request):
         serializer = SignUpSerializer(data=request.data)
         if serializer.is_valid():
+            username = serializer.validated_data['username']
+            if User.objects.filter(username=username).exists():
+                return Response({"error": "Username already taken"}, status=status.HTTP_400_BAD_REQUEST)
+            
             password = serializer.validated_data['password']
             serializer.validated_data['password'] = hash_password(password)
             user = serializer.save()

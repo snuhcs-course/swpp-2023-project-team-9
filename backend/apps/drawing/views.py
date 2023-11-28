@@ -68,7 +68,7 @@ class DrawingJoinAPIView(views.APIView):
 
         participants_list = list(data)
         participants_list = [second for first in participants_list for second in first]
-        participants_data = {'participants': participants_list}
+        participants_data = {'drawing_id': drawing.id, 'participants': participants_list}
 
         return Response(data=participants_data, status=status.HTTP_200_OK)
 
@@ -91,6 +91,13 @@ class DrawingStartAPIView(views.APIView):
 
         return Response({"detail": "Drawing started successfully"}, status=status.HTTP_200_OK)
 
+class DrawingWaitAPIView(views.APIView):
+
+    def post(self, request, id):
+        invitation_code = Drawing.objects.get(id=id).invitation_code
+        pusher_client = settings.PUSHER_CLIENT
+        pusher_client.trigger(invitation_code, 'waiting', {'waiting': 'proceed'})
+        return Response(status=status.HTTP_200_OK)
 
 class DrawingSubmitAPIView(views.APIView):
 
