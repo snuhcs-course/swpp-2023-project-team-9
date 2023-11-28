@@ -188,9 +188,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 @Override
                 public void onResponse(Call<DrawingJoinResponseDto> call, Response<DrawingJoinResponseDto> response) {
                     ArrayList<String> participants = response.body().participants;
+                    int drawingId = response.body().drawing_id;
                     intent.putExtra(IntentExtraKey.PARTICIPANTS, participants);
                     intent.putExtra(IntentExtraKey.INVITATION_CODE, invitationCode);
                     intent.putExtra(IntentExtraKey.HOST_CODE, false);
+                    intent.putExtra(IntentExtraKey.DRAWING_ID, drawingId);
                     startActivityForResult(intent, REQUEST_CODE);
                     alertDialog.dismiss();
                 }

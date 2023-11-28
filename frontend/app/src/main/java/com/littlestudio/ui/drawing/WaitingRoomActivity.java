@@ -68,7 +68,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
         );
 
         String invitationCode = getIntent().getStringExtra(IntentExtraKey.INVITATION_CODE);
-        int drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0);
+        drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0);
         TextView invitationCodeTextView = findViewById(R.id.invitation_code);
         invitationCodeTextView.setText(invitationCode);
 
