@@ -54,7 +54,7 @@ public class ImageActivity extends AppCompatActivity {
         String imageUrl = getIntent().getStringExtra(IntentExtraKey.DRAWING_IMAGE_URL);
         String dabUrl = getIntent().getStringExtra(IntentExtraKey.DRAWING_DAB_URL);
         String jumpingUrl = getIntent().getStringExtra(IntentExtraKey.DRAWING_JUMPING_URL);
-        String waveHelloUrl = getIntent().getStringExtra(IntentExtraKey.DRAWING_WAVE_HELLO_URL);
+        String zombieUrl = getIntent().getStringExtra(IntentExtraKey.DRAWING_ZOMBIE_URL);
 
         ImageView imageView = findViewById(R.id.image_view);
         Glide.with(this).load(imageUrl).into(imageView);
@@ -80,11 +80,11 @@ public class ImageActivity extends AppCompatActivity {
             Glide.with(this).load(jumpingUrl).into(imageView);
         });
 
-        ImageView waveHelloImageView = findViewById(R.id.wave_hello_image_view);
-        Glide.with(this).load(waveHelloUrl).into(waveHelloImageView);
-        waveHelloImageView.setOnClickListener(v -> {
-            onImageViewClicked(waveHelloImageView.getId());
-            Glide.with(this).load(waveHelloUrl).into(imageView);
+        ImageView zombieImageView = findViewById(R.id.zombie_image_view);
+        Glide.with(this).load(zombieUrl).into(zombieImageView);
+        zombieImageView.setOnClickListener(v -> {
+            onImageViewClicked(zombieImageView.getId());
+            Glide.with(this).load(zombieUrl).into(imageView);
         });
 
         selectedImageViewId = originalImageView.getId(); // default to original image

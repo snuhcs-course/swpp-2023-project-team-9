@@ -18,7 +18,7 @@ class Drawing(models.Model):
     image_url = models.TextField(null=True, blank=True)
     gif_dab_url = models.TextField(null=True, blank=True)
     gif_jumping_url = models.TextField(null=True, blank=True)
-    gif_wave_hello_url = models.TextField(null=True, blank=True)
+    gif_zombie_url = models.TextField(null=True, blank=True)
     type = models.CharField(choices=TypeChoices.choices, max_length=255, default=TypeChoices.NOT_STARTED)
 
     host_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column="host_id")

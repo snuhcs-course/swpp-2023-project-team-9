@@ -74,13 +74,13 @@
             android:tag="jumping_image_url"/>
 
         <ImageView
-            android:id="@+id/wave_hello_image_view"
+            android:id="@+id/zombie_image_view"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/black_border_thin"
             android:layout_marginLeft="30dp"
             android:scaleType="fitCenter"
-            android:tag="wave_hello_image_url"/>
+            android:tag="zombie_image_url"/>
     </LinearLayout>
 
     <LinearLayout
