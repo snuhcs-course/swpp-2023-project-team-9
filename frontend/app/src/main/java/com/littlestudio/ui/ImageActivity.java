@@ -34,6 +34,7 @@ public class ImageActivity extends AppCompatActivity {
     DrawingRepository drawingRepository;
     UserRepository userRepository;
     private int selectedImageViewId;
+    private int drawingId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +51,17 @@ public class ImageActivity extends AppCompatActivity {
                 UserLocalDataSource.getInstance(getApplicationContext())
         );
 
-        int drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0);
+        findViewById(com.littlestudio.R.id.image_close_drawing).setOnClickListener(v -> {
+            finish();
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0);
         String imageUrl = getIntent().getStringExtra(IntentExtraKey.DRAWING_IMAGE_URL);
-        String dabUrl = getIntent().getStringExtra(IntentExtraKey.DRAWING_DAB_URL);
-        String jumpingUrl = getIntent().getStringExtra(IntentExtraKey.DRAWING_JUMPING_URL);
-        String zombieUrl = getIntent().getStringExtra(IntentExtraKey.DRAWING_ZOMBIE_URL);
 
         ImageView imageView = findViewById(R.id.image_view);
         Glide.with(this).load(imageUrl).into(imageView);
@@ -67,29 +74,11 @@ public class ImageActivity extends AppCompatActivity {
         });
 
         ImageView dabImageView = findViewById(R.id.dab_image_view);
-        Glide.with(this).load(dabUrl).into(dabImageView);
-        dabImageView.setOnClickListener(v -> {
-            onImageViewClicked(dabImageView.getId());
-            Glide.with(this).load(dabUrl).into(imageView);
-        });
-
         ImageView jumpingImageView = findViewById(R.id.jumping_image_view);
-        Glide.with(this).load(jumpingUrl).into(jumpingImageView);
-        jumpingImageView.setOnClickListener(v -> {
-            onImageViewClicked(jumpingImageView.getId());
-            Glide.with(this).load(jumpingUrl).into(imageView);
-        });
-
         ImageView zombieImageView = findViewById(R.id.zombie_image_view);
-        Glide.with(this).load(zombieUrl).into(zombieImageView);
-        zombieImageView.setOnClickListener(v -> {
-            onImageViewClicked(zombieImageView.getId());
-            Glide.with(this).load(zombieUrl).into(imageView);
-        });
 
         selectedImageViewId = originalImageView.getId(); // default to original image
         setForeground(selectedImageViewId, R.drawable.orange_border_thin);
-
         drawingRepository.getDrawing(drawingId, new Callback<Drawing>() {
             @Override
             public void onResponse(Call<Drawing> call, Response<Drawing> response) {
@@ -100,6 +89,28 @@ public class ImageActivity extends AppCompatActivity {
                 TextView participants = findViewById(R.id.gallery_detail_participants);
                 title.setText(drawing.title);
                 description.setText(drawing.description);
+
+                String dabUrl = drawing.gif_dab_url;
+                String jumpingUrl = drawing.gif_jumping_url;
+                String zombieUrl = drawing.gif_zombie_url;
+
+                Glide.with(getApplication()).load(dabUrl).into(dabImageView);
+                dabImageView.setOnClickListener(v -> {
+                    onImageViewClicked(dabImageView.getId());
+                    Glide.with(getApplication()).load(dabUrl).into(imageView);
+                });
+
+                Glide.with(getApplication()).load(jumpingUrl).into(jumpingImageView);
+                jumpingImageView.setOnClickListener(v -> {
+                    onImageViewClicked(jumpingImageView.getId());
+                    Glide.with(getApplication()).load(jumpingUrl).into(imageView);
+                });
+
+                Glide.with(getApplication()).load(zombieUrl).into(zombieImageView);
+                zombieImageView.setOnClickListener(v -> {
+                    onImageViewClicked(zombieImageView.getId());
+                    Glide.with(getApplication()).load(zombieUrl).into(imageView);
+                });
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String createOn = dateFormat.format(drawing.created_at);
@@ -116,10 +127,6 @@ public class ImageActivity extends AppCompatActivity {
             public void onFailure(Call<Drawing> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
             }
-        });
-
-        findViewById(com.littlestudio.R.id.image_close_drawing).setOnClickListener(v -> {
-            finish();
         });
     }
 

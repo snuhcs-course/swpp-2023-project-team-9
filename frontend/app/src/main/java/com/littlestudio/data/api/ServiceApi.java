@@ -39,6 +39,9 @@ public interface ServiceApi {
     @POST("/drawing/join")
     Call<ResponseBody> joinDrawing(@Body DrawingJoinRequestDto request);
 
+    @POST("/drawing/{id}/wait")
+    Call<Void> finishDrawing(@Path("id") int id);
+
     @POST("/drawing/{id}/submit")
     Call<DrawingViewResponseDto> submitDrawing(@Path("id") int id, @Body DrawingSubmitRequestDto request);
 

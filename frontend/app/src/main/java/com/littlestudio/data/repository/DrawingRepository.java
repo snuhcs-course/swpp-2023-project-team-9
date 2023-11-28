@@ -28,8 +28,8 @@ public class DrawingRepository {
     private final DrawingDataSource remoteDataSource;
     private final DrawingMapper drawingMapper;
 
-    public static DrawingRepository getInstance(DrawingDataSource remoteDataSource, DrawingMapper drawingMapper){
-        if (instance == null){
+    public static DrawingRepository getInstance(DrawingDataSource remoteDataSource, DrawingMapper drawingMapper) {
+        if (instance == null) {
             synchronized (DrawingRepository.class) {
                 if (instance == null) {
                     instance = new DrawingRepository(remoteDataSource, drawingMapper);
@@ -62,6 +62,7 @@ public class DrawingRepository {
             }
         });
     }
+
     public void getDrawing(int id, final Callback<Drawing> callback) {
         remoteDataSource.getDrawing(id, new Callback<DrawingViewResponseDto>() {
             @Override
@@ -76,6 +77,24 @@ public class DrawingRepository {
 
             @Override
             public void onFailure(Call<DrawingViewResponseDto> call, Throwable t) {
+                callback.onFailure(null, t);
+            }
+        });
+    }
+
+    public void finishDrawing(int id, final Callback callback) {
+        remoteDataSource.finishDrawing(id, new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onResponse(null, null);
+                } else {
+                    callback.onFailure(null, new Throwable("Unsuccessful response"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 callback.onFailure(null, t);
             }
         });
@@ -160,6 +179,7 @@ public class DrawingRepository {
             }
         });
     }
+
     public void startDrawing(DrawingStartRequestDto request, final Callback callback) {
 
         remoteDataSource.startDrawing(request, new Callback<ResponseBody>() {
@@ -174,6 +194,7 @@ public class DrawingRepository {
                     callback.onFailure(null, new Throwable("Unsuccessful response"));
                 }
             }
+
             @Override
             public void onFailure(Call call, Throwable t) {
                 Log.e("hei", "jfke");
