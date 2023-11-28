@@ -34,7 +34,7 @@ Please contact the team if you need access to existing AWS RDS and S3 bucket ser
 #### Run Backend Server
 
 ```
-python3 manage.py runserver
+python manage.py runserver
 ```
 
 ## Inference Server Setup 
