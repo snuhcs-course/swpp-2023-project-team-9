@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import DrawingSubmitAPIView, DrawingAPIView, DrawingDetailAPIView, DrawingJoinAPIView, DrawingStartAPIView, DrawingRealTimeAPIView
+from .views import DrawingSubmitAPIView, DrawingAPIView, DrawingDetailAPIView, DrawingJoinAPIView, DrawingStartAPIView, DrawingWaitAPIView, DrawingRealTimeAPIView
 
 urlpatterns = [
     path('', DrawingAPIView.as_view(), name='drawing-list'),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('<int:id>/submit', DrawingSubmitAPIView.as_view(), name='drawing-submit'),
     path('<int:id>/canvas', DrawingRealTimeAPIView.as_view(), name='drawing-real-time'),
     path('<int:id>/start', DrawingStartAPIView.as_view(), name='drawing-start'),
+    path('<int:id>/wait', DrawingWaitAPIView.as_view(), name='drawing-wait')
 ]
