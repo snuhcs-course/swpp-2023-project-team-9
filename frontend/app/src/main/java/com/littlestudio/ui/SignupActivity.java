@@ -35,7 +35,6 @@ public class SignupActivity extends AppCompatActivity {
     private String confirmPasswordToStr;
     private String genderToStr;
     private String familyToStr;
-    private int inputState;
     private boolean isInputValid;
     private String inputCheckMessage;
     UserRepository userRepository;
@@ -85,25 +84,13 @@ public class SignupActivity extends AppCompatActivity {
 
     }
 
-    private int checkInput_result(String fullname, String username, String pw, String pw_check) {
-        if (pw.length() < 4) return 1;
-        if (!pw.equals(pw_check)) return 2;
-        if (fullname.length() > 20) return 3;
-        if (username.length() > 15) return 4;
-        return 0;
-    }
-
-    private String checkInput_message(int cases) {
-        if (cases == 0) return "";
-        if (cases == 1) return "PASSWORD LENGTH < 4";
-        if (cases == 2) return "CONFIRM PASSWORD DO NOT MATCH";
-        if (cases == 3) return "FULLNAME LENGTH > 20";
-        if (cases == 4) return "USERNAME LENGTH > 15";
-        return "";
-    }
-
-    private Boolean checkInput_valid(int cases) {
-        return cases == 0;
+    private String checkInput_result(String fullname, String username, String pw, String pw_check, String gender, String type) {
+        if (fullname.length() == 0 || username.length() == 0 || pw.length() == 0 || pw_check.length() == 0 || gender == null || type == null) return ErrorMessage.EMPTY_FIELDS;
+        if (pw.length() < 4) return ErrorMessage.PASSWORD_LENGTH;
+        if (!pw.equals(pw_check)) return ErrorMessage.PASSWORD_MISMATCH;
+        if (fullname.length() > 20) return ErrorMessage.FULLNAME_LENGTH;
+        if (username.length() > 15) return ErrorMessage.USERNAME_LENGTH;
+        return "validated";
     }
 
     private void userInput() {
@@ -142,9 +129,11 @@ public class SignupActivity extends AppCompatActivity {
 
 
     private void inputValidate() {
-        inputState = checkInput_result(fullnameToStr, usernameToStr, passwordToStr, confirmPasswordToStr);
-        inputCheckMessage = checkInput_message(inputState);
-        isInputValid = checkInput_valid(inputState);
+        inputCheckMessage = checkInput_result(fullnameToStr, usernameToStr, passwordToStr, confirmPasswordToStr, genderToStr, familyToStr);
+        if (inputCheckMessage == "validated")
+            isInputValid = true;
+        else
+            isInputValid = false;
     }
 
     //TODO: Username 중복 처리
