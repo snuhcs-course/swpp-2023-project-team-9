@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,6 +45,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class DrawingActivity extends AppCompatActivity {
     DrawingRepository drawingRepository;
 
@@ -56,6 +61,8 @@ public class DrawingActivity extends AppCompatActivity {
     private boolean isHost;
 
     private int drawingId;
+
+    LinearLayout loadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +78,8 @@ public class DrawingActivity extends AppCompatActivity {
         );
         ((DrawView) findViewById(R.id.draw_view)).setDrawingRepository(drawingRepository);
 
+        loadingIndicator = findViewById(R.id.loading_indicator);
+
         findViewById(R.id.finish_btn).setOnClickListener(v -> {
             ByteArrayOutputStream bStream = new ByteArrayOutputStream();
             Bitmap bitmap = ((DrawView) findViewById(R.id.draw_view)).getBitmap();
@@ -81,6 +90,17 @@ public class DrawingActivity extends AppCompatActivity {
             intent.putExtra(IntentExtraKey.DRAWING_ID, getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0));
             startActivity(intent);
             pusher.unsubscribe(invitationCode);
+            drawingRepository.finishDrawing(drawingId, new Callback() {
+                @Override
+                public void onResponse(Call call, Response response) {
+                    //
+                }
+
+                @Override
+                public void onFailure(Call call, Throwable t) {
+                    //
+                }
+            });
             finish();
         });
 
@@ -106,20 +126,20 @@ public class DrawingActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
         this.invitationCode = getIntent().getStringExtra("invitationCode");
         this.isHost = getIntent().getBooleanExtra(IntentExtraKey.HOST_CODE, false);
         this.drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0);
         connectToChannel(invitationCode);
-        if(!isHost){
+        if (!isHost) {
             Button button = findViewById(R.id.finish_btn);
             button.setVisibility(View.INVISIBLE);
         }
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
         pusher.unsubscribe(invitationCode);
     }
@@ -214,11 +234,23 @@ public class DrawingActivity extends AppCompatActivity {
             }
         });
 
-        if(!isHost){
+        if (!isHost) {
+            this.channel.bind("waiting", new SubscriptionEventListener() {
+                @Override
+                public void onEvent(PusherEvent event) {
+                    runOnUiThread(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    loadingIndicator.setVisibility(View.VISIBLE);
+                                }
+                            }
+                    );
+                }
+            });
             this.channel.bind("finish", new SubscriptionEventListener() {
                 @Override
                 public void onEvent(PusherEvent event) {
-                    Log.i("Pusher", "finished! " + event.toString());
                     try {
                         JSONObject data = new JSONObject(event.getData());
                         String drawingImageUrl = data.getString("image_url");
@@ -229,8 +261,9 @@ public class DrawingActivity extends AppCompatActivity {
                         finish();
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
+                    } finally {
+                        loadingIndicator.setVisibility(View.GONE);
                     }
-
                 }
             });
         }
