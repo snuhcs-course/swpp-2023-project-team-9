@@ -20,7 +20,7 @@ public class PaintOptionsTest {
     @Test
     public void testDefaultPaintOptions() {
         assertEquals(Color.BLACK, paintOptions.getColor());
-        assertEquals(8f, paintOptions.getStrokeWidth(), 0.0f);
+        assertEquals(32f, paintOptions.getStrokeWidth(), 0.0f);
         assertEquals(255, paintOptions.getAlpha());
         assertFalse(paintOptions.isEraserOn());
     }
