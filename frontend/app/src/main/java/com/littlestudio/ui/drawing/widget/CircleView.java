@@ -9,7 +9,7 @@ import android.view.View;
 
 public class CircleView extends View {
     private Paint mPaint = new Paint();
-    private float radius = 8f;
+    private float radius = 32f;
 
     public CircleView(Context context, AttributeSet attrs) {
         super(context, attrs);

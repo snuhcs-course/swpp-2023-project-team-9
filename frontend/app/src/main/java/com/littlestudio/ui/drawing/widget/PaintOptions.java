@@ -11,7 +11,7 @@ public class PaintOptions {
 
     public PaintOptions() {
         this.color = Color.BLACK;
-        this.strokeWidth = 8f;
+        this.strokeWidth = 32f;
         this.alpha = 255;
         this.isEraserOn = false;
     }

@@ -262,7 +262,14 @@ public class DrawingActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     } finally {
-                        loadingIndicator.setVisibility(View.GONE);
+                        runOnUiThread(
+                                new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        loadingIndicator.setVisibility(View.GONE);
+                                    }
+                                }
+                        );
                     }
                 }
             });
