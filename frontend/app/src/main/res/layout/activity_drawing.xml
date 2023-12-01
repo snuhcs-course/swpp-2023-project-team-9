@@ -44,12 +44,12 @@
     <View
         android:id="@+id/view_separator"
         android:layout_width="0dp"
-        android:layout_height="1dp"
+        android:layout_height="3dp"
         android:background="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="112dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/draw_tools"
@@ -85,7 +85,7 @@
             app:layout_constraintEnd_toStartOf="@id/image_draw_color"
             app:layout_constraintStart_toEndOf="@id/image_draw_eraser"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/icon_color_selector" />
+            app:tint="@color/icon_color_selector"/>
 
         <ImageView
             android:id="@+id/image_draw_color"
@@ -142,7 +142,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image_draw_eraser"/>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.AppCompatButton
@@ -174,7 +173,7 @@
             android:layout_marginTop="80dp"
             android:indeterminate="true"
             android:indeterminateDrawable="@drawable/circular_progress"
-            android:indeterminateTint="@color/orange" />
+            android:indeterminateTint="@color/orange"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -182,7 +181,7 @@
             android:layout_marginTop="24dp"
             android:text="Loading..."
             android:textAlignment="center"
-            android:textSize="32dp" />
+            android:textSize="32dp"/>
 
         <TextView
             android:layout_width="300dp"
@@ -190,9 +189,7 @@
             android:layout_marginTop="8dp"
             android:text="Please wait until your character is learning some dance moves! \n It may take a few minutes."
             android:textAlignment="center"
-            android:textSize="20dp" />
-
+            android:textSize="20dp"/>
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

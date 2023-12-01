@@ -78,12 +78,11 @@ public class GalleryFragment extends Fragment {
 
         adapter = new DrawAdapter(getContext(), new ArrayList<>());
 
-        rcv = (RecyclerView) view.findViewById(R.id.recycler_view);
-        //rcv.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        rcv = view.findViewById(R.id.recycler_view);
         rcv.setAdapter(adapter);
+        AppCompatImageView infoBtn = view.findViewById(R.id.info);
 
-        AppCompatImageView questionmark = view.findViewById(R.id.questionMark);
-        questionmark.setOnClickListener(new View.OnClickListener() {
+        infoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), TutorialActivity.class);
