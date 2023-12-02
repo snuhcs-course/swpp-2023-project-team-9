@@ -30,6 +30,7 @@ public class UserLocalDataSource {
 
     SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(context);
+
     }
 
     public void setUser(User user) {
