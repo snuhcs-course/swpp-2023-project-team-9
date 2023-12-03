@@ -64,12 +64,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void userLogin(String ID, String PW) {
-        Intent intent = new Intent(this, MainActivity.class);
         userRepository.login(
                 new UserLoginRequestDto(ID, PW), new Callback() {
                     @Override
                     public void onResponse(Call call, Response response) {
-                        startActivity(intent);
+                        setResult(RESULT_OK);
+                        finish();
                     }
 
                     @Override

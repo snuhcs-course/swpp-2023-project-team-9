@@ -1,10 +1,10 @@
 package com.littlestudio.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -35,6 +36,7 @@ import com.littlestudio.data.repository.DrawingRepository;
 import com.littlestudio.data.repository.UserRepository;
 import com.littlestudio.ui.constant.ErrorMessage;
 import com.littlestudio.ui.constant.IntentExtraKey;
+import com.littlestudio.ui.constant.RequestCode;
 import com.littlestudio.ui.drawing.WaitingRoomActivity;
 import com.littlestudio.ui.gallery.GalleryFragment;
 
@@ -87,9 +89,19 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onResume();
         if (!userRepository.isLoggedIn()) {
             Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, RequestCode.LOGIN);
         } else {
             user = userRepository.getUser();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RequestCode.LOGIN && resultCode == Activity.RESULT_OK) {
+            switchFragment(galleryFragment);
+            startActivity(new Intent(this, TutorialActivity.class));
         }
     }
 
