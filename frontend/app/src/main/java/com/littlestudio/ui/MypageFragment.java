@@ -19,6 +19,7 @@ import com.littlestudio.data.dto.FamilyListResponseDto;
 import com.littlestudio.data.model.User;
 import com.littlestudio.data.repository.UserRepository;
 import com.littlestudio.ui.constant.ErrorMessage;
+import com.littlestudio.ui.constant.RequestCode;
 
 import java.util.List;
 
@@ -76,7 +77,7 @@ public class MypageFragment extends Fragment {
         logoutButton.setOnClickListener(button -> {
             userRepository.logout();
             Intent intent = new Intent(getContext(), LoginActivity.class);
-            startActivity(intent);
+            getActivity().startActivityForResult(intent, RequestCode.LOGIN);
         });
 
         return view;
