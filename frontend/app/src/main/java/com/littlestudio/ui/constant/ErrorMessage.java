@@ -11,6 +11,6 @@ public class ErrorMessage {
     public final static String PASSWORD_LENGTH = "Password must be at least 4 characters.";
     public final static String PASSWORD_MISMATCH = "Password does not match.";
     public final static String FULLNAME_LENGTH = "Full name must be less than or equal to 20 characters.";
-    public final static String USERNAME_LENGTH = "Username must be less than or equal to 15 characters.";
+    public final static String USERNAME_LENGTH = "ID must be less than or equal to 15 characters.";
 
 }
