@@ -45,7 +45,7 @@ public class IntegrationTest {
 
     @Test
     public void bottomNavigationViewTest() {
-        onView(withId(R.id.bottomNavigationView))
+        onView(withId(R.id.draw))
                 .check(matches(isDisplayed()));
 
         onView(withId(R.id.gallery))
@@ -63,7 +63,7 @@ public class IntegrationTest {
 
     @Test
     public void createDrawingTest() {
-        onView(withId(R.id.fab_add_draw))
+        onView(withId(R.id.draw))
                 .perform(click());
 
         onView(ViewMatchers.withText("What would you like to do?"))
@@ -77,7 +77,7 @@ public class IntegrationTest {
 
     @Test
     public void joinDrawingTest() {
-        onView(withId(R.id.fab_add_draw))
+        onView(withId(R.id.draw))
                 .perform(click());
 
         onView(ViewMatchers.withText("What would you like to do?"))
