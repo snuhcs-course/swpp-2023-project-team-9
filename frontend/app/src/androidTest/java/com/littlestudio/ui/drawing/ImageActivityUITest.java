@@ -1,15 +1,15 @@
-package com.littlestudio;
+package com.littlestudio.ui.drawing;
 
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.littlestudio.R;
 import com.littlestudio.data.datasource.UserLocalDataSource;
 import com.littlestudio.data.model.User;
 import com.littlestudio.ui.ImageActivity;
-import com.littlestudio.ui.MainActivity;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,13 +24,12 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
-public class Iter5IntegrationTest {
+public class ImageActivityUITest {
 
     @Rule
     public ActivityScenarioRule<ImageActivity> mActivityRule = new ActivityScenarioRule<>(ImageActivity.class);
@@ -47,7 +46,7 @@ public class Iter5IntegrationTest {
 
     @Test
     public void zombieReferenceTest() {
-        onView(withId(R.id.wave))
+        onView(ViewMatchers.withId(R.id.wave))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("Zombie")));
     }
