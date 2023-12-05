@@ -91,6 +91,7 @@ class DrawingStartAPIView(views.APIView):
 
         return Response({"detail": "Drawing started successfully"}, status=status.HTTP_200_OK)
 
+
 class DrawingWaitAPIView(views.APIView):
 
     def post(self, request, id):
@@ -98,6 +99,16 @@ class DrawingWaitAPIView(views.APIView):
         pusher_client = settings.PUSHER_CLIENT
         pusher_client.trigger(invitation_code, 'waiting', {'waiting': 'proceed'})
         return Response(status=status.HTTP_200_OK)
+
+
+class DrawingAbortAPIView(views.APIView):
+
+    def post(self, request, id):
+        invitation_code = Drawing.objects.get(id=id).invitation_code
+        pusher_client = settings.PUSHER_CLIENT
+        pusher_client.trigger(invitation_code, 'abort', {'abort': 'aborted'})
+        return Response(status=status.HTTP_200_OK)
+
 
 class DrawingSubmitAPIView(views.APIView):
 
@@ -166,9 +177,6 @@ class DrawingSubmitAPIView(views.APIView):
         }
         pusher_client = settings.PUSHER_CLIENT
         pusher_client.trigger(invitation_code, 'finish', {'image_url': image_url})
-        # serializer = DrawingSerializer(data=drawing_data)
-        # if serializer.is_valid():
-        #     serializer.save()
         return Response(drawing_data, status=status.HTTP_200_OK)
 
         
