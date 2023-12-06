@@ -1,5 +1,6 @@
 package com.littlestudio.ui;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ public class ImageActivity extends AppCompatActivity {
     private int selectedImageViewId;
     private int drawingId;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +52,6 @@ public class ImageActivity extends AppCompatActivity {
                 UserRemoteDataSource.getInstance(),
                 UserLocalDataSource.getInstance(getApplicationContext())
         );
-
         findViewById(com.littlestudio.R.id.image_close_drawing).setOnClickListener(v -> {
             finish();
         });
@@ -122,7 +123,6 @@ public class ImageActivity extends AppCompatActivity {
                 createdOn.setText("Created on " + createOn);
                 participants.setText("Drawn by " + combinedString);
             }
-
             @Override
             public void onFailure(Call<Drawing> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
@@ -130,10 +130,50 @@ public class ImageActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        MediaPlayer dabSFX = MediaPlayer.create(this, R.raw.dab_sfx);
+        MediaPlayer jumpingSFX = MediaPlayer.create(this, R.raw.jump_sfx);
+        MediaPlayer zombieSFX = MediaPlayer.create(this, R.raw.zombie_sfx);
+
+        super.onDestroy();
+        if (dabSFX != null) {
+            dabSFX.release();
+        }
+        if (jumpingSFX != null) {
+            jumpingSFX.release();
+        }
+        if (zombieSFX != null) {
+            zombieSFX.release();
+        }
+    }
+
     private void onImageViewClicked(int imageViewId) {
         setForeground(selectedImageViewId, R.drawable.black_border_thin);
         setForeground(imageViewId, R.drawable.orange_border_thin);
         selectedImageViewId = imageViewId;
+
+        ImageView dabImageView = findViewById(R.id.dab_image_view);
+        ImageView jumpingImageView = findViewById(R.id.jumping_image_view);
+        ImageView zombieImageView = findViewById(R.id.zombie_image_view);
+
+        MediaPlayer dabSFX = MediaPlayer.create(this, R.raw.dab_sfx);
+        MediaPlayer jumpingSFX = MediaPlayer.create(this, R.raw.jump_sfx);
+        MediaPlayer zombieSFX = MediaPlayer.create(this, R.raw.zombie_sfx);
+
+        if (imageViewId == dabImageView.getId()) {
+            playSound(dabSFX);
+        } else if (imageViewId == jumpingImageView.getId()) {
+            playSound(jumpingSFX);
+        } else if (imageViewId == zombieImageView.getId()) {
+            playSound(zombieSFX);
+        }
+    }
+
+    private void playSound(MediaPlayer mediaPlayer) {
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+        }
     }
 
     private void setForeground(int imageViewId, int foregroundDrawableResource) {

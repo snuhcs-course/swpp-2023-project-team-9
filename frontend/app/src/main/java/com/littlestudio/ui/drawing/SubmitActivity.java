@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,11 +43,15 @@ public class SubmitActivity extends AppCompatActivity {
     LinearLayout loadingIndicator;
     EditText titleEditText;
     EditText descriptionEditText;
+    private MediaPlayer mediaPlayer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit);
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.bgm);
 
         drawingRepository = DrawingRepository.getInstance(
                 DrawingRemoteDataSource.getInstance(),
@@ -87,33 +92,33 @@ public class SubmitActivity extends AppCompatActivity {
                         drawingRepository.submitDrawing(
                                 drawingId,
                                 new DrawingSubmitRequestDto(
-                                    bitmapToString(bitmap),
-                                    title,
-                                    description
-                        ), new Callback<Drawing>() {
-                            @Override
-                            public void onResponse(Call<Drawing> call, Response<Drawing> response) {
-                                setLoading(false);
-                                String drawingImageUrl = response.body().image_url;
-                                String gifDabUrl = response.body().gif_dab_url;
-                                String gifJumpingUrl = response.body().gif_jumping_url;
-                                String gifZombieUrl = response.body().gif_zombie_url;
-                                Intent intent = new Intent(getApplicationContext(), ImageActivity.class);
-                                intent.putExtra(IntentExtraKey.DRAWING_ID, drawingId);
-                                intent.putExtra(IntentExtraKey.DRAWING_IMAGE_URL, drawingImageUrl);
-                                intent.putExtra(IntentExtraKey.DRAWING_DAB_URL, gifDabUrl);
-                                intent.putExtra(IntentExtraKey.DRAWING_JUMPING_URL, gifJumpingUrl);
-                                intent.putExtra(IntentExtraKey.DRAWING_ZOMBIE_URL, gifZombieUrl);
-                                startActivity(intent);
-                                finish();
-                            }
+                                        bitmapToString(bitmap),
+                                        title,
+                                        description
+                                ), new Callback<Drawing>() {
+                                    @Override
+                                    public void onResponse(Call<Drawing> call, Response<Drawing> response) {
+                                        setLoading(false);
+                                        String drawingImageUrl = response.body().image_url;
+                                        String gifDabUrl = response.body().gif_dab_url;
+                                        String gifJumpingUrl = response.body().gif_jumping_url;
+                                        String gifZombieUrl = response.body().gif_zombie_url;
+                                        Intent intent = new Intent(getApplicationContext(), ImageActivity.class);
+                                        intent.putExtra(IntentExtraKey.DRAWING_ID, drawingId);
+                                        intent.putExtra(IntentExtraKey.DRAWING_IMAGE_URL, drawingImageUrl);
+                                        intent.putExtra(IntentExtraKey.DRAWING_DAB_URL, gifDabUrl);
+                                        intent.putExtra(IntentExtraKey.DRAWING_JUMPING_URL, gifJumpingUrl);
+                                        intent.putExtra(IntentExtraKey.DRAWING_ZOMBIE_URL, gifZombieUrl);
+                                        startActivity(intent);
+                                        finish();
+                                    }
 
-                            @Override
-                            public void onFailure(Call call, Throwable t) {
-                                setLoading(false);
-                                Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                                    @Override
+                                    public void onFailure(Call call, Throwable t) {
+                                        setLoading(false);
+                                        Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
 
                     })
                     .setNegativeButton("No", (dialogInterface, i) -> {
@@ -137,11 +142,33 @@ public class SubmitActivity extends AppCompatActivity {
     private void setLoading(boolean isLoading) {
         if (isLoading) {
             loadingIndicator.setVisibility(View.VISIBLE);
+            playAudio();
         } else {
             loadingIndicator.setVisibility(View.GONE);
+            pauseAudio();
         }
         finishButton.setEnabled(!isLoading);
         titleEditText.setEnabled(!isLoading);
         descriptionEditText.setEnabled(!isLoading);
+    }
+
+    private void playAudio() {
+        if (!mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
+    }
+
+    private void pauseAudio() {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
     }
 }
