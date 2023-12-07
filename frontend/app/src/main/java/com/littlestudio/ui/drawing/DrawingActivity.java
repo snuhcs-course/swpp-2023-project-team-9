@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -65,11 +66,14 @@ public class DrawingActivity extends AppCompatActivity {
     private int drawingId;
 
     LinearLayout loadingIndicator;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.littlestudio.R.layout.activity_drawing);
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.bgm);
 
         ObjectMapper mapper = new ObjectMapper();
         FamilyMapper familyMapper = new FamilyMapper(mapper);
@@ -147,6 +151,9 @@ public class DrawingActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         pusher.unsubscribe(invitationCode);
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
     }
 
     @Override
@@ -266,6 +273,7 @@ public class DrawingActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     loadingIndicator.setVisibility(View.VISIBLE);
+                                    playAudio();
                                 }
                             }
                     );
@@ -290,6 +298,7 @@ public class DrawingActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         loadingIndicator.setVisibility(View.GONE);
+                                        pauseAudio();
                                     }
                                 }
                         );
@@ -310,6 +319,18 @@ public class DrawingActivity extends AppCompatActivity {
                     );
                 }
             });
+        }
+    }
+
+    private void playAudio() {
+        if (!mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
+    }
+
+    private void pauseAudio() {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
         }
     }
 
