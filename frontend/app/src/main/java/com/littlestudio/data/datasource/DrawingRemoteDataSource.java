@@ -20,8 +20,8 @@ public class DrawingRemoteDataSource implements DrawingDataSource {
     private static volatile DrawingRemoteDataSource instance;
     private final ServiceApi serviceApi;
 
-    public static DrawingRemoteDataSource getInstance(){
-        if (instance == null){
+    public static DrawingRemoteDataSource getInstance() {
+        if (instance == null) {
             synchronized (DrawingRemoteDataSource.class) {
                 if (instance == null) {
                     instance = new DrawingRemoteDataSource();
@@ -80,6 +80,16 @@ public class DrawingRemoteDataSource implements DrawingDataSource {
     public void finishDrawing(int id, Callback callback) {
         try {
             serviceApi.finishDrawing(id).enqueue(callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+            callback.onFailure(null, e);
+        }
+    }
+
+    @Override
+    public void abortDrawing(int id, Callback callback) {
+        try {
+            serviceApi.abortDrawing(id).enqueue(callback);
         } catch (Exception e) {
             e.printStackTrace();
             callback.onFailure(null, e);

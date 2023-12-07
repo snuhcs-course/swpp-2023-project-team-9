@@ -44,7 +44,10 @@ public class SubmitActivity extends AppCompatActivity {
     EditText titleEditText;
     EditText descriptionEditText;
     private MediaPlayer mediaPlayer;
-
+    int drawingId;
+    String title;
+    String description;
+    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +62,8 @@ public class SubmitActivity extends AppCompatActivity {
         );
 
         byte[] imageByteArray = getIntent().getByteArrayExtra(IntentExtraKey.DRAWING_IMAGE_BYTE_ARRAY);
-        int drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+        drawingId = getIntent().getIntExtra(IntentExtraKey.DRAWING_ID, 0);
+        bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
 
         ImageView imageView = (ImageView) findViewById(R.id.drawing);
         imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 100, 100, false));
@@ -81,51 +84,77 @@ public class SubmitActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setTitle("Submit Drawing")
                     .setPositiveButton("Yes", (dialogInterface, i) -> {
-                        String title = titleEditText.getText().toString();
-                        String description = descriptionEditText.getText().toString();
+                        title = titleEditText.getText().toString();
+                        description = descriptionEditText.getText().toString();
 
                         if (title.isEmpty() || description.isEmpty()) {
                             Toast.makeText(getApplicationContext(), ErrorMessage.EMPTY_TITLE_AND_DESCRIPTION, Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        setLoading(true);
-                        drawingRepository.submitDrawing(
-                                drawingId,
-                                new DrawingSubmitRequestDto(
-                                        bitmapToString(bitmap),
-                                        title,
-                                        description
-                                ), new Callback<Drawing>() {
-                                    @Override
-                                    public void onResponse(Call<Drawing> call, Response<Drawing> response) {
-                                        setLoading(false);
-                                        String drawingImageUrl = response.body().image_url;
-                                        String gifDabUrl = response.body().gif_dab_url;
-                                        String gifJumpingUrl = response.body().gif_jumping_url;
-                                        String gifZombieUrl = response.body().gif_zombie_url;
-                                        Intent intent = new Intent(getApplicationContext(), ImageActivity.class);
-                                        intent.putExtra(IntentExtraKey.DRAWING_ID, drawingId);
-                                        intent.putExtra(IntentExtraKey.DRAWING_IMAGE_URL, drawingImageUrl);
-                                        intent.putExtra(IntentExtraKey.DRAWING_DAB_URL, gifDabUrl);
-                                        intent.putExtra(IntentExtraKey.DRAWING_JUMPING_URL, gifJumpingUrl);
-                                        intent.putExtra(IntentExtraKey.DRAWING_ZOMBIE_URL, gifZombieUrl);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call call, Throwable t) {
-                                        setLoading(false);
-                                        Toast.makeText(getApplicationContext(), ErrorMessage.DEFAULT, Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-
+                        submitDrawing();
                     })
                     .setNegativeButton("No", (dialogInterface, i) -> {
                         // Do nothing
                     })
                     .show();
         });
+    }
+
+    private void submitDrawing() {
+        setLoading(true);
+        drawingRepository.submitDrawing(
+                drawingId,
+                new DrawingSubmitRequestDto(
+                        bitmapToString(bitmap),
+                        title,
+                        description
+                ), new Callback<Drawing>() {
+                    @Override
+                    public void onResponse(Call<Drawing> call, Response<Drawing> response) {
+                        setLoading(false);
+                        String drawingImageUrl = response.body().image_url;
+                        String gifDabUrl = response.body().gif_dab_url;
+                        String gifJumpingUrl = response.body().gif_jumping_url;
+                        String gifZombieUrl = response.body().gif_zombie_url;
+                        Intent intent = new Intent(getApplicationContext(), ImageActivity.class);
+                        intent.putExtra(IntentExtraKey.DRAWING_ID, drawingId);
+                        intent.putExtra(IntentExtraKey.DRAWING_IMAGE_URL, drawingImageUrl);
+                        intent.putExtra(IntentExtraKey.DRAWING_DAB_URL, gifDabUrl);
+                        intent.putExtra(IntentExtraKey.DRAWING_JUMPING_URL, gifJumpingUrl);
+                        intent.putExtra(IntentExtraKey.DRAWING_ZOMBIE_URL, gifZombieUrl);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Throwable t) {
+                        setLoading(false);
+                        new AlertDialog.Builder(SubmitActivity.this)
+                                .setTitle("Failed to submit")
+                                .setPositiveButton("Retry", (dialogInterface, i) -> {
+                                    title = titleEditText.getText().toString();
+                                    description = descriptionEditText.getText().toString();
+                                    if (title.isEmpty() || description.isEmpty()) {
+                                        Toast.makeText(getApplicationContext(), ErrorMessage.EMPTY_TITLE_AND_DESCRIPTION, Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    submitDrawing();
+                                })
+                                .setNegativeButton("Return to home", (dialogInterface, i) -> {
+                                    finish();
+                                })
+                                .show();
+                    }
+                });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        abortDrawing();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
     }
 
     private String bitmapToString(Bitmap bitmap) {
@@ -137,6 +166,19 @@ public class SubmitActivity extends AppCompatActivity {
             imageString = Base64.getEncoder().encodeToString(imageBytes);
         }
         return imageString;
+    }
+
+    private void abortDrawing() {
+        drawingRepository.abortDrawing(drawingId, new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                //
+            }
+        });
     }
 
     private void setLoading(boolean isLoading) {
@@ -161,14 +203,6 @@ public class SubmitActivity extends AppCompatActivity {
     private void pauseAudio() {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
         }
     }
 }

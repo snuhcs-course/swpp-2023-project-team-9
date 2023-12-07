@@ -42,6 +42,9 @@ public interface ServiceApi {
     @POST("/drawing/{id}/wait")
     Call<Void> finishDrawing(@Path("id") int id);
 
+    @POST("/drawing/{id}/abort")
+    Call<Void> abortDrawing(@Path("id") int id);
+
     @POST("/drawing/{id}/submit")
     Call<DrawingViewResponseDto> submitDrawing(@Path("id") int id, @Body DrawingSubmitRequestDto request);
 
