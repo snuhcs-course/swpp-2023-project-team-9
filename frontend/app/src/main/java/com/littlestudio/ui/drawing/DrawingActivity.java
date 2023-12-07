@@ -114,7 +114,7 @@ public class DrawingActivity extends AppCompatActivity {
         findViewById(R.id.image_close_drawing).setOnClickListener(v -> {
             new AlertDialog.Builder(this)
                     .setTitle("Close Drawing")
-                    .setMessage("Are you sure you want to close this drawing? Any unsaved changes will be lost.")
+                    .setMessage("Are you sure you want to close this drawing? Your drawing will be lost.")
                     .setPositiveButton("Yes", (dialogInterface, i) -> {
                         if (isHost) {
                             abortDrawing();
