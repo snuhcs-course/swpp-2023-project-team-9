@@ -103,6 +103,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
 
         });
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -127,6 +128,20 @@ public class WaitingRoomActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         pusher.unsubscribe(invitationCode);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (isHost) {
+            drawingRepository.abortDrawing(drawingId, new Callback() {
+                @Override
+                public void onResponse(Call call, Response response) {}
+
+                @Override
+                public void onFailure(Call call, Throwable t) {}
+            });
+        }
     }
 
     private void connectToPusher() {
@@ -194,5 +209,15 @@ public class WaitingRoomActivity extends AppCompatActivity {
                 }
             }
         });
+
+        if (!isHost) {
+            this.channel.bind("abort", new SubscriptionEventListener() {
+                @Override
+                public void onEvent(PusherEvent event) {
+                    Toast.makeText(getApplicationContext(), ErrorMessage.DRAWING_ABORTED, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
+        }
     }
 }

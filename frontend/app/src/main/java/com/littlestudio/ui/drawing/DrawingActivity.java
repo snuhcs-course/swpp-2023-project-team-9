@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -25,6 +26,7 @@ import com.littlestudio.data.mapper.DrawingMapper;
 import com.littlestudio.data.mapper.FamilyMapper;
 import com.littlestudio.data.repository.DrawingRepository;
 import com.littlestudio.ui.ImageActivity;
+import com.littlestudio.ui.constant.ErrorMessage;
 import com.littlestudio.ui.constant.IntentExtraKey;
 import com.littlestudio.ui.drawing.widget.CircleView;
 import com.littlestudio.ui.drawing.widget.DrawView;
@@ -110,6 +112,9 @@ public class DrawingActivity extends AppCompatActivity {
                     .setTitle("Close Drawing")
                     .setMessage("Are you sure you want to close this drawing? Any unsaved changes will be lost.")
                     .setPositiveButton("Yes", (dialogInterface, i) -> {
+                        if (isHost) {
+                            abortDrawing();
+                        }
                         finish();
                     })
                     .setNegativeButton("No", (dialogInterface, i) -> {
@@ -142,6 +147,24 @@ public class DrawingActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         pusher.unsubscribe(invitationCode);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (isHost) {
+            abortDrawing();
+        }
+    }
+
+    private void abortDrawing() {
+        drawingRepository.abortDrawing(drawingId, new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {}
+
+            @Override
+            public void onFailure(Call call, Throwable t) {}
+        });
     }
 
     private void connectToPusher() {
@@ -273,6 +296,13 @@ public class DrawingActivity extends AppCompatActivity {
                     }
                 }
             });
+            this.channel.bind("abort", new SubscriptionEventListener() {
+                @Override
+                public void onEvent(PusherEvent event) {
+                    Toast.makeText(getApplicationContext(), ErrorMessage.DRAWING_ABORTED, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
         }
     }
 
@@ -377,10 +407,12 @@ public class DrawingActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
     }
 
@@ -393,10 +425,12 @@ public class DrawingActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
     }
 
