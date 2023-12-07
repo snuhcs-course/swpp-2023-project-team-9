@@ -108,7 +108,6 @@ public class DrawingActivity extends AppCompatActivity {
             finish();
         });
 
-
         findViewById(R.id.image_close_drawing).setOnClickListener(v -> {
             new AlertDialog.Builder(this)
                     .setTitle("Close Drawing")

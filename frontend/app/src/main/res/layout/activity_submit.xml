@@ -91,7 +91,7 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Please wait until your character is learning some dance moves! \n It may take a few minutes."
+            android:text="Please wait a few minutes until your character starts dancing!"
             android:textAlignment="center"
             android:textSize="20dp"/>
     </LinearLayout>
