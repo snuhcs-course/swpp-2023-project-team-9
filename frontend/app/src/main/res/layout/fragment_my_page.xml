@@ -19,6 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
+        android:id="@+id/family_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="30dp"
@@ -38,12 +39,11 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/logout_btn"
-        android:layout_width="125dp"
-        android:layout_height="36dp"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
         android:layout_marginBottom="30dp"
         android:background="@drawable/rounded_btn"
         android:text="Logout"
-        android:textSize="26sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

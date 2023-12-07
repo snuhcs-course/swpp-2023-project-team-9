@@ -68,7 +68,6 @@
         android:layout_width="125dp"
         android:layout_height="40dp"
         android:text="Join"
-        android:textSize="22sp"
         android:background="@drawable/rounded_btn"
         app:layout_constraintTop_toBottomOf="@id/join_drawing_option_linear_layout"
         app:layout_constraintStart_toStartOf="parent"

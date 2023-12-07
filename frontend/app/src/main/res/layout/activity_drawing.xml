@@ -147,13 +147,12 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/finish_btn"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:text="Finish"
-        android:textSize="24sp"
+        android:layout_height="wrap_content"
+        android:text="Finish Drawing"
         android:background="@drawable/rounded_btn"
         android:paddingHorizontal="30dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="35dp"
         app:layout_constraintBottom_toTopOf="@id/image_sketchbook"
         app:layout_constraintEnd_toEndOf="parent"/>
 
