@@ -1,6 +1,7 @@
 package com.littlestudio.ui;
 
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -24,12 +25,17 @@ import pl.droidsonroids.gif.GifImageView;
 public class TutorialActivity extends AppCompatActivity {
     private int pageCounter;
     private int selectedImageViewId;
+    private MediaPlayer bgmPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutorial);
         initializeUI();
+
+        bgmPlayer = MediaPlayer.create(this, R.raw.tutorial_bgm);
+        bgmPlayer.setLooping(true);
+        bgmPlayer.start();
     }
 
     private void initializeUI() {
@@ -37,6 +43,12 @@ public class TutorialActivity extends AppCompatActivity {
         updateUIForPage(pageCounter);
         TextView backBtn = findViewById(R.id.back_btn);
         backBtn.setVisibility(View.GONE);
+
+        TextView skipBtn = findViewById(R.id.skip_btn);
+        skipBtn.setOnClickListener(v -> {
+            stopBGM();
+            finish();
+        });
     }
 
     private void updateUIForPage(int page) {
@@ -222,5 +234,19 @@ public class TutorialActivity extends AppCompatActivity {
     private void setForeground(int imageViewId, int foregroundDrawableResource) {
         ImageView imageView = findViewById(imageViewId);
         imageView.setForeground(ContextCompat.getDrawable(this, foregroundDrawableResource));
+    }
+
+    private void stopBGM() {
+        if (bgmPlayer != null) {
+            bgmPlayer.stop();
+            bgmPlayer.release();
+            bgmPlayer = null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopBGM();
+        super.onDestroy();
     }
 }
