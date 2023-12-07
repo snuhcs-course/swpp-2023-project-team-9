@@ -37,6 +37,7 @@ public class ImageActivity extends AppCompatActivity {
     UserRepository userRepository;
     private int selectedImageViewId;
     private int drawingId;
+    private MediaPlayer currentMediaPlayer;
 
 
     @Override
@@ -133,11 +134,16 @@ public class ImageActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         MediaPlayer dabSFX = MediaPlayer.create(this, R.raw.dab_sfx);
         MediaPlayer jumpingSFX = MediaPlayer.create(this, R.raw.jump_sfx);
         MediaPlayer zombieSFX = MediaPlayer.create(this, R.raw.zombie_sfx);
 
-        super.onDestroy();
+        if (currentMediaPlayer != null) {
+            currentMediaPlayer.release();
+            currentMediaPlayer = null;
+        }
+
         if (dabSFX != null) {
             dabSFX.release();
         }
@@ -155,36 +161,51 @@ public class ImageActivity extends AppCompatActivity {
         setForeground(imageViewId, R.drawable.orange_border_thin);
         selectedImageViewId = imageViewId;
 
+        if (currentMediaPlayer != null && currentMediaPlayer.isPlaying()) {
+            currentMediaPlayer.release();
+            currentMediaPlayer = null;
+        }
+
         ImageView dabImageView = findViewById(R.id.dab_image_view);
         ImageView jumpingImageView = findViewById(R.id.jumping_image_view);
         ImageView zombieImageView = findViewById(R.id.zombie_image_view);
 
-        MediaPlayer dabSFX = MediaPlayer.create(this, R.raw.dab_sfx);
-        MediaPlayer jumpingSFX = MediaPlayer.create(this, R.raw.jump_sfx);
-        MediaPlayer zombieSFX = MediaPlayer.create(this, R.raw.zombie_sfx);
-
         if (imageViewId == dabImageView.getId()) {
-            playSound(R.raw.dab_sfx);
+            currentMediaPlayer = MediaPlayer.create(this, R.raw.dab_sfx);
+            playSound(currentMediaPlayer);
         } else if (imageViewId == jumpingImageView.getId()) {
-            playSoundWithDelay(R.raw.jump_sfx,0);
-            playSoundWithDelay(R.raw.jump_sfx,2000);
+            currentMediaPlayer = MediaPlayer.create(this, R.raw.jump_sfx);
+            playSoundWithDelay(currentMediaPlayer, 0);
+            playSoundWithDelay(currentMediaPlayer, 2000);
         } else if (imageViewId == zombieImageView.getId()) {
-            playSound(R.raw.zombie_sfx);
+            currentMediaPlayer = MediaPlayer.create(this, R.raw.zombie_sfx);
+            playSound(currentMediaPlayer);
         }
     }
 
-    private void playSound(int soundResourceId) {
-        MediaPlayer mediaPlayer = MediaPlayer.create(this, soundResourceId);
+    private void playSound(MediaPlayer mediaPlayer) {
         if (mediaPlayer != null) {
             mediaPlayer.setOnCompletionListener(mp -> {
                 mp.release();
+                currentMediaPlayer = null;
             });
             mediaPlayer.start();
         }
     }
 
-    private void playSoundWithDelay(int soundResourceId, long delayMillis) {
-        new Handler().postDelayed(() -> playSound(soundResourceId), delayMillis);
+    private void playSoundWithDelay(MediaPlayer mediaPlayer, long delayMillis) {
+        new Handler().postDelayed(() -> {
+            if (mediaPlayer != null) {
+                try {
+                    if (!mediaPlayer.isPlaying()) {
+                        mediaPlayer.start();
+                    }
+                } catch (IllegalStateException e) {
+                    mediaPlayer.release();
+                    currentMediaPlayer = null;
+                }
+            }
+        }, delayMillis);
     }
 
     private void setForeground(int imageViewId, int foregroundDrawableResource) {
