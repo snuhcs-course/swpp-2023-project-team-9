@@ -80,7 +80,7 @@ public class ImageActivity extends AppCompatActivity {
         ImageView jumpingImageView = findViewById(R.id.jumping_image_view);
         ImageView zombieImageView = findViewById(R.id.zombie_image_view);
 
-        selectedImageViewId = originalImageView.getId(); // default to original image
+        selectedImageViewId = originalImageView.getId();
         setForeground(selectedImageViewId, R.drawable.orange_border_thin);
         drawingRepository.getDrawing(drawingId, new Callback<Drawing>() {
             @Override

@@ -58,7 +58,7 @@ public class TutorialActivity extends AppCompatActivity {
             case 1:
                 tutorialImage.setImageResource(R.drawable.start);
                 title.setText("Welcome to Little Studio!");
-                description.setText("Let's bring the character you drew to life!");
+                description.setText("Let's bring the character you drew come to life!");
                 nextBtn.setText("Let's go!");
                 break;
             case 2:
@@ -135,7 +135,7 @@ public class TutorialActivity extends AppCompatActivity {
         GifImageView jumpingImageView = findViewById(R.id.jumping_image_view);
         GifImageView zombieImageView = findViewById(R.id.zombie_image_view);
 
-        selectedImageViewId = dabImageView.getId(); // default to dab gif
+        selectedImageViewId = dabImageView.getId();
         setForeground(selectedImageViewId, R.drawable.orange_border_thin);
 
         String originalDrawing = "tutorial_7";
