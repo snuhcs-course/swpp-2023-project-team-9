@@ -130,7 +130,8 @@ public class SubmitActivity extends AppCompatActivity {
                     public void onFailure(Call call, Throwable t) {
                         setLoading(false);
                         new AlertDialog.Builder(SubmitActivity.this)
-                                .setTitle("Failed to submit")
+                                .setTitle("Error occurred")
+                                .setMessage("There was a problem in detecting the pose from your character. Please draw again with a clear outline.")
                                 .setPositiveButton("Retry", (dialogInterface, i) -> {
                                     title = titleEditText.getText().toString();
                                     description = descriptionEditText.getText().toString();
