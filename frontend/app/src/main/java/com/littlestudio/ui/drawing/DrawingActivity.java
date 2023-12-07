@@ -99,12 +99,10 @@ public class DrawingActivity extends AppCompatActivity {
             drawingRepository.finishDrawing(drawingId, new Callback() {
                 @Override
                 public void onResponse(Call call, Response response) {
-                    //
                 }
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
-                    //
                 }
             });
             finish();
@@ -115,14 +113,14 @@ public class DrawingActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setTitle("Close Drawing")
                     .setMessage("Are you sure you want to close this drawing? Your drawing will be lost.")
-                    .setPositiveButton("Yes", (dialogInterface, i) -> {
+                    .setPositiveButton("No", (dialogInterface, i) -> { // actually negative
+                        // Positive button set as negative to avoid accidental click
+                    })
+                    .setNegativeButton("Yes", (dialogInterface, i) -> {
                         if (isHost) {
                             abortDrawing();
                         }
                         finish();
-                    })
-                    .setNegativeButton("No", (dialogInterface, i) -> {
-                        // Do nothing
                     })
                     .show();
         });
@@ -399,7 +397,6 @@ public class DrawingActivity extends AppCompatActivity {
     }
 
     private void scaleColorView(View view) {
-        // Reset scale of all views
         findViewById(R.id.image_color_black).setScaleX(1f);
         findViewById(R.id.image_color_black).setScaleY(1f);
 
@@ -421,7 +418,6 @@ public class DrawingActivity extends AppCompatActivity {
         findViewById(R.id.image_color_brown).setScaleX(1f);
         findViewById(R.id.image_color_brown).setScaleY(1f);
 
-        // Set scale of the selected view
         view.setScaleX(1.5f);
         view.setScaleY(1.5f);
     }
