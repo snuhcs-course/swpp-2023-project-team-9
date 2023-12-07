@@ -2,6 +2,7 @@ package com.littlestudio.ui;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -142,6 +143,7 @@ public class ImageActivity extends AppCompatActivity {
         }
         if (jumpingSFX != null) {
             jumpingSFX.release();
+            jumpingSFX.release();
         }
         if (zombieSFX != null) {
             zombieSFX.release();
@@ -162,18 +164,27 @@ public class ImageActivity extends AppCompatActivity {
         MediaPlayer zombieSFX = MediaPlayer.create(this, R.raw.zombie_sfx);
 
         if (imageViewId == dabImageView.getId()) {
-            playSound(dabSFX);
+            playSound(R.raw.dab_sfx);
         } else if (imageViewId == jumpingImageView.getId()) {
-            playSound(jumpingSFX);
+            playSoundWithDelay(R.raw.jump_sfx,0);
+            playSoundWithDelay(R.raw.jump_sfx,2000);
         } else if (imageViewId == zombieImageView.getId()) {
-            playSound(zombieSFX);
+            playSound(R.raw.zombie_sfx);
         }
     }
 
-    private void playSound(MediaPlayer mediaPlayer) {
+    private void playSound(int soundResourceId) {
+        MediaPlayer mediaPlayer = MediaPlayer.create(this, soundResourceId);
         if (mediaPlayer != null) {
+            mediaPlayer.setOnCompletionListener(mp -> {
+                mp.release();
+            });
             mediaPlayer.start();
         }
+    }
+
+    private void playSoundWithDelay(int soundResourceId, long delayMillis) {
+        new Handler().postDelayed(() -> playSound(soundResourceId), delayMillis);
     }
 
     private void setForeground(int imageViewId, int foregroundDrawableResource) {
