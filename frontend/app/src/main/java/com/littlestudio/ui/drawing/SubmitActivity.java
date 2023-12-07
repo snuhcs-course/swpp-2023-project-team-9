@@ -54,7 +54,7 @@ public class SubmitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit);
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.bgm);
+        mediaPlayer = MediaPlayer.create(this, R.raw.loading_bgm);
 
         drawingRepository = DrawingRepository.getInstance(
                 DrawingRemoteDataSource.getInstance(),

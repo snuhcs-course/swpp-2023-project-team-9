@@ -73,7 +73,7 @@ public class DrawingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(com.littlestudio.R.layout.activity_drawing);
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.bgm);
+        mediaPlayer = MediaPlayer.create(this, R.raw.loading_bgm);
 
         ObjectMapper mapper = new ObjectMapper();
         FamilyMapper familyMapper = new FamilyMapper(mapper);
