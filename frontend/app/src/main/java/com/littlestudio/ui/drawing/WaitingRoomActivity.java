@@ -119,7 +119,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
         connectToChannel(invitationCode);
         if (!isHost) {
             Button button = findViewById(R.id.start_drawing_btn);
-            Toast.makeText(WaitingRoomActivity.this, "Only host can start drawing", Toast.LENGTH_SHORT).show();
+            Toast.makeText(WaitingRoomActivity.this, "Only host can start drawing.", Toast.LENGTH_SHORT).show();
             button.setVisibility(View.INVISIBLE);
         }
     }
@@ -214,8 +214,15 @@ public class WaitingRoomActivity extends AppCompatActivity {
             this.channel.bind("abort", new SubscriptionEventListener() {
                 @Override
                 public void onEvent(PusherEvent event) {
-                    Toast.makeText(getApplicationContext(), ErrorMessage.DRAWING_ABORTED, Toast.LENGTH_SHORT).show();
-                    finish();
+                    runOnUiThread(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplication(), ErrorMessage.DRAWING_ABORTED, Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                            }
+                    );
                 }
             });
         }

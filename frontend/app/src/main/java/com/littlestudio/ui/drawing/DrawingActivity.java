@@ -299,8 +299,15 @@ public class DrawingActivity extends AppCompatActivity {
             this.channel.bind("abort", new SubscriptionEventListener() {
                 @Override
                 public void onEvent(PusherEvent event) {
-                    Toast.makeText(getApplicationContext(), ErrorMessage.DRAWING_ABORTED, Toast.LENGTH_SHORT).show();
-                    finish();
+                    runOnUiThread(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), ErrorMessage.DRAWING_ABORTED, Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                            }
+                    );
                 }
             });
         }
