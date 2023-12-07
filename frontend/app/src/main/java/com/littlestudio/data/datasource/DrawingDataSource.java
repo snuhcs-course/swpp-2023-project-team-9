@@ -24,6 +24,8 @@ public interface DrawingDataSource {
 
     void finishDrawing(int id, Callback callback);
 
+    void abortDrawing(int id, Callback callback);
+
     void submitDrawing(int id, DrawingSubmitRequestDto request, Callback callback);
 
     void realTimeDrawing(DrawingRealTimeRequestDto request, Callback callback);

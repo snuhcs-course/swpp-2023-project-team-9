@@ -1,6 +1,5 @@
 package com.littlestudio.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioButton;
@@ -68,8 +67,7 @@ public class SignupActivity extends AppCompatActivity {
         logInLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
 

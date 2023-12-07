@@ -100,6 +100,24 @@ public class DrawingRepository {
         });
     }
 
+    public void abortDrawing(int id, final Callback callback) {
+        remoteDataSource.abortDrawing(id, new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onResponse(null, null);
+                } else {
+                    callback.onFailure(null, new Throwable("Unsuccessful response"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                callback.onFailure(null, t);
+            }
+        });
+    }
+
     public void submitDrawing(int id, DrawingSubmitRequestDto request, final Callback callback) {
         remoteDataSource.submitDrawing(id, request, new Callback<DrawingViewResponseDto>() {
             @Override
