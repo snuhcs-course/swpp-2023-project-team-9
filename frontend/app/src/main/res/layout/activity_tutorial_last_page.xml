@@ -206,7 +206,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Drawn by Dad and Kevin"
+            android:text="Drawn by Kevin Lee, Dad"
             android:textSize="10sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/gallery_detail_created_on"/>
